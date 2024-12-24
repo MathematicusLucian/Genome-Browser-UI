@@ -18,17 +18,25 @@ export default function Home() {
             Genome Browser
           </h1>
 
+          <p className={styles.subtitle}>
+            (Engineer: <a href="https://github.com/MathematicusLucian" target="blank">
+              MathematicusLucian
+            </a>)
+          </p >
+
           <p className={styles.description}>
-            The Genome Browser UI is a Next.js React-based (TypeScript) UI client application, which queries the Genome Browser API (FastAPI) server, to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
+            The <a href="https://github.com/MathematicusLucian/Genome-Browser-UI" target="blank">Genome Browser UI</a> is a Next.js React-based (TypeScript) UI client application, which queries the <a href="https://github.com/MathematicusLucian/Genome-Browser-API" target="blank">Genome Browser API</a> (FastAPI) server, to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
           </p>
 
-          {/* <PatientData /> */}
+          <div className={styles.childcontainer}>
+            <PatientData />
+          </div>
 
         </div>
       </main>
 
       <footer>
-        &copy; Luke Jones {new Date().getFullYear()}
+        <strong>Genome Browser UI, and |Genome Browser API</strong>, &copy; Luke Jones {new Date().getFullYear()}
       </footer>
 
       <style jsx>{`
@@ -47,6 +55,7 @@ export default function Home() {
           display: flex;
           justify-content: center;
           align-items: center;
+          font-size: 0.6rem;
         }
         footer img {
           margin-left: 0.5rem;
