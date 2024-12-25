@@ -1,4 +1,4 @@
-import Button from 'antd/es/button';
+// import Button from 'antd/es/button';
 import React from 'react';
 
 interface DrawerProps {
@@ -11,10 +11,19 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, content }) => {
     return (
         <div className={`drawer ${isOpen ? 'open' : ''}`}>
             <div className="drawer-content">
-                <Button className="close-button" onClick={onClose}>Close</Button>
+                <button className="close-button rounded bg-gray-900 px-3 py-1 mt-3 text-xs"
+                    onClick={onClose}>
+                    Close
+                </button>
                 <hr />
-                {content.patient_id}
-                <p>{JSON.stringify(content)}</p>
+                <h2>Gene Variant Details</h2>
+                {content && (
+                    <div>
+                        {Object.entries(content).map(([key, value]) => (
+                            <p key={key}><strong>{key}:</strong> {value}</p>
+                        ))}
+                    </div>
+                )}
             </div>
             <style jsx>{`
                 .drawer {
@@ -29,7 +38,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, content }) => {
                     transition: transform 0.3s ease;
                     z-index: 1000;
                 }
-                p {
+                div {
                     width: 80%;
                     padding: 1em;
                 }
