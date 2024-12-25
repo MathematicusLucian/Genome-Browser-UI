@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
-import { DrawerContext } from '../../../context';
+import { ModalContext, DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
 import Select from '../../../components/Select'; 
 import TableGrid from '../../../components/TableGrid'; 
 
 const GenericPage: React.FC<any> = (props) => { 
-    const { content, visible, updateContent, toggleVisible } = useContext(DrawerContext);
+    const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
+    const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]);
     const [error, setError] = useState(null);
@@ -96,13 +97,27 @@ const GenericPage: React.FC<any> = (props) => {
     };
 
     const handleSelectedDataRowChange = (dataRow: string) => {
-        toggleVisible();
-        updateContent(dataRow) 
+        updateDrawerContent(dataRow);
+        toggleDrawerVisible();
     };  
+
+    const uploadDNAFile = () => {
+        console.log("clicked upload button")
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3">Content</div></div>);
+        toggleModalVisible(true);
+    }
 
     return (
         <Layout>
-            <Select patientProfiles={patientProfiles} error={error} handlePatientChange={handlePatientChange} />
+            <div>
+                <button
+                className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
+                onClick={uploadDNAFile}
+                >
+                    Upload DNA File
+                </button>
+                <Select patientProfiles={patientProfiles} error={error} handlePatientChange={handlePatientChange} />
+            </div>
             {!selectedPatient || error ? (
                 <div>Error: {error}</div>
             ) : (

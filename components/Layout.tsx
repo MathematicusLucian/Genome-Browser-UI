@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
-import { DrawerContext } from '../context';
+import { ModalContext, DrawerContext } from '../context';
 import Head from 'next/head'; 
 import styles from '../styles/Layout.module.css';
 import Header from './Header';
-import Footer from './Footer';
+import Footer from './Footer'; 
+import Modal from './Modal';
 import Drawer from './Drawer';
 
-const Layout = ({ children }) => {     
-  const { content, visible, updateContent, toggleVisible } = useContext(
-      DrawerContext
+const Layout = ({ children }) => {      
+  const { modalContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(
+    ModalContext
   );    
+  const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(
+      DrawerContext
+  );   
 
   return (
     <div className={styles.container}>
@@ -21,7 +25,8 @@ const Layout = ({ children }) => {
 
       <main>
 
-        <Drawer isOpen={visible} onClose={toggleVisible} content={content} />
+        <Modal isOpen={modalVisible} onClose={toggleModalVisible} content={modalContent} /> 
+        <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} content={drawerContent} />
 
         <div className={styles.grid}>
 
@@ -38,7 +43,9 @@ const Layout = ({ children }) => {
           <div className="footerwrapper">
             <Footer />
           </div>
+
         </div>
+
       </main>
 
       <style jsx>{`
