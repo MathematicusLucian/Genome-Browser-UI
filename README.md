@@ -19,9 +19,19 @@ The Genome Browser UI is a **React**-based (TypeScript) UI client application (w
 
 ### Full Patient Report
 
+The rows represent the gene variants associated with the patient.
+
 ![full_report](./assets/full_report.png)
 
+### Gene Variant Details
+
+If you click on a row, the app will launch a drawer featuring the details for the gene variant.
+
+![gene_variant_details](./assets/gene_variant_details.png)
+
 ### List of Patients
+
+Patient genomes that the user has uploaded.
 
 ![list_of_patients](./assets/list_of_patients.png)
 
