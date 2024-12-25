@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from 'next/router';
-import { ThemeContext, DrawerContext } from '../../../context';
+import { DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
 import TableGrid from '../../../components/TableGrid'; 
 
@@ -44,19 +44,12 @@ const GenericPage: React.FC<any> = (props) => {
         toggleVisible();
         updateContent(dataRow) 
     };  
-        
-    const { style, toggleStyle } = useContext(
-        ThemeContext
-    );
     const { content, visible, updateContent, toggleVisible } = useContext(
         DrawerContext
     );
 
     return (
         <Layout>
-             <p>
-                Theme is <em>{style}</em>
-            </p>
             {!patient_id || error ? (
                 <div>Error: {error}</div>
             ) : (

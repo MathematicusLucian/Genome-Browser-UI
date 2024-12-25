@@ -13,21 +13,19 @@ function App({ Component, pageProps }: AppProps) {
   function updateContent(value) { 
     setContent(value);
   }
-  function toggleStyle() {
+  function toggleTheme() {
     setStyle(style => (style === "light" ? "dark" : "light"));
   }
   function toggleVisible() {
-    console.log(visible)
     setVisible(!visible);
-    console.log(visible)
   }
 
   return (
       <ThemeContext.Provider
-        value={{ style, toggleStyle }}
+        value={{ style, toggleTheme }}
       >
         <DrawerContext.Provider
-          value={{ content, visible, updateContent, toggleVisible }}
+          value={{ content, visible, updateContent, toggleTheme }}
         >
           <Component {...pageProps} />
         </DrawerContext.Provider> 

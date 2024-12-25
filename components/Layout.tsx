@@ -6,10 +6,13 @@ import Header from './Header';
 import Footer from './Footer';
 import Drawer from './Drawer';
 
-const Layout = ({ children }) => {
+const Layout = ({ children }) => {     
+  const { style, toggleTheme } = useContext(
+      ThemeContext
+  );
   const { content, visible, updateContent, toggleVisible } = useContext(
       DrawerContext
-  );   
+  );    
 
   return (
     <div className={styles.container}>
@@ -22,6 +25,16 @@ const Layout = ({ children }) => {
       <main>
 
         <Drawer isOpen={visible} onClose={toggleVisible} content={content} />
+
+        <p>
+            Theme is <em>{style}</em>
+        </p>
+        <button
+          className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
+          onClick={toggleTheme}
+        >
+          ToggleTheme
+        </button>
 
         <div className={styles.grid}>
 
