@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import * as agGrid from "ag-grid-community";  
 import * as agGridE from "ag-grid-enterprise";  
@@ -26,6 +26,8 @@ interface MyComponentProps {
 }
 
 const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
+  const gridRef = useRef<AgGridReact<any>>(null);
+  
   const [gridApi, setGridApi] = useState<agGrid.GridApi | null>(null);
   const [gridColumnApi, setGridColumnApi] = useState<agGrid.Column | null>(
     null
@@ -40,7 +42,12 @@ const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
   const onGridReady = (params: agGrid.GridReadyEvent) => {
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-  };
+    params.api.addGlobalListener((type: string, e) => {
+      if (type === "rowClicked" || type === "rowSelected") {
+        console.log(e.type, e.data.patient_id); 
+      }
+    });
+  }; 
 
   const onPaginationChanged = () => {
     console.log("onPaginationChanged");
@@ -50,31 +57,59 @@ const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
     if (gridApi) {
       gridApi.setFilterModel(null);
     }
-  };
+  }; 
+  
+  const autoSizeStrategy = useMemo<
+    | agGrid.SizeColumnsToFitGridStrategy
+    | agGrid.SizeColumnsToFitProvidedWidthStrategy
+    | agGrid.SizeColumnsToContentStrategy
+  >(() => {
+    return {
+      type: "fitCellContents",
+    };
+  }, []);
+
+  const autoSizeAll = useCallback((skipHeader: boolean) => {
+    const allColumnIds: string[] = [];
+    gridRef.current!.api.getColumns()!.forEach((column) => {
+      allColumnIds.push(column.getId());
+    });
+    gridRef.current!.api.autoSizeColumns(allColumnIds, skipHeader);
+  }, []); 
 
   return (
     <div className="ag-theme-alpine grid-container">
-      <div className="flex justify-between align-middle mb-4 text-lg text-[#4b5563] ">
-        <button
-          className="rounded bg-gray-200 px-3 py-1"
-          onClick={clearFilters}
-        >
-          Clear Filters
-        </button>
+      <div className="flex justify-between align-middle mb-4 text-lg text-[#4b5563]">
+          <button
+            className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
+            onClick={clearFilters}
+          >
+            Clear Filters
+          </button>
+          <button 
+            className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
+            onClick={() => autoSizeAll(false)}>
+            Fit Columns to Cell Contents
+          </button>
       </div>
       <AgGridReact
         className="ag-grid"
+        ref={gridRef} 
         columnDefs={columnDefs}
         rowData={rowData}
+        rowSelection={'single'}
         defaultColDef={defaultColDef}
         onGridReady={onGridReady}
         pagination={true}
         paginationPageSize={50}
         onPaginationChanged={onPaginationChanged}
+        autoSizeStrategy={autoSizeStrategy}
+        enableCellTextSelection={true}
+        ensureDomOrder={true}
       ></AgGridReact>
       <style jsx global>{`
         .grid-container {
-          height: 750px;
+          height: 75vh;
           width: 100%;
           padding: 0; 
         }

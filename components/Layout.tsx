@@ -10,6 +10,7 @@ const Layout = ({ children }) => {
       <Head>
         <title>Genome Browser</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
       <main>
@@ -24,14 +25,16 @@ const Layout = ({ children }) => {
           <div className={styles.childcontainer}>
             {children}
           </div>
-        </div>
 
-        <Footer />
+          <div className="footerwrapper">
+            <Footer />
+          </div>
+        </div>
       </main>
 
       <style jsx>{`
         main {
-          padding: 5rem 0;
+          padding: 2rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;

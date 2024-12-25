@@ -1,27 +1,29 @@
 .container {
   font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
     Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  min-height: 100vh;
-  padding: 0 0.5rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
   justify-content: center;
-  align-items: center;
+  padding: 0 0.1rem;
+  min-height: 100vh;
+  height: 100vh; /* Full viewport height */
 }
 
 .grid {
   display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  max-width: 800px;
-  margin-top: 0.1rem;
+  padding-top: 0rem;
 }
 
 .title,
 .subtitle,
 .description,
-.childcontainer {
+.childcontainer,
+.footerwrapper {
   text-align: center;
   flex-basis: 95%;
 }
@@ -52,6 +54,13 @@
 .description {
   line-height: 1.6;
   font-size: 0.8rem;
+}
+
+.footerwrapper {
+  background-color: red;
+  display: flex;
+  align-items: flex-end;
+  /* height: 100vh; Full viewport height */
 }
 
 .card {

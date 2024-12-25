@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
-import Layout from '../../components/Layout';
-import Grid from '../../components/Grid';
+import Layout from '../../../components/Layout';
+import TableGrid from '../../../components/TableGrid';
 
 const GenericPage = () => {
     const [rowData, setRowData] = useState([]);
@@ -13,8 +13,8 @@ const GenericPage = () => {
 
     const fetchData = async () => {
         try {
-            // const api_url = patient_id = ? `http://127.0.0.1:8000/patient_genome/full_report/${patient_id}` : `http://127.0.0.1:8000/patient_genome/full_report`);
-            const api_url = `http://127.0.0.1:8000/patient_genome/full_report`;
+            // const api_url = patient_id = ? `http://127.0.0.1:8000/patient_genome/patient_profile/${patient_id}` : `http://127.0.0.1:8000/patient_genome/patient_profile`);
+            const api_url = `http://127.0.0.1:8000/patient_genome/patient_profile`;
             const response = await fetch(api_url);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -41,14 +41,20 @@ const GenericPage = () => {
 
     return (
         <Layout>
-            {!patient_id || error ? (
+            {patient_id || error ? (
                 <div>Error: {error}</div>
             ) : (
                 <div>
-                    <strong>Patient Data (ID: {patient_id})</strong>
-                    <Grid rowData={rowData} columnDefs={columnDefs} error={error} />
+                    <div className="table-header">List of Patients</div>
+                    <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} />
                 </div>
             )}
+            <style jsx>{`
+              .table-header { 
+                padding: 1.3rem 0 0 0;
+                font-weight: 900;
+            `}
+            </style>
         </Layout>
     );
 };
