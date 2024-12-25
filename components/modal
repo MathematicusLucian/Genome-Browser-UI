@@ -1,0 +1,99 @@
+
+
+    // const showModal = () => {
+    //     setIsModalVisible(true);
+    // };
+
+    // const handleOk = () => {
+    //     setIsModalVisible(false);
+    // };
+
+    // const handleCancel = () => {
+    //     setIsModalVisible(false);
+    // };
+    
+
+    //opening modal in a global scope
+    // const openModal = () => {
+    //     Modal.open({
+    //     title: "Modal Title",
+    //     component: HelloWorld,
+    //     props: {
+    //         callback: () => {
+    //         //closes the modal
+    //         Modal.close();
+    //         },
+    //         update: () => {
+    //         //update the current modal props any where from the application using
+    //         //this methods
+    //         Modal.updateProps(
+    //             {
+    //             data: "hello",
+    //             },
+    //             0
+    //         );
+    //         },
+    //     },
+    //     });
+    // };
+    
+{/* 
+            <Button onClick={toggleStyle}>
+                Change Theme
+            </Button> */}
+{/* 
+            <Button type="dashed" onClick={openModal}>
+                Open Modal using Function
+            </Button>
+            
+            <Button type="primary" onClick={showModal}>
+                Open Modal general approach
+            </Button>
+     */}
+            {/* <AntModal
+            title="Basic Modal"
+            visible={isModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            >
+            <p>Modal data...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            </AntModal> */}
+
+
+
+
+// const HelloWorld = ({
+    //     callback,
+    //     data,
+    //     update,
+    //     enableBottomSheet = false,
+    //   }: any) => {
+    //     return (
+    //       <div
+    //         style={{
+    //           position: "relative",
+    //         }}
+    //       >
+    //         <div className="content">
+    //           <div>Updated props is {data || "Null"}</div>
+    //           <div>Hello world</div>
+    //           <div>Hello world</div>
+    //         </div>
+    //         <div
+    //           className="modal__bottom"
+    //           style={{
+    //             position: enableBottomSheet ? "fixed" : "absolute",
+    //           }}
+    //         >
+    //           <Button type="primary" style={{ marginRight: "10px" }} onClick={update}>
+    //             update props
+    //           </Button>
+    //           <Button type="primary" danger onClick={callback}>
+    //             Cancel
+    //           </Button>
+    //         </div>
+    //       </div>
+    //     );
+    // };

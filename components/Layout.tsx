@@ -1,9 +1,15 @@
+import React, { useState, useEffect, useContext } from "react";
+import { ThemeContext, DrawerContext } from '../context';
 import Head from 'next/head'; 
 import styles from '../styles/Layout.module.css';
 import Header from './Header';
 import Footer from './Footer';
+import Drawer from './Drawer';
 
 const Layout = ({ children }) => {
+  const { content, visible, updateContent, toggleVisible } = useContext(
+      DrawerContext
+  );   
 
   return (
     <div className={styles.container}>
@@ -14,15 +20,18 @@ const Layout = ({ children }) => {
       </Head>
 
       <main>
+
+        <Drawer isOpen={toggleVisible} onClose={toggleVisible} content={content} />
+
         <div className={styles.grid}>
 
           <Header />
 
           <p className={styles.description}>
             The <a href="https://github.com/MathematicusLucian/Genome-Browser-UI" target="blank">Genome Browser UI</a> is a Next.js React-based (TypeScript) UI client application, which queries the <a href="https://github.com/MathematicusLucian/Genome-Browser-API" target="blank">Genome Browser API</a> (FastAPI) server, to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
-          </p>
+          </p> 
 
-          <div className={styles.childcontainer}>
+          <div className={styles.childcontainer}> 
             {children}
           </div>
 

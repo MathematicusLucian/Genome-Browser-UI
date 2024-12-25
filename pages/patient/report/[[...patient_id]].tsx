@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from 'next/router';
+import { ThemeContext, DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
-import TableGrid from '../../../components/TableGrid';
+import TableGrid from '../../../components/TableGrid'; 
 
-const GenericPage = () => {
+const GenericPage: React.FC<any> = (props) => { 
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]); 
     const [error, setError] = useState(null);
-    const [selectedDataRow, setSelectedDataRow] = useState<string | null>(null);
-
+ 
     const router = useRouter();
     const { patient_id } = router.query;
 
@@ -40,18 +40,29 @@ const GenericPage = () => {
         fetchData();
     }, [patient_id]); 
 
-    const handleSelectedDataRowChange = (selectedDataRow: string) => {
-        setSelectedDataRow(selectedDataRow); 
-    };
+    const handleSelectedDataRowChange = (dataRow: string) => {
+        toggleVisible();
+        updateContent(dataRow) 
+    };  
+        
+    const { style, toggleStyle } = useContext(
+        ThemeContext
+    );
+    const { content, visible, updateContent, toggleVisible } = useContext(
+        DrawerContext
+    );
 
     return (
         <Layout>
+             <p>
+                Theme is <em>{style}</em>
+            </p>
             {!patient_id || error ? (
                 <div>Error: {error}</div>
             ) : (
                 <div>
                     <div className="table-header">Patient Data (Patient ID: {patient_id})</div>
-                    {selectedDataRow && <div>Selected RSID: {selectedDataRow.rsid}</div>}
+                    {content && <div>Selected RSID: {content.rsid}; visibility: {visible.toString()}</div>}
                     <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
                 </div>
             )}

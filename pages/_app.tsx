@@ -1,7 +1,36 @@
 import '../styles/Layout.module.css'
 import '../styles/global.css'
 import type { AppProps } from 'next/app'
+import { useEffect, useState } from "react"; 
+import { ThemeContext, DrawerContext } from '../context'; 
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+function App({ Component, pageProps }: AppProps) { 
+
+  const [content, setContent] = useState(null);
+  const [style, setStyle] = useState("light");
+  const [visible, setVisible] = useState(true);
+
+  function updateContent(value) { 
+    setContent(value);
+  }
+  function toggleStyle() {
+    setStyle(style => (style === "light" ? "dark" : "light"));
+  }
+  function toggleVisible() {
+    setVisible(visible => !visible);
+  }
+
+  return (
+      <ThemeContext.Provider
+        value={{ style, toggleStyle }}
+      >
+        <DrawerContext.Provider
+          value={{ content, visible, updateContent, toggleVisible }}
+        >
+          <Component {...pageProps} />
+        </DrawerContext.Provider> 
+      </ThemeContext.Provider> 
+  );
 }
+
+export default App;

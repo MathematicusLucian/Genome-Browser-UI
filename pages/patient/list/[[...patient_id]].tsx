@@ -3,7 +3,11 @@ import { useRouter } from 'next/router';
 import Layout from '../../../components/Layout';
 import TableGrid from '../../../components/TableGrid';
 
-const GenericPage = () => {
+interface GenericPageProps {
+    opensidedrawer: (content: React.ReactNode) => void;
+}
+
+const GenericPage: React.FC<GenericPageProps> = ({ opensidedrawer }) => { 
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]); 
     const [error, setError] = useState(null);
@@ -42,6 +46,7 @@ const GenericPage = () => {
 
     const handleSelectedDataRowChange = (selectedDataRow: string) => {
         setSelectedDataRow(selectedDataRow); 
+        opensidedrawer(<div>Details for Patient ID: {selectedDataRow?.patient_id}</div>);
     };
 
     return (
