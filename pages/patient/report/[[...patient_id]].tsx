@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from 'next/router';
 import { DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
+import Select from '../../../components/Select'; 
 import TableGrid from '../../../components/TableGrid'; 
 
 const GenericPage: React.FC<any> = (props) => { 
@@ -94,21 +95,7 @@ const GenericPage: React.FC<any> = (props) => {
 
     return (
         <Layout>
-            {!patientProfiles || error ? (
-                <div>Error: {error}</div>
-            ) : (
-                <div className="dropdown">
-                    <label htmlFor="patient-select">Select a Patient Profile:</label>
-                    <select id="patient-select" onChange={handlePatientChange}>
-                        <option value="">--Please choose a patient--</option>
-                        {patientProfiles.map((profile: any) => (
-                            <option key={profile.patient_id} value={profile.patient_id}>
-                                {profile.patient_name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
+            <Select patientProfiles={patientProfiles} error={error} handlePatientChange={handlePatientChange} />
             {!selectedPatient || error ? (
                 <div>Error: {error}</div>
             ) : (
@@ -126,12 +113,6 @@ const GenericPage: React.FC<any> = (props) => {
                 }
                 p, label, select {
                     font-size: 0.8em;
-                }
-                .dropdown {
-                    padding: 1.3rem 0 0 0;
-                }
-                .dropdown label {
-                    font-weight: 900;
                 }
                 .table-header { 
                     padding: 1.3rem 0 0 0; 
