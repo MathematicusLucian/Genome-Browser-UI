@@ -1,7 +1,7 @@
 import '../styles/Layout.module.css'
 import '../styles/global.css'
 import type { AppProps } from 'next/app'
-import { useEffect, useState } from "react"; 
+import { useEffect, useMemo, useState } from "react"; 
 import { ThemeContext, DrawerContext } from '../context'; 
 
 function App({ Component, pageProps }: AppProps) { 
@@ -20,16 +20,24 @@ function App({ Component, pageProps }: AppProps) {
     setVisible(!visible);
   }
 
+  const themeContextValue = useMemo(() => ({
+    style,
+    toggleTheme,
+  }), [style]);
+
+  const drawerContextValue = useMemo(() => ({
+    content,
+    visible,
+    updateContent,
+    toggleVisible,
+  }), [content, visible]);
+
   return (
-      <ThemeContext.Provider
-        value={{ style, toggleTheme }}
-      >
-        <DrawerContext.Provider
-          value={{ content, visible, updateContent, toggleTheme }}
-        >
-          <Component {...pageProps} />
-        </DrawerContext.Provider> 
-      </ThemeContext.Provider> 
+    <ThemeContext.Provider value={themeContextValue}>
+      <DrawerContext.Provider value={drawerContextValue}>
+        <Component {...pageProps} />
+      </DrawerContext.Provider>
+    </ThemeContext.Provider>
   );
 }
 

@@ -12,6 +12,7 @@ The Genome Browser UI is a **React**-based (TypeScript) UI client application (w
 
 - A _React_ implementation (with **NexrtJs**)
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.
+- React Context and Providers
 - Consideration of DRY/SOLID principles, and Gang of Four design patterns
 - **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexDB.)
 

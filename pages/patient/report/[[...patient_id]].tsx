@@ -5,6 +5,10 @@ import Layout from '../../../components/Layout';
 import TableGrid from '../../../components/TableGrid'; 
 
 const GenericPage: React.FC<any> = (props) => { 
+    const { content, visible, updateContent, toggleVisible } = useContext(
+        DrawerContext
+    );
+    
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]); 
     const [error, setError] = useState(null);
@@ -44,9 +48,6 @@ const GenericPage: React.FC<any> = (props) => {
         toggleVisible();
         updateContent(dataRow) 
     };  
-    const { content, visible, updateContent, toggleVisible } = useContext(
-        DrawerContext
-    );
 
     return (
         <Layout>
