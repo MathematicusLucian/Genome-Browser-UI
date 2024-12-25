@@ -21,7 +21,7 @@ const Layout = ({ children }) => {
 
       <main>
 
-        <Drawer isOpen={toggleVisible} onClose={toggleVisible} content={content} />
+        <Drawer isOpen={visible} onClose={toggleVisible} content={content} />
 
         <div className={styles.grid}>
 

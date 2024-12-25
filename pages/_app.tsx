@@ -8,7 +8,7 @@ function App({ Component, pageProps }: AppProps) {
 
   const [content, setContent] = useState(null);
   const [style, setStyle] = useState("light");
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   function updateContent(value) { 
     setContent(value);
@@ -17,7 +17,9 @@ function App({ Component, pageProps }: AppProps) {
     setStyle(style => (style === "light" ? "dark" : "light"));
   }
   function toggleVisible() {
-    setVisible(visible => !visible);
+    console.log(visible)
+    setVisible(!visible);
+    console.log(visible)
   }
 
   return (
