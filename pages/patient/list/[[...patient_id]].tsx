@@ -7,6 +7,7 @@ const GenericPage = () => {
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]); 
     const [error, setError] = useState(null);
+    const [selectedDataRow, setSelectedDataRow] = useState<string | null>(null);
 
     const router = useRouter();
     const { patient_id } = router.query;
@@ -37,7 +38,11 @@ const GenericPage = () => {
     
     useEffect(() => { 
         fetchData();
-    }, []); 
+    }, [patient_id]); 
+
+    const handleSelectedDataRowChange = (selectedDataRow: string) => {
+        setSelectedDataRow(selectedDataRow); 
+    };
 
     return (
         <Layout>
@@ -46,7 +51,8 @@ const GenericPage = () => {
             ) : (
                 <div>
                     <div className="table-header">List of Patients</div>
-                    <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} />
+                    {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patient_id}</div>}
+                    <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
                 </div>
             )}
             <style jsx>{`

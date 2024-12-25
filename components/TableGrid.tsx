@@ -19,13 +19,14 @@ interface RowData {
   total: number;
 }
 
-interface MyComponentProps {
+interface TableGridProps {
     rowData: any;
     columnDefs: any;
     error?: any;
+    onSelectedDataRowChange: (dataRow: string) => void;
 }
 
-const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
+const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSelectedDataRowChange }) => {
   const gridRef = useRef<AgGridReact<any>>(null);
   
   const [gridApi, setGridApi] = useState<agGrid.GridApi | null>(null);
@@ -44,7 +45,8 @@ const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
     setGridColumnApi(params.columnApi);
     params.api.addGlobalListener((type: string, e) => {
       if (type === "rowClicked" || type === "rowSelected") {
-        console.log(e.type, e.data.patient_id); 
+        console.log(e.type, e.data); 
+        onSelectedDataRowChange(e.data);
       }
     });
   }; 
@@ -146,7 +148,7 @@ const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
   );
 };
 
-export default Grid;
+export default TableGrid;
 <style jsx>{`
   main {
   }
