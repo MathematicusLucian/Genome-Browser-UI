@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
 import { DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
@@ -13,6 +13,10 @@ const GenericPage: React.FC<any> = (props) => {
     const [patientProfiles, setPatientProfiles] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
     const [selectedPatientName, setSelectedPatientName] = useState<string | null>(null);
+    const rowDataValue = useMemo(() => ({
+        rowData,
+        setRowData, 
+    }), [rowData]);
 
     const router = useRouter();
 
@@ -40,25 +44,8 @@ const GenericPage: React.FC<any> = (props) => {
             }
             const result = await response.json();
             if (result.length > 0) {
-                const columns = [
-                    // {"headerName":"patient_id","field":"patient_id"},
-                    // {"headerName":"patient_name","field":"patient_name"},
-                    {"headerName":"rsid","field":"rsid"},
-                    {"headerName":"risk","field":"risk"},
-                    // {"headerName":"genotype_match","field":"genotype_match"},
-                    {"headerName":"notes","field":"notes"},
-                    {"headerName":"allele1","field":"allele1"},
-                    {"headerName":"allele2","field":"allele2"},
-                    // {"headerName":"genotype","field":"genotype"},
-                    // {"headerName":"rsid_genotypes","field":"rsid_genotypes"},
-                    {"headerName":"chromosome","field":"chromosome"},
-                    {"headerName":"position","field":"position"},
-                    {"headerName":"magnitude","field":"magnitude"},
-
-                ];
-                setColumnDefs(columns);
+                setRowData(result);
             }
-            setRowData(result);
         } catch (error) {
             console.error('Error fetching full report:', error);
             setError(error.message);
@@ -67,6 +54,23 @@ const GenericPage: React.FC<any> = (props) => {
 
     useEffect(() => {
         fetchPatientProfiles();
+        const columns = [
+            {"headerName":"rsid","field":"rsid"},
+            {"headerName":"risk","field":"risk"},
+            {"headerName":"notes","field":"notes"},
+            {"headerName":"allele1","field":"allele1"},
+            {"headerName":"allele2","field":"allele2"},
+            {"headerName":"chromosome","field":"chromosome"},
+            {"headerName":"position","field":"position"},
+            {"headerName":"magnitude","field":"magnitude"},
+            // The following are not displayed:
+            // {"headerName":"patient_id","field":"patient_id"},
+            // {"headerName":"patient_name","field":"patient_name"},
+            // {"headerName":"genotype_match","field":"genotype_match"},
+            // {"headerName":"genotype","field":"genotype"},
+            // {"headerName":"rsid_genotypes","field":"rsid_genotypes"},
+        ];
+        setColumnDefs(columns);
     }, []);  
 
     useEffect(() => {
@@ -74,7 +78,7 @@ const GenericPage: React.FC<any> = (props) => {
             const patient_id = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id;
             patient_id && setSelectedPatient(patient_id);
         }
-    }, [router.isReady]);   
+    }, [router.isReady, router.asPath]);   
     
     useEffect(() => {
         if (selectedPatient) {
