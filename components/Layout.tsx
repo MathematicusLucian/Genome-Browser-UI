@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { ThemeContext, DrawerContext } from '../context';
+import { DrawerContext } from '../context';
 import Head from 'next/head'; 
 import styles from '../styles/Layout.module.css';
 import Header from './Header';
@@ -7,9 +7,6 @@ import Footer from './Footer';
 import Drawer from './Drawer';
 
 const Layout = ({ children }) => {     
-  const { style, toggleTheme } = useContext(
-      ThemeContext
-  );
   const { content, visible, updateContent, toggleVisible } = useContext(
       DrawerContext
   );    
@@ -25,16 +22,6 @@ const Layout = ({ children }) => {
       <main>
 
         <Drawer isOpen={visible} onClose={toggleVisible} content={content} />
-
-        <p>
-            Theme is <em>{style}</em>
-        </p>
-        <button
-          className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
-          onClick={toggleTheme}
-        >
-          ToggleTheme
-        </button>
 
         <div className={styles.grid}>
 
@@ -62,7 +49,7 @@ const Layout = ({ children }) => {
           flex-direction: column;
           justify-content: center;
           align-items: center;
-        }
+        } 
         code {
           background: #fafafa;
           border-radius: 5px;
