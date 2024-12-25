@@ -18,11 +18,13 @@ const GenericPage: React.FC<any> = (props) => {
         setRowData, 
     }), [rowData]);
 
+    const GENOME_BROWSER_API_PATH = process.env.NEXT_PUBLIC_GENOME_BROWSER_API_PATH;
+
     const router = useRouter();
 
     const fetchPatientProfiles = async () => {
         try {
-            const api_url = `http://127.0.0.1:8000/patient_genome/patient_profile`;
+            const api_url = `${GENOME_BROWSER_API_PATH}/patient_genome/patient_profile`;
             const response = await fetch(api_url);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -37,7 +39,7 @@ const GenericPage: React.FC<any> = (props) => {
 
     const fetchFullReport = async (patient_id: string) => {
         try {
-            const api_url = `http://127.0.0.1:8000/patient_genome/full_report/?patient_id=${patient_id}`;
+            const api_url = `${GENOME_BROWSER_API_PATH}/patient_genome/full_report/?patient_id=${patient_id}`;
             const response = await fetch(api_url);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -111,10 +113,6 @@ const GenericPage: React.FC<any> = (props) => {
                 </div>
             )}
             <style jsx>{`
-                h2 {
-                    font-size: 0.9em;
-                    font-weight: 900;
-                }
                 p, label, select {
                     font-size: 0.8em;
                 }

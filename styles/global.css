@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   padding: 0;
@@ -15,8 +19,9 @@ a {
   text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
+h2 {
+  font-size: 0.9em;
+  font-weight: 900;
 }
 
 img {

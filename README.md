@@ -84,3 +84,16 @@ The project follows a structured directory layout to organize the codebase effic
 - `npm run dev`: Starts the development server.
 - `npm run build`: Builds the app for production.
 - `npm start`: Runs the built app in production mode.
+
+### Environment Variables
+
+**Locally**:
+Set up the environment variables:
+
+```bash
+cp .env.example .env
+
+```
+
+**Environment Variables on Vercel**:
+`vercel env pull`

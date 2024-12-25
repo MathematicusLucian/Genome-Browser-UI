@@ -19,8 +19,8 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, content }) => {
                 <h2>Gene Variant Details</h2>
                 {content && (
                     <div>
-                        {Object.entries(content).map(([key, value]) => (
-                            <p key={key}><strong>{key}:</strong> {value}</p>
+                        {Object.entries(content).map(([key, value]): any => (
+                            <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
                         ))}
                     </div>
                 )}
@@ -37,6 +37,24 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, content }) => {
                     transform: translateX(-100%);
                     transition: transform 0.3s ease;
                     z-index: 1000;
+                }
+                .drawer-item {
+                    font-family:
+                        Menlo,
+                        Monaco,
+                        'Lucida Console',
+                        'Liberation Mono',
+                        'DejaVu Sans Mono',
+                        'Bitstream Vera Sans Mono',
+                        'Courier New',
+                        monospace;
+                    text-align: left;
+                    color: #4b5563;
+                    border-color: #e5e7eb;
+                    margin: 0 auto;
+                    padding: 0.6rem;
+                    font-size: 0.8rem;
+                    line-height: 1.0;
                 }
                 div {
                     width: 80%;
