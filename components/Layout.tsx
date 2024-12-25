@@ -1,13 +1,12 @@
+// 'use client'
 import Head from 'next/head';
+// import { Html, Head, Main, NextScript } from 'next/document'
 import styles from '../styles/Layout.module.css';
 import Header from './Header';
 import Footer from './Footer';
-// import { AllCommunityModules, ModuleRegistry } from 'ag-grid-community'; 
-
-// Register all Community features
-// ModuleRegistry.registerModules(AllCommunityModules);
 
 const Layout = ({ children }) => {
+
   return (
     <div className={styles.container}>
       <Head>

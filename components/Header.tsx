@@ -1,7 +1,7 @@
 import React from "react";
 import styles from '../styles/Layout.module.css';
 
-const Footer = () => {
+const Header = () => {
     return (
         <header>
             <h1 className={styles.title}>Genome Browser</h1>
@@ -14,4 +14,4 @@ const Footer = () => {
     )
 };
 
-export default Footer;
+export default Header;
