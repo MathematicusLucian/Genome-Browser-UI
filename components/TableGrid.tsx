@@ -3,6 +3,8 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { flushSync } from 'react-dom';
 import { AgGridReact } from "ag-grid-react";
 import * as agGrid from "ag-grid-community";  
+import { useContainerWidth } from "../utils/useContainerWidth";
+import { useWindowSize } from "../utils/useWindowSize";
 
 agGrid.ModuleRegistry.registerModules([agGrid.AllCommunityModule, agGrid.ValidationModule]);
 
@@ -29,11 +31,18 @@ interface TableGridProps {
 const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSelectedDataRowChange }) => {
   const gridRef = useRef<AgGridReact<any>>(null);
   const [gridApi, setGridApi] = useState<agGrid.GridApi | null>(null);
+  const debounce = 0;
+  const [windowWidth] = useWindowSize(debounce);
+  const {width: containerWidth, ref} = useContainerWidth(debounce);
   
   const defaultColDef: agGrid.ColDef = {
     flex: 1,
-    minWidth: 100,
-    resizable: true,
+    minWidth: 50, 
+    resizable: true, // Enable resizing
+    wrapText: true, // Wrap Text
+    wrapHeaderText: true,
+    autoHeight: true, // Adjust Cell Height to Fit Wrapped Text
+    autoHeaderHeight: true,
   };
 
   const onGridReady = (params: agGrid.GridReadyEvent) => {
@@ -42,21 +51,12 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
       if (type === "rowClicked" || type === "rowSelected") {
         onSelectedDataRowChange(e.data);
       }
-    }); 
-  };  
-  useEffect(() => {
-    if (gridApi) {
-      const allColumnIds: string[] = []; 
-      gridApi.getColumns()!.forEach((column) => {
-        allColumnIds.push(column.getId());
-      });
-      gridApi.autoSizeColumns(allColumnIds, false);
-    }
-  }, [gridApi]);
+    });  
+  };    
   
-  // const onPaginationChanged = () => {
-  //   // console.log("onPaginationChanged");
-  // };
+  const onPaginationChanged = () => {
+    // console.log("onPaginationChanged");
+  };
 
   const clearFilters = () => {
     if (gridApi) {
@@ -74,6 +74,17 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
     };
   }, []);
 
+  useEffect(() => {
+    if (gridApi) {
+      // gridApi.sizeColumnsToFit();
+      let columnIds = [];
+      gridApi.getColumns().forEach(column => {
+        columnIds.push(column.getColDef());
+      });
+      gridApi.autoSizeColumns(columnIds);
+    }
+  }, [windowWidth, containerWidth, gridApi]);
+
   return (
     <div className="ag-theme-alpine grid-container">
       <div className="flex justify-between align-middle mb-4 text-lg text-[#4b5563]">
@@ -90,11 +101,11 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
         columnDefs={columnDefs}
         rowData={rowData}
         rowSelection={'single'}
-        defaultColDef={defaultColDef}
+        defaultColDef={defaultColDef} 
         onGridReady={onGridReady}
         pagination={true}
         paginationPageSize={50}
-        // onPaginationChanged={onPaginationChanged}
+        onPaginationChanged={onPaginationChanged}
         autoSizeStrategy={autoSizeStrategy}
         enableCellTextSelection={true}
         ensureDomOrder={true}
