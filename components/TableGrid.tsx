@@ -49,6 +49,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
         onSelectedDataRowChange(e.data);
       }
     });
+    autoSizeAll(false);
   }; 
 
   const onPaginationChanged = () => {
@@ -91,7 +92,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           <button 
             className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
             onClick={() => autoSizeAll(false)}>
-            Fit Columns to Cell Contents
+              Fit Columns to Cell Contents
           </button>
       </div>
       <AgGridReact
@@ -111,7 +112,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
       ></AgGridReact>
       <style jsx global>{`
         .grid-container {
-          height: 75vh;
+          height: 65vh;
           width: 100%;
           padding: 0; 
         }

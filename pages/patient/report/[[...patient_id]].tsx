@@ -11,6 +11,7 @@ const GenericPage: React.FC<any> = (props) => {
     const [error, setError] = useState(null);
     const [patientProfiles, setPatientProfiles] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+    const [selectedPatientName, setSelectedPatientName] = useState<string | null>(null);
 
     const router = useRouter();
 
@@ -61,13 +62,15 @@ const GenericPage: React.FC<any> = (props) => {
             const patient_id = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id;
             patient_id && setSelectedPatient(patient_id);
         }
-    }, [router.isReady]);  
-
+    }, [router.isReady]);   
+    
     useEffect(() => {
         if (selectedPatient) {
             fetchFullReport(selectedPatient);
+            const selectedProfile = patientProfiles.find(profile => profile.patient_id === selectedPatient);
+            setSelectedPatientName(selectedProfile ? selectedProfile.patient_name : null);
         }
-    }, [selectedPatient]);
+    }, [selectedPatient, patientProfiles]);
 
     const handlePatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         router.push(`/patient/report/${event.target.value}`);
@@ -100,14 +103,18 @@ const GenericPage: React.FC<any> = (props) => {
             ) : (
                 <div>
                     <h2 className="table-header">Patient Data</h2>
-                    <p className="table-sub-header"><span>Patient ID: </span>({selectedPatient})</p>
+                    <p className="table-sub-header"><span>Patient ID: </span>{selectedPatient}</p>
+                    <p>{selectedPatientName}</p>
                     <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
                 </div>
             )}
             <style jsx>{`
                 h2 {
-                    font-size: 1.2em;
+                    font-size: 1em;
                     font-weight: 900;
+                }
+                p, label, select {
+                    font-size: 0.9em;
                 }
                 .dropdown {
                     padding: 1.3rem 0 0 0;
