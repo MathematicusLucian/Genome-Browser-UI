@@ -1,8 +1,10 @@
-# Genome-Browser-UI
+# Genome-Browser-UI 🔬🧬
 
 ## Overview
 
 The Genome Browser UI is a **React**-based (TypeScript) UI client application (with **NextJs**), and which queries the Genome Browser API to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser **IndexedDB**.)
+
+(The API/Orchestrator for this project is here: [Genome Browser API](https://github.com/MathematicusLucian/Genome-Browser-API))
 
 ### Objectives
 

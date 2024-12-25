@@ -20,6 +20,23 @@ const GenericPage: React.FC<any> = (props) => {
 
     const GENOME_BROWSER_API_PATH = process.env.NEXT_PUBLIC_GENOME_BROWSER_API_PATH;
 
+    const columns = [
+        {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 120},
+        {"headerName":"risk","field":"risk", flex: 1, maxWidth: 50},
+        {"headerName":"notes","field":"notes", flex: 4, minWidth: 200, maxWidth: 650, suppressSizeToFit: false},
+        {"headerName":"allele1","field":"allele1", flex: 1, maxWidth: 100},
+        {"headerName":"allele2","field":"allele2", flex: 1, maxWidth: 100},
+        {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 100},
+        {"headerName":"position","field":"position", flex: 2, maxWidth: 120},
+        {"headerName":"magnitude","field":"magnitude", flex: 1, maxWidth: 100},
+        // The following are not displayed:
+        // {"headerName":"patient_id","field":"patient_id"},
+        // {"headerName":"patient_name","field":"patient_name"},
+        // {"headerName":"genotype_match","field":"genotype_match"},
+        // {"headerName":"genotype","field":"genotype"},
+        // {"headerName":"rsid_genotypes","field":"rsid_genotypes"},
+    ];
+
     const router = useRouter();
 
     const fetchPatientProfiles = async () => {
@@ -56,22 +73,6 @@ const GenericPage: React.FC<any> = (props) => {
 
     useEffect(() => {
         fetchPatientProfiles();
-        const columns = [
-            {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 120},
-            {"headerName":"risk","field":"risk", flex: 1, maxWidth: 50},
-            {"headerName":"notes","field":"notes", flex: 4, minWidth: 200, maxWidth: 650, suppressSizeToFit: false},
-            {"headerName":"allele1","field":"allele1", flex: 1, maxWidth: 100},
-            {"headerName":"allele2","field":"allele2", flex: 1, maxWidth: 100},
-            {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 100},
-            {"headerName":"position","field":"position", flex: 2, maxWidth: 120},
-            {"headerName":"magnitude","field":"magnitude", flex: 1, maxWidth: 100},
-            // The following are not displayed:
-            // {"headerName":"patient_id","field":"patient_id"},
-            // {"headerName":"patient_name","field":"patient_name"},
-            // {"headerName":"genotype_match","field":"genotype_match"},
-            // {"headerName":"genotype","field":"genotype"},
-            // {"headerName":"rsid_genotypes","field":"rsid_genotypes"},
-        ];
         setColumnDefs(columns);
     }, []);  
 
