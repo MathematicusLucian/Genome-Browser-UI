@@ -10,7 +10,7 @@ const Header = () => {
     return (
         <header>
             <div className="header-row">
-                <h1 className={styles.title}>Genome Browser</h1>
+                <h1 className={styles.title}>Genome Browser 🔬🧬</h1>
                 <div className={styles.subtitle}>
                     (<strong>Engineer:</strong> 
                     <a href="https://github.com/MathematicusLucian" target="blank">

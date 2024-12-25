@@ -25,6 +25,12 @@ const Select: React.FC<SelectProps> = ({ patientProfiles, error, handlePatientCh
                     p, label, select {
                         font-size: 0.8em;
                     }
+                    label {
+                        padding: 0 0.5em;
+                    }
+                    select {
+                        border: 1px rgb(222, 221, 221) solid;
+                    }
                     .dropdown {
                         padding: 1.3rem 0 0 0;
                     }
