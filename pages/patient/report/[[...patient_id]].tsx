@@ -99,18 +99,29 @@ const GenericPage: React.FC<any> = (props) => {
                 <div>Error: {error}</div>
             ) : (
                 <div>
-                    <div className="table-header">Patient Data (Patient ID: {selectedPatient})</div>
-                    {content && <div>Selected RSID: {content.rsid}; visibility: {visible.toString()}</div>}
+                    <h2 className="table-header">Patient Data</h2>
+                    <p className="table-sub-header"><span>Patient ID: </span>({selectedPatient})</p>
                     <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
                 </div>
             )}
             <style jsx>{`
+                h2 {
+                    font-size: 1.2em;
+                    font-weight: 900;
+                }
                 .dropdown {
                     padding: 1.3rem 0 0 0;
                 }
-                .table-header { 
-                    padding: 1.3rem 0 0 0;
+                .dropdown label {
                     font-weight: 900;
+                }
+                .table-header { 
+                    padding: 1.3rem 0 0 0; 
+                }
+                .table-sub-header span {
+                    font-weight: 900;
+                    padding: 0 0.4em;
+                }
             `}
             </style>
         </Layout>
