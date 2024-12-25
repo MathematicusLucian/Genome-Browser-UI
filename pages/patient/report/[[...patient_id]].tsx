@@ -83,7 +83,7 @@ const GenericPage: React.FC<any> = (props) => {
             {!patientProfiles || error ? (
                 <div>Error: {error}</div>
             ) : (
-                <div>
+                <div className="dropdown">
                     <label htmlFor="patient-select">Select Patient:</label>
                     <select id="patient-select" onChange={handlePatientChange}>
                         <option value="">--Please choose a patient--</option>
@@ -105,9 +105,12 @@ const GenericPage: React.FC<any> = (props) => {
                 </div>
             )}
             <style jsx>{`
-              .table-header { 
-                padding: 1.3rem 0 0 0;
-                font-weight: 900;
+                .dropdown {
+                    padding: 1.3rem 0 0 0;
+                }
+                .table-header { 
+                    padding: 1.3rem 0 0 0;
+                    font-weight: 900;
             `}
             </style>
         </Layout>
