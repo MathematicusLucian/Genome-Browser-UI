@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import * as agGrid from "ag-grid-community";  
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
+import * as agGridE from "ag-grid-enterprise";  
 
-agGrid.ModuleRegistry.registerModules([agGrid.ClientSideRowModelModule]);
+agGrid.ModuleRegistry.registerModules([agGrid.AllCommunityModule, agGridE.SetFilterModule, agGrid.ValidationModule]);
 
 interface RowData {
   athlete: string;
@@ -75,22 +74,37 @@ const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
       ></AgGridReact>
       <style jsx global>{`
         .grid-container {
-          height: 800px;
+          height: 750px;
           width: 100%;
+          padding: 0; 
         }
         .ag-grid .ag-cell {
-          padding: 0.5rem;
-          font-size: 1.2rem;
+          font-family:
+            Menlo,
+            Monaco,
+            'Lucida Console',
+            'Liberation Mono',
+            'DejaVu Sans Mono',
+            'Bitstream Vera Sans Mono',
+            'Courier New',
+            monospace;
+        }
+        .ag-grid .ag-cell {
           color: #4b5563;
           border-color: #e5e7eb;
-          line-height: 1.5;
+          margin: 0 auto;
+          padding: 0.3rem;
+          font-size: 0.7rem;
+          line-height: 1.0;
         }
         .ag-grid .ag-header-cell {
-          font-weight: 600;
-          font-size: 1.2rem;
-          color: #374151;
           background-color: #f9fafb;
           border-color: #e5e7eb;
+          margin: 0 auto;
+          padding: 0.3rem;
+          font-weight: 600;
+          font-size: 0.7rem;
+          color: #374151;
         }
       `}</style>
     </div>
@@ -98,3 +112,7 @@ const Grid: React.FC<MyComponentProps> = ({ rowData, columnDefs, error }) => {
 };
 
 export default Grid;
+<style jsx>{`
+  main {
+  }
+`}</style>
