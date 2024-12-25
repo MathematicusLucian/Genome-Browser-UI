@@ -31,7 +31,6 @@ const GenericPage: React.FC<any> = (props) => {
     };
 
     const fetchFullReport = async (patient_id: string) => {
-        console.log('patient_id', patient_id);
         try {
             const api_url = `http://127.0.0.1:8000/patient_genome/full_report/?patient_id=${patient_id}`;
             const response = await fetch(api_url);
@@ -40,10 +39,22 @@ const GenericPage: React.FC<any> = (props) => {
             }
             const result = await response.json();
             if (result.length > 0) {
-                const columns = Object.keys(result[0]).map(key => ({
-                    headerName: key,
-                    field: key,
-                }));
+                const columns = [
+                    // {"headerName":"patient_id","field":"patient_id"},
+                    // {"headerName":"patient_name","field":"patient_name"},
+                    {"headerName":"rsid","field":"rsid"},
+                    {"headerName":"risk","field":"risk"},
+                    // {"headerName":"genotype_match","field":"genotype_match"},
+                    {"headerName":"notes","field":"notes"},
+                    {"headerName":"allele1","field":"allele1"},
+                    {"headerName":"allele2","field":"allele2"},
+                    // {"headerName":"genotype","field":"genotype"},
+                    // {"headerName":"rsid_genotypes","field":"rsid_genotypes"},
+                    {"headerName":"chromosome","field":"chromosome"},
+                    {"headerName":"position","field":"position"},
+                    {"headerName":"magnitude","field":"magnitude"},
+
+                ];
                 setColumnDefs(columns);
             }
             setRowData(result);
@@ -87,7 +98,7 @@ const GenericPage: React.FC<any> = (props) => {
                 <div>Error: {error}</div>
             ) : (
                 <div className="dropdown">
-                    <label htmlFor="patient-select">Select Patient:</label>
+                    <label htmlFor="patient-select">Select a Patient Profile:</label>
                     <select id="patient-select" onChange={handlePatientChange}>
                         <option value="">--Please choose a patient--</option>
                         {patientProfiles.map((profile: any) => (
@@ -110,11 +121,11 @@ const GenericPage: React.FC<any> = (props) => {
             )}
             <style jsx>{`
                 h2 {
-                    font-size: 1em;
+                    font-size: 0.9em;
                     font-weight: 900;
                 }
                 p, label, select {
-                    font-size: 0.9em;
+                    font-size: 0.8em;
                 }
                 .dropdown {
                     padding: 1.3rem 0 0 0;

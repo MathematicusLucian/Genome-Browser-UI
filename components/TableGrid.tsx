@@ -45,7 +45,6 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
     setGridColumnApi(params.columnApi);
     params.api.addGlobalListener((type: string, e) => {
       if (type === "rowClicked" || type === "rowSelected") {
-        console.log(e.type, e.data); 
         onSelectedDataRowChange(e.data);
       }
     });
@@ -131,7 +130,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           color: #4b5563;
           border-color: #e5e7eb;
           margin: 0 auto;
-          padding: 0.3rem;
+          padding: 0.5rem;
           font-size: 0.7rem;
           line-height: 1.0;
         }
@@ -139,7 +138,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           background-color: #f9fafb;
           border-color: #e5e7eb;
           margin: 0 auto;
-          padding: 0.3rem;
+          padding: 0.7rem;
           font-weight: 600;
           font-size: 0.7rem;
           color: #374151;
