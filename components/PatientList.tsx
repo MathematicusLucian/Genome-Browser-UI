@@ -82,10 +82,11 @@ const PatientList: FC = () => {
         {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patient_id}</div>}
         <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
       <style jsx>{`
-          p, li, input, label, select, button {
-              font-size: 0.8em;
+          p, div, li, input, label, select, button {
+            font-size: 0.8em;
           }
           .table-header { 
+            font-size: 1em;
             padding: 0.1rem 0 0 0;
             font-weight: 900;
           }
