@@ -16,17 +16,10 @@ const AddPatientForm: FC = () => {  // { defaultAge } = { defaultAge: 21 }
     }
    
     try {
-      // Add the new customer!
       const patientId = await patientProfileTable.add(patientProfile);
-      // const patientId = await patientsIndexedDb.patientprofile.add({
-      //     patient_name
-      // });
-      console.info(`A new customer was created with patientId ${patientId}`);
       event.target.reset()
-
-      setStatus(`Patient ${patientName} successfully added. Got patientId ${patientId}`);
+      setStatus(`Patient ${patientName} successfully added: patientId ${patientId}`);
       setPatientName('');
-      // setAge(defaultAge);
     } catch (error) {
       setStatus(`Failed to add ${patientName}: ${error}`);
       console.error(`Failed to add ${patientName}: ${error}`);

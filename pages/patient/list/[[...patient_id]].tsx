@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
+import type {FC} from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../../components/Layout';
+import PatientList from "@/components/PatientList";
 import TableGrid from '../../../components/TableGrid';
+import { useLiveQuery } from "dexie-react-hooks"; 
+import { patientsIndexedDb, patientProfileTable } from "@/database/db"; 
+import type { IPatientProfile } from "@/database/db";
 
 interface GenericPageProps {
     opensidedrawer: (content: React.ReactNode) => void;
 }
 
+// const PatientList: FC = () => {   
 const GenericPage: React.FC<GenericPageProps> = ({ opensidedrawer }) => { 
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]); 
@@ -46,7 +52,7 @@ const GenericPage: React.FC<GenericPageProps> = ({ opensidedrawer }) => {
 
     const handleSelectedDataRowChange = (selectedDataRow: string) => {
         setSelectedDataRow(selectedDataRow); 
-        opensidedrawer(<div>Details for Patient ID: {selectedDataRow?.patient_id}</div>);
+        // opensidedrawer(<div>Details for Patient ID: {selectedDataRow?.patient_id}</div>);
     };
 
     return (
@@ -55,15 +61,12 @@ const GenericPage: React.FC<GenericPageProps> = ({ opensidedrawer }) => {
                 <div>Error: {error}</div>
             ) : (
                 <div>
-                    <div className="table-header">List of Patients</div>
-                    {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patient_id}</div>}
-                    <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
+                    <PatientList />
+                    {/* {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patient_id}</div>}
+                    <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} /> */}
                 </div>
             )}
             <style jsx>{`
-              .table-header { 
-                padding: 1.3rem 0 0 0;
-                font-weight: 900;
             `}
             </style>
         </Layout>

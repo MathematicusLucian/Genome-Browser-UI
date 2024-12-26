@@ -9,8 +9,7 @@ const Home: NextPage = () => {
   return (
     <Layout>  
         <h2 className="table-header">Patient Database</h2>
-        <AddPatientForm />
-        <PatientList/>
+        <AddPatientForm /> 
     </Layout>
   );
 };
