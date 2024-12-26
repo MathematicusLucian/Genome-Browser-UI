@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { ModalContext, DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
 import Select from '../../../components/Select'; 
+import UploadForm from '../../../components/UploadForm'; 
 import TableGrid from '../../../components/TableGrid'; 
 
 const GenericPage: React.FC<any> = (props) => { 
@@ -103,7 +104,7 @@ const GenericPage: React.FC<any> = (props) => {
 
     const uploadDNAFile = () => {
         console.log("clicked upload button")
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3">Content</div></div>);
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm /></div></div>);
         toggleModalVisible(true);
     }
 

@@ -1,11 +1,11 @@
 import Dexie, { type EntityTable } from 'dexie';
 
-interface PatientProfile {
+interface IPatientProfile {
   patient_id: string;
   patient_name: string;
 }
 
-interface PatientGenome {
+interface IPatientGenome {
   rsid: string;
   patient_id: string;
   chromosome: string;
@@ -13,7 +13,7 @@ interface PatientGenome {
   genotype: string;
 }
 
-interface PatientProfileAndGenome {
+interface IPatientProfileAndGenome {
   patient_id: string;
   patient_name: string;
   rsid: string;
@@ -22,7 +22,7 @@ interface PatientProfileAndGenome {
   genotype: string;
 }
 
-interface SnpPairsResearch {
+interface ISnpPairsResearch {
   rsid_genotypes: string;
   magnitude: string; 
   risk: string;
@@ -32,7 +32,7 @@ interface SnpPairsResearch {
   allele2: string; 
 }
 
-interface FullReport {
+interface IFullReport {
   patient_id: string;
   patient_name: string;
   rsid: string;
@@ -48,22 +48,28 @@ interface FullReport {
   genotype_match: string;
 }
 
-// const db = new Dexie('PatientDatabase');
-const db = new Dexie('PatientDatabase') as Dexie & {
+const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
   patientprofile: EntityTable<
-    PatientProfile,
+  IPatientProfile,
       'patient_id' // primary key "id" (for the typings only)
+  >;
+} & {
+  patientgenome: EntityTable<
+  IPatientGenome,
+      'rsid' // primary key "id" (for the typings only)
   >;
 };
 
 // Schema declaration:
 // "patientProfile": primary key "id" 
-db.version(1).stores({patientprofile: "++patient_id, patient_name", patientgenome: "sid, patient_id, chromosome, position, genotype"});
-db.open();
+patientsIndexedDb.version(1).stores({patientprofile: "++patient_id, patient_name", patientgenome: "rsid, patient_id, chromosome, position, genotype"});
+patientsIndexedDb.open();
 // Output the schema of each table:
-db.tables.forEach(function (table) {
+patientsIndexedDb.tables.forEach(function (table) {
     console.log("Schema of " + table.name + ": " + JSON.stringify(table.schema));
 }); 
 
-export type { PatientProfile, PatientGenome, PatientProfileAndGenome, SnpPairsResearch, FullReport};
-export { db };
+export type { IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport};
+export const patientProfileTable = patientsIndexedDb.table('patientprofile');
+export const patientGenomeTable = patientsIndexedDb.table('patientgenome');
+export { patientsIndexedDb };

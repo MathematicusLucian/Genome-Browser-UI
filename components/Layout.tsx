@@ -19,6 +19,7 @@ const Layout = ({ children }) => {
     <div className={styles.container}>
       <Head>
         <title>Genome Browser</title>
+        <meta name="description" content=""/>
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -31,11 +32,7 @@ const Layout = ({ children }) => {
         <div className={styles.grid}>
 
           <Header />
-
-          <p className={styles.description}>
-            The <a href="https://github.com/MathematicusLucian/Genome-Browser-UI" target="blank">Genome Browser UI</a> is a Next.js React-based (TypeScript) UI client application, which queries the <a href="https://github.com/MathematicusLucian/Genome-Browser-API" target="blank">Genome Browser API</a> (FastAPI) server, to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
-          </p> 
-
+          
           <div className={styles.childcontainer}> 
             {children}
           </div>
@@ -50,7 +47,7 @@ const Layout = ({ children }) => {
 
       <style jsx>{`
         main {
-          padding: 2rem 0;
+          padding: 2rem;
           flex: 1;
           display: flex;
           flex-direction: column;

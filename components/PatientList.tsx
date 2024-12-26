@@ -1,36 +1,36 @@
 import React, { useState } from "react";
-import { db } from "@/database/db";
+import type {FC} from 'react';
 import { useLiveQuery } from "dexie-react-hooks"; 
+import { patientsIndexedDb, patientProfileTable } from "@/database/db"; 
+import type { IPatientProfile } from "@/database/db";
 
-export function PatientList({ minAge, maxAge }) {
-    const patientProfiles = useLiveQuery(
-      async () => {
-        //
-        // Query Dexie's API
-        //
-        // count
-        db.patientprofile.toCollection().count(function (count) {
-            console.log(count + " patientProfiles in total");
-        });
-        // const patientProfiles = await db.patientProfile
-        //   .where('patient_name')
-        //   .between(minAge, maxAge)
-        //   .toArray();
-  
-        // Return result
-        return patientProfiles;
-      },
-      // specify vars that affect query:
-      [minAge, maxAge]
-    );
-  
-    return (
-      <ul>
+const PatientList: FC = () => {  
+  const [patientProfilesCount, setPatientProfilesCount] = useState('');
+
+  const patientProfiles = useLiveQuery(
+    async () => {
+      const patientProfilesCount = await patientProfileTable.toCollection().count(function (count) {
+        setPatientProfilesCount(String(count));
+      });
+      const patientProfilesCollection = await patientProfileTable.toArray(); 
+      console.log(patientProfilesCollection); 
+        return patientProfilesCollection;
+    }, 
+  );
+
+  return (
+    <>
+      {patientProfilesCount && (<div>{patientProfilesCount} patient profiles in total</div>)}
+      <hr />
+      <ul> 
         {patientProfiles?.map((patientProfile) => (
           <li key={patientProfile.patient_id}>
             {patientProfile.patient_name}
           </li>
         ))}
       </ul>
-    );
-  }
+    </>
+  );
+}
+
+export default PatientList;

@@ -1,4 +1,3 @@
-import '../styles/Layout.module.css'
 import '../styles/global.css'
 import type { AppProps } from 'next/app'
 import { useEffect, useMemo, useState } from "react"; 
