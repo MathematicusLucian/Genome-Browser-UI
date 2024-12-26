@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
 import { ModalContext, DrawerContext } from '../../../context';

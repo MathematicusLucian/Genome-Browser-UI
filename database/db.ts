@@ -66,7 +66,7 @@ patientsIndexedDb.version(1).stores({patientprofile: "++patient_id, patient_name
 patientsIndexedDb.open();
 // Output the schema of each table:
 patientsIndexedDb.tables.forEach(function (table) {
-    console.log("Schema of " + table.name + ": " + JSON.stringify(table.schema));
+    // console.log("Schema of " + table.name + ": " + JSON.stringify(table.schema));
 }); 
 
 export type { IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport};

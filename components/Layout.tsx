@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect, useContext } from "react";
 import { ModalContext, DrawerContext } from '../context';
 import Head from 'next/head'; 
