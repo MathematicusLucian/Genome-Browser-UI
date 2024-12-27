@@ -1,9 +1,9 @@
 import React, { useState } from 'react'; 
  import type {NextPage} from 'next'
-import Layout from '../components/Layout';    
+import Layout from '../../components/Layout';    
 import Intro from '@/components/Intro';
 
-const Home: NextPage = () => {  
+const ProfilePagesHome: NextPage = () => {  
   return (
     <Layout>  
       <Intro />
@@ -11,4 +11,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default ProfilePagesHome;
