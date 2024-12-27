@@ -83,7 +83,7 @@ The project follows a structured directory layout to organize the codebase effic
 
 ## Getting Started
 
-- `npm run dev`: Starts the development server.
+- `npm run dev`: Starts the development server. Browse to `http://127.0.0.1:3000/`.
 - `npm run build`: Builds the app for production.
 - `npm start`: Runs the built app in production mode.
 
@@ -99,3 +99,31 @@ cp .env.example .env
 
 **Environment Variables on Vercel**:
 `vercel env pull`
+
+## IndexedDB
+
+[Chrome Offline Storage](https://developer.chrome.com/docs/apps/offline_storage/)
+
+```shell
+navigator.webkitPersistentStorage.queryUsageAndQuota (
+    function(usedBytes, grantedBytes) {
+        console.log('we are using ', usedBytes, ' of ', grantedBytes, 'bytes');
+    },
+    function(e) { console.log('Error', e);  }
+);
+```
+
+or
+`'indexedDB' in window` in the Chrome Dev Tools' Console.
+
+Request memory increase:
+
+```shell
+var requestedBytes = 1024*1024*280;
+navigator.webkitPersistentStorage.requestQuota (
+    requestedBytes, function(grantedBytes) {
+        console.log('we were granted ', grantedBytes, 'bytes');
+
+    }, function(e) { console.log('Error', e); }
+);
+```
