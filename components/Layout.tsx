@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect, useContext } from "react";
 import { ModalContext, DrawerContext } from '../context';
-import Head from 'next/head'; 
 import styles from '../styles/Layout.module.css';
 import Header from './Header';
 import Footer from './Footer'; 
@@ -9,7 +8,7 @@ import Modal from './Modal';
 import Drawer from './Drawer';
 import { addDemoDataIfDatabaseTablesEmpty } from "@/database/db";
 
-const Layout = ({ children }) => {      
+const RootLayout = ({ children }) => {      
   const { modalContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(
     ModalContext
   );    
@@ -23,14 +22,7 @@ const Layout = ({ children }) => {
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Genome Browser</title>
-        <meta name="description" content=""/>
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-
-      <main>
+      <main className="bg-slate-100 dark:bg-zinc-950 text-zinc-950 dark:text-white">
 
         <Modal isOpen={modalVisible} onClose={toggleModalVisible} content={modalContent} /> 
         <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} content={drawerContent} />
@@ -50,7 +42,6 @@ const Layout = ({ children }) => {
         </div>
 
       </main>
-
       <style jsx>{`
         main {
           padding: 2rem;
@@ -80,4 +71,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default RootLayout;
