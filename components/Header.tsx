@@ -1,16 +1,12 @@
 import React, { useContext } from "react";
 import styles from '../styles/Layout.module.css';
-import { ThemeContext } from "@/context";
 import ModeToggle from './ModeToggle';
 
-const Header = () => {
-    const { style, toggleTheme } = useContext(
-        ThemeContext
-    );
-
+const Header = () => { 
+    
     return (
         <header>
-            <div className="header-row bg-zinc-950 dark:bg-white text-slate-100 dark:text-zinc-950">
+            <div className="header-row bg-zinc-950 dark:bg-zinc-200 text-slate-100 dark:text-zinc-950">
                 <h1 className={styles.title}>Genome Browser 🔬🧬</h1>
                 <div className={styles.subtitle}>
                     (<strong>Engineer:</strong> 
@@ -18,15 +14,8 @@ const Header = () => {
                         MathematicusLucian
                     </a>)
                 </div>
-                <div className={styles.subtitle}>
-                    {/* <button
-                        className="theme-toggle-button rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
-                        onClick={toggleTheme}
-                    >
-                        {style} 
-                        <em>(theme)</em> 
-                    </button> */}
-                    <ModeToggle children={undefined} />
+                <div className={styles.subtitle}> 
+                     <ModeToggle children={undefined} />
                 </div>
             </div>
             <p className={styles.description}>

@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app'
 import { useEffect, useMemo, useState } from "react"; 
 import Head from 'next/head'; 
 import { ThemeProvider } from "../providers/theme-provider";
-import { ThemeContext, DrawerContext, ModalContext } from '../context'; 
+import { DrawerContext, ModalContext } from '../context'; 
 
 function App({ Component, pageProps }: AppProps) { 
 
@@ -60,7 +60,6 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       
-      <ThemeContext.Provider value={themeContextValue}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -74,7 +73,6 @@ function App({ Component, pageProps }: AppProps) {
           </ModalContext.Provider>
 
         </ThemeProvider>
-      </ThemeContext.Provider>
       {/* </html> */}
     </>
   );
