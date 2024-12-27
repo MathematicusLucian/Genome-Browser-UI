@@ -7,9 +7,11 @@ import Select from '../../../components/Select';
 import UploadForm from '../../../components/UploadForm'; 
 import GeneVariantList from "@/components/GeneVariantList";
 import TableGrid from '../../../components/TableGrid'; 
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
-import { IPatientGenomeVariant } from "@/models/db";
+import { IPatientGenomeVariant } from "@/models/db"; 
 
 interface GenomePageProps {
     // opensidedrawer: (content: React.ReactNode) => void;
@@ -130,17 +132,18 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                 <div>
                     <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
                     {(JSON.stringify(selectedPatientProfile))} 
-                    <br />
-                    <hr />
 
-                    <button
-                        className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
+                    <Separator className="my-4" />
+
+                    <Button
+                        className="rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200"
+                        variant="outline"
                         onClick={uploadDNAFile}
                     >
                         Upload DNA File
-                    </button> 
-                    <br /><br />
-                    <hr /> 
+                    </Button> 
+
+                    <Separator className="my-4" />
 
                     {!selectedPatientGenomes ? (
                         <div>No genomes. Perhaps no DNA file has been uploaded. {error}</div>
@@ -177,14 +180,14 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                     font-weight: 900;
                 }
                 .table-header { 
-                font-size: 1em;
-                padding: 0.1rem 0 0 0;
-                font-weight: 900;
+                    font-size: 1em;
+                    padding: 0.1rem 0 0 0;
+                    font-weight: 900;
                 }
                 .profile-count {
-                font-size: 0.8em;
-                font-weight: 600;
-                padding: 0.5em;
+                    font-size: 0.8em;
+                    font-weight: 600;
+                    padding: 0.5em;
                 }
             `}</style> 
         </Layout>
