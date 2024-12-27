@@ -97,15 +97,14 @@ const PatientList: FC = () => {
   return (
     <>
       <div className="table-header">List of Patients</div>
-      <ul> 
+      {/* <ul> 
         {patientProfiles?.map((patientProfile) => (
           <li key={patientProfile.patientId}>
             {patientProfile.patientId}, 
             {patientProfile.patientName}
           </li>
         ))}
-      </ul> 
-
+      </ul>  */}
       {/* <div>Error: {error} No genome data in database.</div> */}
       {patientProfilesCount && (<div className="profile-count">{patientProfilesCount} patient profiles in total</div>)}
       <hr />

@@ -8,7 +8,7 @@ interface IPatientProfile {
 }
 
 interface IPatientGenome {
-  patientGeomeId: string;
+  patientGenomeId: string;
   rsid: string;
   genotype: string;
   chromosome: string;
@@ -69,7 +69,7 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
 // Schema declaration:
 patientsIndexedDb.version(1).stores({
   patientProfile: "++patientId, patientName, datetimestamp", // "patientProfile": primary key "id" 
-  patientGenome: "++patientGeomeId, rsid, genotype, patientId, chromosome, position, datetimestamp"
+  patientGenome: "++patientGenomeId, rsid, genotype, patientId, chromosome, position, datetimestamp"
 });
 
 patientsIndexedDb.open();
@@ -98,7 +98,7 @@ const patientIds = [
 // }]);
 
 // const patientGenomeAddDemoRow = patientsIndexedDb.patientGenome.add({
-//   patientGeomeId: uuidv4(),
+//   patientGenomeId: uuidv4(),
 //   rsid: 'i12435',
 //   patientId: patientIds[0],
 //   chromosome: '1',
@@ -108,7 +108,7 @@ const patientIds = [
 // }); 
 
 // const patientGenomeBulkAddRowsDemo = patientsIndexedDb.patientGenome.bulkPut([{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'rs134242',
 //     patientId: patientIds[0],
 //     chromosome: '4',
@@ -116,7 +116,7 @@ const patientIds = [
 //     genotype: 'TC',
 //     datetimestamp: Date.now()
 //   },{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'rs145345',
 //     patientId: patientIds[0],
 //     chromosome: '5',
@@ -124,7 +124,7 @@ const patientIds = [
 //     genotype: 'CC',
 //     datetimestamp: Date.now()
 //   },{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'rs153435',
 //     patientId: patientIds[0],
 //     chromosome: '12',
@@ -132,7 +132,7 @@ const patientIds = [
 //     genotype: 'AA',
 //     datetimestamp: Date.now()
 //   },{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'i12435',
 //     patientId: patientIds[1],
 //     chromosome: '8',
@@ -140,7 +140,7 @@ const patientIds = [
 //     genotype: 'GG',
 //     datetimestamp: Date.now()
 //   },{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'rs134242',
 //     patientId: patientIds[1],
 //     chromosome: '4',
@@ -148,7 +148,7 @@ const patientIds = [
 //     genotype: 'TC',
 //     datetimestamp: Date.now()
 //   },{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'rs145345',
 //     patientId: patientIds[1],
 //     chromosome: '8',
@@ -156,7 +156,7 @@ const patientIds = [
 //     genotype: 'AG',
 //     datetimestamp: Date.now()
 //   },{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'i15435',
 //     patientId: patientIds[2],
 //     chromosome: '5',
@@ -164,7 +164,7 @@ const patientIds = [
 //     genotype: 'CC',
 //     datetimestamp: Date.now()
 //   },{
-//     patientGeomeId: uuidv4(),
+//     patientGenomeId: uuidv4(),
 //     rsid: 'i91436',
 //     patientId: patientIds[2],
 //     chromosome: '5',

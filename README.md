@@ -23,9 +23,15 @@ For security reasons, the user's patient data is not shared to the server, but r
 
 ## Pages/Views
 
-### Open the DNA (VCF) test file, i.e display gene variants (SNPs)
+### Browse a DNA (VCF) test file, i.e display gene variants (SNPs)
 
-The rows represent the gene variants associated with the patient. (The `rsid` columns is the identifier for the SNP pairs; and a crucial factor in many cases, with respect to risk, is the `genotype` that the user has inherited from their parents - hence, generaly, this consists of two letters, i.e. one from each parent.)
+From the dropdown, the user can select which profile to view:
+
+![select_patient](./assets/select_patient.png)
+
+**The rows represent the gene variants associated with the patient.**
+
+(The `rsid` columns is the identifier for the SNP pairs; and a crucial factor in many cases, with respect to risk, is the `genotype` that the user has inherited from their parents - hence, generaly, this consists of two letters, i.e. one from each parent.)
 
 ![patient_genome](./assets/patient_genome.png)
 
@@ -35,7 +41,7 @@ The report compares the gene variants of the patient with published literature t
 
 ![full_report](./assets/full_report.png)
 
-If you click on a row, the app will launch a drawer featuring the details for the gene variant.
+If a user clicks on a row, the app will launch a drawer featuring the details for the gene variant.
 
 ![gene_variant_details](./assets/gene_variant_details.png)
 

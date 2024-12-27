@@ -25,7 +25,7 @@ const GenomeList: FC<GenomeListProps> = (props) => {
       {"headerName":"position","field":"position", flex: 2, maxWidth: 120},
       {"headerName":"datetimestamp","field":"datetimestamp", flex: 1, maxWidth: 120}, 
       {"headerName":"patientId","field":"patientId", flex: 1, maxWidth: 280}, 
-      {"headerName":"patientGeomeId","field":"patientGeomeId", flex: 1, maxWidth: 280},
+      {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 1, maxWidth: 280},
   ];
   // const columns = [
   //     {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 120},
@@ -104,14 +104,14 @@ const GenomeList: FC<GenomeListProps> = (props) => {
         <>
           {/* <ul> 
             {patientGenomes?.map((patientGenome) => (
-              <li key={patientGenome.patientGeomeId}>
+              <li key={patientGenome.patientGenomeId}>
                 {patientGenome.rsid} |
                 {patientGenome.genotype}, 
                 {patientGenome.chromosome}, 
                 {patientGenome.position}
                 {patientGenome.datetimestamp},
                 {patientGenome.patientId}, 
-                {patientGenome.patientGeomeId}, 
+                {patientGenome.patientGenomeId}, 
               </li>
             ))}
           </ul> */}

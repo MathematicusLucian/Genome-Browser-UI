@@ -14,18 +14,17 @@ const Select: React.FC<SelectProps> = ({ patientProfiles, selectedOptionProfile,
 
     useEffect(() => {  
         setSelectedOptionId(selectedOptionProfile.patientId);
-    }, [selectedOptionProfile]); 
+    }, [selectedOptionProfile]);  
 
-    return  !patientProfiles || error ? (
+    return !patientProfiles || error ? (
             <div>Error: {error}</div>
         ) : (
-            <div className="dropdown">
+            <div className="dropdown"> 
                 <label htmlFor="patient-select">Select a Patient Profile:</label>
                 <select id="patient-select" onChange={handlePatientChange}>
                     <option value="">--Please choose a patient--</option>
                     {patientProfiles.map((profile: IPatientProfile) => (
-                        <option key={profile.patientId} value={profile.patientId}>
-                             {/* selected={profile.patientId==selectedOptionId} */}
+                        <option key={profile.patientId} value={profile.patientId} selected={profile.patientId==selectedOptionId}>
                             {profile.patientName} - {profile.patientId}
                         </option>
                     ))}
