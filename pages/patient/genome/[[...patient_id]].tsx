@@ -27,7 +27,7 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
     const handlePatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log('handlePatientChange: event', event);
         // http://127.0.0.1:3000/patient/report?patientId=[x]
-        router.push(`/patient/report/${event.target.value}`);
+        router.push(`/patient/genome/${event.target.value}`);
     };
   
     const uploadDNAFile = () => {
@@ -57,7 +57,7 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
     return (
         <Layout>
             <div className="page-header">Patient Genome (Gene Variants)</div>
-            <Select selectData={patientProfiles} key={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOptionProfile={selectedPatientProfile} handleSelectChange={handlePatientChange} />
+            <Select selectData={patientProfiles} selectDataKey={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOption={selectedPatientProfile} handleSelectChange={handlePatientChange} />
             <h2 className="table-header">Patient Data</h2>
             <p>Patient Profile Count: {patientProfilesCount}</p>
             {!selectedPatientProfile || error ? (
@@ -71,7 +71,7 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
                     >
                         Upload DNA File
                     </button> 
-                    {/* <Select selectData={genomeProfiles} selectTitle={"Select a DNA file to browse:"} placeholder={"Please choose a genome"} error={error} selectedOptionProfile={selectedGenomeProfile} handleSelectChange={handleGenomeChange} />
+                    {/* <Select selectData={genomeProfiles} selectTitle={"Select a DNA file to browse:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedGenomeProfile} handleSelectChange={handleGenomeChange} />
                     <p>Patient DNA files Count: {pgenomeProfilesCount}</p>
                     <h2 className="table-header">Genome Data</h2> */}
                     {/* <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientGenome.patientGenomeId}</p>

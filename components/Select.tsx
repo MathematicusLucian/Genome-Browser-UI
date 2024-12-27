@@ -1,59 +1,63 @@
 import React, { useEffect, useState } from 'react';
 // import Button from 'antd/es/button';
-import { IPatientProfile } from '@/database/db';
 
 interface SelectProps {
     selectData: any;
     selectTitle: string;
-    key: any;
+    selectDataKey: any;
     displayField: string;
     placeholder: string;
-    selectedOptionProfile: any; // IPatientProfile,
+    selectedOption: any; // for Profile select, this item would match the model IPatientProfile,
     error: any;
     handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const Select: React.FC<SelectProps> = ({ selectData, key, displayField, selectTitle, placeholder, selectedOptionProfile, error, handleSelectChange }) => {
+const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField, selectTitle, placeholder, selectedOption, error, handleSelectChange }) => {
     const [selectedOptionId, setSelectedOptionId] = useState<any>(null); 
 
     useEffect(() => {  
-        if(key) {
-            setSelectedOptionId(selectedOptionProfile[key]);
+        console.log('selectedOption', selectedOption);
+        console.log(selectDataKey);
+        if(selectedOption && selectDataKey) {
+            const s = selectedOption[selectDataKey];
+            console.log(s);
+            if(s) setSelectedOptionId(s);
         }
-    }, [selectedOptionProfile, key]);  
+    }, [selectData, selectDataKey]);  
 
-    return !selectData || !key || error ? (
-            <div>Error: {error}</div>
-        ) : (
-            <div className="dropdown"> 
-                <label htmlFor={`${key}-select`}>{selectTitle}</label>
-                <select id={`${key}-select`} onChange={handleSelectChange}>
-                    <option value="">--{placeholder}--</option>
-                    {selectData.map((profile: any) => (
-                        <option key={profile[key]} value={profile[key]} selected={profile[key]==selectedOptionId}>
-                            {profile[displayField]}
-                        </option>
-                    ))}
-                </select>
-                <style jsx>{`
-                    p, label, select {
-                        font-size: 0.8em;
-                    }
-                    label {
-                        padding: 0 0.5em;
-                    }
-                    select {
-                        border: 1px rgb(222, 221, 221) solid;
-                    }
-                    .dropdown {
-                        padding: 1.3rem 0 0 0;
-                    }
-                    .dropdown label {
-                        font-weight: 900;
-                    }
-                `}</style>
-            </div>
-        )
+    return !selectData || !selectDataKey || error ? (
+        <div>Error: {error}</div>
+    ) : (
+        <div className="dropdown"> 
+            <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label>
+            <select id={`${selectDataKey}-select`} onChange={handleSelectChange}>
+                 {/* value={selectedOptionId}> */}
+                <option value="">--{placeholder}--</option>
+                {selectData.map((profile: any) => (
+                    <option key={profile[selectDataKey]} value={profile[selectDataKey]}> 
+                        {profile[displayField]}
+                    </option>
+                ))}
+            </select>
+            <style jsx>{`
+                p, label, select {
+                    font-size: 0.8em;
+                }
+                label {
+                    padding: 0 0.5em;
+                }
+                select {
+                    border: 1px rgb(222, 221, 221) solid;
+                }
+                .dropdown {
+                    padding: 1.3rem 0 0 0;
+                }
+                .dropdown label {
+                    font-weight: 900;
+                }
+            `}</style>
+        </div>
+    )
 };
 
 export default Select;

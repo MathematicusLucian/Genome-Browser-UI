@@ -67,7 +67,7 @@ const GeneVariantRisksReportPage: React.FC<GeneVariantRisksReportPageProps> = (p
             ) : (
                 <div>
                     <div className="page-header">Patient Genome (Gene Variants)</div>
-                    <Select selectData={patientProfiles} key={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOptionProfile={selectedPatientProfile} handleSelectChange={handlePatientChange} />
+                    {/* <Select selectData={patientProfiles} selectDataKey={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOption={selectedPatientProfile} handleSelectChange={handlePatientChange} /> */}
                     <p>Patient Profile Count: {patientProfilesCount}</p>
                     <h2 className="table-header">Patient Data</h2>
                     <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
