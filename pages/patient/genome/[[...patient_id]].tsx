@@ -10,30 +10,27 @@ import TableGrid from '../../../components/TableGrid';
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
 
-interface GenonePageProps {
+interface GenomePageProps {
     // opensidedrawer: (content: React.ReactNode) => void;
 }
-const GenonePage: React.FC<GenonePageProps> = (props) => {  
+const GenomePage: React.FC<GenomePageProps> = (props) => {  
     const [error, setError] = useState(null); 
     const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null); 
     const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
     const isIndexedDatabase = true;
 
-    const router = useRouter(); 
-
-    console.log(props);
+    const router = useRouter();  
 
     const handlePatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log('handlePatientChange: event', event);
-        // http://127.0.0.1:3000/patient/report?patientId=[x]
+        // http://127.0.0.1:3000/patient/genome?patientId=[x]
         router.push(`/patient/genome/${event.target.value}`);
     };
   
     const uploadDNAFile = () => {
-        console.log("clicked upload button")
-        // updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm /></div></div>);
-        // toggleModalVisible(true);
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm /></div></div>);
+        toggleModalVisible(true);
     }  
  
     const patientProfiles = useLiveQuery( 
@@ -47,12 +44,42 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
             const patientId = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id; 
 
             if(patientProfiles) {
-                console.log(JSON.stringify(patientProfiles));
+                // console.log(JSON.stringify(patientProfiles));
                 const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
                 setSelectedPatientProfile(patientProfileMatch);
             } 
         }
     }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
+
+    // Gene Variants List
+
+    const [selectedGenomeId, setSelectedGenomeId] = useState<string| null>(null);
+    // const [selectedPatientGenome, setsSelectedPatientGenome] = useState<IPatientGenome | null>(null);
+    
+    const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
+        // async () => patientsIndexedDb.patientGenome.toArray()
+        async () => patientsIndexedDb.patientGenome.where('patientId').equals("aa1205b7-504b-4b3e-a9dc-d9b67e4f08b3").toArray()
+        // async () => patientsIndexedDb.patientGenome.where('patientId').anyOf().toArray()
+        //.toArray(),
+        // .equals(selectedPatientProfile.patientId)
+        // [selectedPatientProfile]
+    );
+    console.log(JSON.stringify(selectedPatientGenomes));
+    // const selectedPatientGenomesCount = useLiveQuery(
+    //     async() => patientsIndexedDb.patientGenome.count()
+    // ); 
+    // const selectedPatientSelectedGenome = useLiveQuery(// IPatientGenome[]
+    //     async () => patientsIndexedDb.patientGenome.where('patientGenomeId').equals(selectedGenomeId).toArray(),
+    //     [selectedGenomeId]
+    // );
+
+    const handleGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log('handleGenomeChange: event', event);
+        // http://127.0.0.1:3000/patient/genome?patientId=[x]
+        // router.push(`/patient/genome/${event.target.value}`);
+
+        setSelectedGenomeId(event.target.value); 
+    };
     
     return (
         <Layout>
@@ -71,12 +98,12 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
                     >
                         Upload DNA File
                     </button> 
-                    {/* <Select selectData={genomeProfiles} selectTitle={"Select a DNA file to browse:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedGenomeProfile} handleSelectChange={handleGenomeChange} />
-                    <p>Patient DNA files Count: {pgenomeProfilesCount}</p>
-                    <h2 className="table-header">Genome Data</h2> */}
-                    {/* <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientGenome.patientGenomeId}</p>
-                    <p>{selectedPatientGenome.patientGenomeId}</p>
-                    <GeneVariantList patient_id={String(selectedPatientGenome.patientGenomeId)} />  */}
+                    {/* <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'datetimestamp'} selectTitle={"Select a DNA file to browse:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenomes} handleSelectChange={handleGenomeChange} />
+                    <p>Patient DNA files Count: {selectedPatientGenomesCount}</p>
+                    <h2 className="table-header">Genome Data</h2>
+                    <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientSelectedGenome.patientGenomeId}</p>
+                    <p>{selectedPatientSelectedGenome.patientGenomeId}</p>
+                    <GeneVariantList patient_id={String(selectedPatientSelectedGenome.patientGenomeId)} />  */}
                 </div>
             )} 
             <style jsx>{`
@@ -103,4 +130,4 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
     );
 };
 
-export default GenonePage;
+export default GenomePage;

@@ -13,23 +13,30 @@ export interface IGeneVariantMapping {
 }
 
 export interface IPatientProfile {
-    patientId: string;
+    patientId: any;
     patientName: string;
     datetimestamp: number;
-}
+} 
 
 export interface IPatientGenome {
     patientGenomeId: string;
+    source: string; 
+    datetimestamp: number;
+    patientId: any;
+}
+
+export interface IPatientGenomeVariant {
+    patientGeneVariantId: string;
     rsid: string;
     genotype: string;
     chromosome: string;
-    position: string; 
+    position: string;
     datetimestamp: number;
-    patientId: string;
+    patientGenomeId: any;
 }
 
 export interface IPatientProfileAndGenome {
-    patientProfileAndGenome: string
+    patientProfileAndGenome: string;
     rsid: string;
     genotype: string;
     chromosome: string;

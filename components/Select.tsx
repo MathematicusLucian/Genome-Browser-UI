@@ -16,12 +16,10 @@ const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField
     const [selectedOptionId, setSelectedOptionId] = useState<any>(null); 
 
     useEffect(() => {  
-        console.log('selectedOption', selectedOption);
-        console.log(selectDataKey);
-        if(selectedOption && selectDataKey) {
-            const s = selectedOption[selectDataKey];
-            console.log(s);
-            if(s) setSelectedOptionId(s);
+        if(selectData) {
+            if(!selectDataKey) selectDataKey = Object.keys(selectData[0])[0]; 
+            if(!selectedOption) selectedOption = selectData[0][selectDataKey]; 
+            if(selectedOption) setSelectedOptionId(selectedOption);
         }
     }, [selectData, selectDataKey]);  
 
@@ -29,9 +27,8 @@ const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField
         <div>Error: {error}</div>
     ) : (
         <div className="dropdown"> 
-            <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label>
-            <select id={`${selectDataKey}-select`} onChange={handleSelectChange}>
-                 {/* value={selectedOptionId}> */}
+            <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> {selectedOptionId}
+            <select id={`${selectDataKey}-select`} onChange={handleSelectChange} value={selectedOptionId}> 
                 <option value="">--{placeholder}--</option>
                 {selectData.map((profile: any) => (
                     <option key={profile[selectDataKey]} value={profile[selectDataKey]}> 

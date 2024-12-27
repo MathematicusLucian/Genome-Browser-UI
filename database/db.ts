@@ -1,7 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie';
 import { v4 as uuidv4 } from 'uuid';
-import { IChromosome, IHumanGene, IGeneVariantMapping, IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport } from '../models/db';
-import { demoGenome, demoMultipleGenomes, demoPatients, homoSapiensChromosomes } from './demoData';
+import { IChromosome, IHumanGene, IGeneVariantMapping, IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport, IPatientGenomeVariant } from '../models/db';
+import { demoGeneVariantMapping, demoGenome, demoHumanGenes, demoMultipleGeneVariants, demoPatients, homoSapiensChromosomes } from './demoData';
 
 // In IndexedDB, there are no explicit "tables" like in SQL databases, but rather object stores.
 // :. The database schema must be inspected during an upgrade or creation phase to check whether an object store already exists.
@@ -10,38 +10,44 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
   // Dexie.js Schema: The chromosomeName is defined as the primary key of the object store, 
   // ensuring that if a record with the same chromosomeName already exists, it won't be inserted again
   chromosome: EntityTable<
-  IChromosome,
-      'chromsomeName' // primary key "chromsomeName" (for the typings only)
+    IChromosome,
+    'chromsomeName' // primary key "chromsomeName" (for the typings only)
   >;
 } & {
   humanGene: EntityTable<
-  IHumanGene,
-      'geneName' // primary key "geneName" (for the typings only)
+    IHumanGene,
+    'geneName' // primary key "geneName" (for the typings only)
   >;
 } & {
   geneVariantMapping: EntityTable<
-  IGeneVariantMapping,
-      'geneVariant' // primary key "geneVariant" (for the typings only)
+    IGeneVariantMapping,
+    'geneVariant' // primary key "geneVariant" (for the typings only)
   >;
 } & {
   patientProfile: EntityTable<
-  IPatientProfile,
-      'patientId' // primary key "patientId" (for the typings only)
+    IPatientProfile,
+    'patientId' // primary key "patientId" (for the typings only)
   >;
 } & {
   patientGenome: EntityTable<
-  IPatientGenome,
-      'rsid' // primary key "rsid" (for the typings only)
+    IPatientGenome,
+    'patientGenomeId' // primary key "patientGenomeId" (for the typings only)
+  >;
+} & {
+  patientGenomeVariant: EntityTable<
+    IPatientGenomeVariant,
+    'patientGeneVariantId' // primary key "patientGeneVariantId" (for the typings only)
   >;
 };
 
 // Schema declaration:
 patientsIndexedDb.version(1).stores({
   chromosome: 'chromosomeName, species', 
-  humanGenes: 'geneName, chromosomeName',
+  humanGene: 'geneName, chromosomeName',
   geneVariantMapping: 'geneVariant, geneName',
   patientProfile: "++patientId, patientName, datetimestamp",
-  patientGenome: "++patientGenomeId, rsid, genotype, patientId, chromosome, position, datetimestamp"
+  patientGenome: "++patientGenomeId, rsid, genotype, patientId, chromosome, position, datetimestamp",
+  patientGenomeVariant: "++patientGeneVariantId, rsid, genotype, patientId, chromosome, position, datetimestamp"
 });
 
 patientsIndexedDb.open();
@@ -60,6 +66,16 @@ async function addDemoDataIfDatabaseTablesEmpty() {
       await patientsIndexedDb.chromosome.bulkPut(homoSapiensChromosomes);
     }
 
+    const humanGenesCount = await patientsIndexedDb.humanGene.count(); 
+    if(!humanGenesCount) {
+      await patientsIndexedDb.humanGene.bulkPut(demoHumanGenes);
+    }
+
+    const geneVariantMappingCount = await patientsIndexedDb.geneVariantMapping.count(); 
+    if(!geneVariantMappingCount) {
+      await patientsIndexedDb.geneVariantMapping.bulkPut(demoGeneVariantMapping);
+    }
+
     const patientProfileCount = await patientsIndexedDb.patientProfile.count(); 
     if(!patientProfileCount) {
       await patientsIndexedDb.patientProfile.bulkPut(demoPatients);
@@ -67,12 +83,15 @@ async function addDemoDataIfDatabaseTablesEmpty() {
 
     const patientGenomesCount = await patientsIndexedDb.patientGenome.count(); 
     if(!patientGenomesCount) {
-      console.log('Object store "chromosome" created');
-      await patientsIndexedDb.patientGenome.add(demoGenome);  
-      await patientsIndexedDb.patientGenome.bulkPut(demoMultipleGenomes); 
+      await patientsIndexedDb.patientGenome.bulkPut(demoGenome); 
+    }
+
+    const patientGenomeVariantCount = await patientsIndexedDb.patientGenomeVariant.count(); 
+    if(!patientGenomeVariantCount) {
+      await patientsIndexedDb.patientGenomeVariant.bulkPut(demoMultipleGeneVariants); 
     }
   } catch (error) {
-    console.error('Error adding chromosomes:', error);
+    console.error('Error adding tables to database:', error);
   }
 }
 
