@@ -2,9 +2,12 @@
 
 ## Overview
 
-The Genome Browser UI is a **React**-based (TypeScript) UI client application (with **NextJs**), and which queries the Genome Browser API to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser **IndexedDB**.)
+The Genome Browser scans/analyses DNA files from popular family tree providers (23andMe, Ancestry.com, etc.), comparing the genome of the user with published literature on health risks/conditions that their gene variants are correlated to. SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler.
 
-(The API/Orchestrator for this project is here: [Genome Browser API](https://github.com/MathematicusLucian/Genome-Browser-API))
+For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser **IndexedDB**.)
+
+- This repo is the **React**-based (TypeScript) UI client application (with **NextJs**), and which queries the Genome Browser API.
+- The API/Orchestrator for this project is here: [Genome Browser API](https://github.com/MathematicusLucian/Genome-Browser-API).
 
 ### Objectives
 
@@ -20,13 +23,17 @@ The Genome Browser UI is a **React**-based (TypeScript) UI client application (w
 
 ## Pages/Views
 
-### Full Patient Report
+### Open the DNA (VCF) test file, i.e display gene variants (SNPs)
 
-The rows represent the gene variants associated with the patient.
+The rows represent the gene variants associated with the patient. (The `rsid` columns is the identifier for the SNP pairs; and a crucial factor in many cases, with respect to risk, is the `genotype` that the user has inherited from their parents - hence, generaly, this consists of two letters, i.e. one from each parent.)
+
+![patient_genome](./assets/patient_genome.png)
+
+### Health Risk/Correlation Report
+
+The report compares the gene variants of the patient with published literature to indiciate which of their respective SNPs are associated with health conditions.
 
 ![full_report](./assets/full_report.png)
-
-### Gene Variant Details
 
 If you click on a row, the app will launch a drawer featuring the details for the gene variant.
 
@@ -94,13 +101,14 @@ Set up the environment variables:
 
 ```bash
 cp .env.example .env
-
 ```
 
 **Environment Variables on Vercel**:
 `vercel env pull`
 
 ## IndexedDB
+
+![IndexedDB diagram](./assets/indexeddb.png)
 
 [Chrome Offline Storage](https://developer.chrome.com/docs/apps/offline_storage/)
 

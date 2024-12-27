@@ -61,20 +61,20 @@ const PatientList: FC = () => {
   //     //     }
   //     // }, [patientProfiles]);  
 
-  useLiveQuery(
-    async () => {
-      if(isIndexedDatabase) {
-        const patientProfilesCount = await patientsIndexedDb.patientGenome.toCollection().count(function (count) {
-          setPatientProfilesCount(String(count));
-        });
-        let result = await patientsIndexedDb.patientGenome.toArray(); 
-        if (result.length > 0) {   
-          setRowData(result); 
-          return result;
-        }
-      }
-    }, 
-  );
+  // useLiveQuery(
+  //   async () => {
+  //     if(isIndexedDatabase) {
+  //       const patientProfilesCount = await patientsIndexedDb.patientGenome.toCollection().count(function (count) {
+  //         setPatientProfilesCount(String(count));
+  //       });
+  //       let result = await patientsIndexedDb.patientGenome.toArray(); 
+  //       if (result.length > 0) {   
+  //         setRowData(result); 
+  //         return result;
+  //       }
+  //     }
+  //   }, 
+  // );
 
   const patientProfiles = useLiveQuery( 
     () => patientsIndexedDb.patientProfile.toArray()
@@ -82,8 +82,9 @@ const PatientList: FC = () => {
     
   useEffect(() => { 
     const columns = [
-      {"headerName":"patient_id","field":"patient_id", flex: 2, maxWidth: 120},
-      {"headerName":"patient_name","field":"patient_name", flex: 2, maxWidth: 120},
+      {"headerName":"patientId","field":"patientId", flex: 2, maxWidth: 280},
+      {"headerName":"patientName","field":"patientName", flex: 2, maxWidth: 180},
+      {"headerName":"datetimestamp","field":"datetimestamp", flex: 2, maxWidth: 120},
     ];
     setColumnDefs(columns);
     !isIndexedDatabase && fetchData();
@@ -106,25 +107,25 @@ const PatientList: FC = () => {
       </ul> 
 
       {/* <div>Error: {error} No genome data in database.</div> */}
-      {/* {patientProfilesCount && (<div className="profile-count">{patientProfilesCount} patient profiles in total</div>)}
+      {patientProfilesCount && (<div className="profile-count">{patientProfilesCount} patient profiles in total</div>)}
       <hr />
-        {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patient_id}</div>}
-        <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
+      {/* {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patientId}</div>} */}
+      <TableGrid rowData={patientProfiles} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
       <style jsx>{`
-          p, div, li, input, label, select, button {
-            font-size: 0.8em;
-          }
-          .table-header { 
-            font-size: 1em;
-            padding: 0.1rem 0 0 0;
-            font-weight: 900;
-          }
-          .profile-count {
-            font-size: 0.8em;
-            font-weight: 600;
-            padding: 0.5em;
-          }
-      `}</style> */}
+        p, div, li, input, label, select, button {
+          font-size: 0.8em;
+        }
+        .table-header { 
+          font-size: 1em;
+          padding: 0.1rem 0 0 0;
+          font-weight: 900;
+        }
+        .profile-count {
+          font-size: 0.8em;
+          font-weight: 600;
+          padding: 0.5em;
+        }
+      `}</style>
     </>
   );
 }
