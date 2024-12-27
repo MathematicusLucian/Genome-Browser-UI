@@ -11,19 +11,29 @@ For security reasons, the user's patient data is not shared to the server, but r
 
 ### Objectives
 
-1. Comparison of ancestry website DNA report with SNPedia data. The major/minor alleles of gene variants, their associated gene, chromosome position, etc..
+DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are long text files that lack meaning (unless someone had memorised SNP ids, and the associated published literature.)
 
-2. This also serves to demonstrate:
+1. A dashboard UI (grids/tables, charts, etc.) to browse DNA files. Present the major/minor alleles of gene variants, their associated gene, chromosome position, etc..
+
+2. Compare the DNA file to published literature, i.e. generate a report of the potential health conditions/risks associated with the gene varients that the patient's genome features.
+
+**This also serves to demonstrate:**
 
 - A _React_ implementation (with **NexrtJs**)
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.
 - React Context and Providers
 - Consideration of DRY/SOLID principles, and Gang of Four design patterns
-- **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexDB.)
+- **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser `IndexedDB`.) (See section below on `Dexie.js`, etc..)
 
 ## Pages/Views
 
-### Browse a DNA (VCF) test file, i.e display gene variants (SNPs)
+### Upload a DNA test results (VCF) file
+
+If a patient file does not exist, the user is prompted to create one (the default name is `Default Profile`.)
+
+The patient software allows for the upload of several DNA files per patient, as they potentially could have several such as files, as there are many popular family tree providers (23andMe, Ancestry.com, etc..)
+
+### Browse gene variants (SNPs) present in the patient genome
 
 From the dropdown, the user can select which profile to view:
 
@@ -75,13 +85,16 @@ The Genome Browser UI leverages the powerful features of Next.js to build a robu
 
 ### Directory Structure
 
-The project follows a structured directory layout to organize the codebase efficiently:
+The project follows a structured directory layout to organise the codebase efficiently:
 
 - `/api`
 - `/components`
   - `Layout.tsx`: [Layout component for consistent page structure]
   - `TableGrid.tsx`: [Component for displaying data in a table grid]
   - etc.
+- `/context`
+- `/database`
+- `/models`
 - `/pages`: Routes/Views
   - `/api`: [API routes for server-side logic]
     - etc.
@@ -89,9 +102,12 @@ The project follows a structured directory layout to organize the codebase effic
     - etc.
   - `_app.tsx`: [Custom App component]
   - `index.tsx`: [Home page]
+- `/providers`
 - `/public`: [Static assets like images, icons, etc.]
 - `/services`: [Service functions for API calls and business logic]
+- `/state`
 - `/styles`: [CSS and SCSS files for styling]
+- `/types`
 - `/utils`: [Utility functions and helpers]
 
 ## Getting Started
@@ -115,6 +131,36 @@ cp .env.example .env
 ## IndexedDB
 
 ![IndexedDB diagram](./assets/indexeddb.png)
+
+### Dexie,js
+
+Relative to the `IndexedDB` native API, the [`Dexie.js`](https://dexie.org/) wrapper (a promise-based API) provides simplicity and ease of interaction (for TypeScript/JavaScript apps.) It is a clean and efficient way to manage IndexedDB with `Dexie.js` in a `React` and `Next.js` environment.
+
+**Dexie.js Schema**: The `chromosomeName` is defined as the primary key of the object store, ensuring that if a record with the same chromosomeName already exists, it won't be inserted again.
+
+**Database Name**: `patientsIndexedDb`
+
+![IndexedDB in Dev Tools](./assets//dev_tools_indexeddb.png)
+
+**Demo data**:
+
+- To populate tables, e.g. chromosomes, patient profiles, patient genomes/gene varients, etc., if empty. Before adding new data, we check if the table already contains any records using `count`, e.g. `patientsIndexedDb.chromosome.count()`. If the count is 0, that means no records exist and we proceed with adding the data.
+- The function `addChromosomesIfNotExist` is called inside a `useEffect` hook, ensuring that the check and insertion happen when the component is loaded. This allows performance of a database update when the page is initialized, but this can also be triggered as the action following any React app event.
+  ```shell
+  useEffect(() => {
+    addChromosomesIfNotExist();
+  }, []
+  ```
+- **Versioning and Object Store Creation:** The first time the app is run, the object store will be created, i.e. `patientsIndexedDb.version(1).stores`. If the object store already exists (i.e., it's the same version), it won't be recreated.
+- **Efficient Checks**: Instead of directly checking the presence of the table, this method checks if the table is empty by counting existing records. This ensures that the `bulkPut` operation only happens if the table is empty.
+
+**Other**:
+
+- **Schema Upgrades:** When you upgrade the schema (e.g., by increasing the version number in `patientsIndexedDb.version(...)`), the onupgradeneeded event is triggered, allowing you to modify the schema (e.g., adding or modifying object stores/indexes).
+- **Overwriting Records**: If there is a unique key such as `chromosomeName` as the primary key, calling `bulkPut` will overwrite any existing record with the same key. This means if you have a row with `chromosomeName: 'Chromosome 1'` already in the table, calling `bulkPut` with the same `chromosomeName` will update the existing record rather than creating a duplicate.
+- **Error Handling**: Any errors in adding chromosomes are caught in the catch block and logged to the console.
+
+### Chrome local storage memory
 
 [Chrome Offline Storage](https://developer.chrome.com/docs/apps/offline_storage/)
 
@@ -141,11 +187,3 @@ navigator.webkitPersistentStorage.requestQuota (
     }, function(e) { console.log('Error', e); }
 );
 ```
-
-### Dexie,js
-
-Dexie.js simplifies working with IndexedDB in JavaScript. Dexie provides a promise-based API to manage IndexedDB, making it much easier to interact with compared to the native IndexedDB API.
-
-- **Dexie.js Schema**: The chromosomeName is defined as the primary key of the object store, ensuring that if a record with the same chromosomeName already exists, it won't be inserted again.
-- **Error Handling**: Any errors in adding chromosomes are caught in the catch block and logged to the console.
-- **Efficient Checks**: Instead of directly checking the presence of the table, this method checks if the table is empty by counting existing records. This ensures that the bulkPut operation only happens if the table is empty.

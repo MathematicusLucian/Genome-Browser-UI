@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { IChromosome, IHumanGene, IGeneVariantMapping, IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport } from '../models/db';
 import { demoGenome, demoMultipleGenomes, demoPatients, homoSapiensChromosomes } from './demoData';
 
+// In IndexedDB, there are no explicit "tables" like in SQL databases, but rather object stores.
+// :. The database schema must be inspected during an upgrade or creation phase to check whether an object store already exists.
+
 const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
   // Dexie.js Schema: The chromosomeName is defined as the primary key of the object store, 
   // ensuring that if a record with the same chromosomeName already exists, it won't be inserted again
@@ -64,6 +67,7 @@ async function addDemoDataIfDatabaseTablesEmpty() {
 
     const patientGenomesCount = await patientsIndexedDb.patientGenome.count(); 
     if(!patientGenomesCount) {
+      console.log('Object store "chromosome" created');
       await patientsIndexedDb.patientGenome.add(demoGenome);  
       await patientsIndexedDb.patientGenome.bulkPut(demoMultipleGenomes); 
     }

@@ -1,8 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 
-const patientIds = [
-  uuidv4(), uuidv4(), uuidv4()
-]
+const patientIds = [];
+const numberOfDemoProfilesRequired = 3;
+for(let i; i<numberOfDemoProfilesRequired; i++) {
+  patientIds.push(uuidv4());
+}
 
 const homoSapiensChromosomes = [
   { chromosomeName: 'Chromosome 1', specifics: 'homo-sapiens' },
@@ -34,15 +36,20 @@ const homoSapiensChromosomes = [
 const demoPatients = [
   {
     patientId: patientIds[0],
-    patientName: 'John Smith',
+    patientName: 'Default Profile',
     datetimestamp: Date.now()
-  },{
+  },
+  {
     patientId: patientIds[1],
-    patientName: 'Hannah James',
+    patientName: 'John Smith (demo profile)',
     datetimestamp: Date.now()
   },{
     patientId: patientIds[2],
-    patientName: 'Eric Mombasa',
+    patientName: 'Hannah James (demo profile)',
+    datetimestamp: Date.now()
+  },{
+    patientId: patientIds[3],
+    patientName: 'Eric Mombasa (demo profile)',
     datetimestamp: Date.now()
   }
 ];
