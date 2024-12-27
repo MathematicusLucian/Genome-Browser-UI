@@ -6,7 +6,7 @@ const demoPatientIds = [ uuidv4(),  uuidv4(),  uuidv4(),  uuidv4()];
 //   const u = uuidv4()
 //   patientIds.push(u);
 // }
-console.log('demoPatientIds', demoPatientIds);
+// console.log('demoPatientIds', demoPatientIds);
 
 const demoPatientGenomeIds = [ uuidv4(),  uuidv4(),  uuidv4(),  uuidv4(), uuidv4(),  uuidv4()];
 // const numberOfDemoProfilesRequired = 3;
@@ -14,7 +14,7 @@ const demoPatientGenomeIds = [ uuidv4(),  uuidv4(),  uuidv4(),  uuidv4(), uuidv4
 //   const u = uuidv4()
 //   patientIds.push(u);
 // }
-console.log('demoPatientGenomeIds', demoPatientGenomeIds);
+// console.log('demoPatientGenomeIds', demoPatientGenomeIds);
 
 const homoSapiensChromosomes = [
   { chromosomeName: 'Chromosome 1', specifics: 'homo-sapiens' },

@@ -54,7 +54,7 @@ patientsIndexedDb.open();
 
 // Output the schema of each table:
 patientsIndexedDb.tables.forEach(function (table) {
-    console.log("Schema of " + table.name + ": " + JSON.stringify(table.schema));
+    // console.log("Schema of " + table.name + ": " + JSON.stringify(table.schema));
 }); 
 
 // Function to add chromosomes to the IndexedDB (check if the table exists)

@@ -15,19 +15,20 @@ interface SelectProps {
 const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField, selectTitle, placeholder, selectedOption, error, handleSelectChange }) => {
     const [selectedOptionId, setSelectedOptionId] = useState<any>(null); 
 
-    useEffect(() => {  
-        if(selectData) {
-            if(!selectDataKey) selectDataKey = Object.keys(selectData[0])[0]; 
-            if(!selectedOption) selectedOption = selectData[0][selectDataKey]; 
-            if(selectedOption) setSelectedOptionId(selectedOption);
-        }
-    }, [selectData, selectDataKey]);  
+    // useEffect(() => {  
+    //     if(selectData) {
+    //         if(!selectDataKey) selectDataKey = Object.keys(selectData[0])[0]; 
+    //         if(!selectedOption) selectedOption = selectData[0][selectDataKey]; 
+    //         if(selectedOption) setSelectedOptionId(selectedOption);
+    //     }
+    // }, [selectData, selectDataKey]);  
 
     return !selectData || !selectDataKey || error ? (
         <div>Error: {error}</div>
     ) : (
         <div className="dropdown"> 
-            <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> {selectedOptionId}
+            <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> 
+            {/* {selectedOptionId} */}
             <select id={`${selectDataKey}-select`} onChange={handleSelectChange} value={selectedOptionId}> 
                 <option value="">--{placeholder}--</option>
                 {selectData.map((profile: any) => (

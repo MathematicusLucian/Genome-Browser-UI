@@ -9,29 +9,34 @@ import GeneVariantList from "@/components/GeneVariantList";
 import TableGrid from '../../../components/TableGrid'; 
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
+import { IPatientGenomeVariant } from "@/models/db";
 
 interface GenomePageProps {
     // opensidedrawer: (content: React.ReactNode) => void;
 }
 const GenomePage: React.FC<GenomePageProps> = (props) => {  
-    const [error, setError] = useState(null); 
-    const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null); 
     const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
-    const isIndexedDatabase = true;
-
+    const [error, setError] = useState(null); 
+    // Router
     const router = useRouter();  
-
-    const handlePatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log('handlePatientChange: event', event);
-        // http://127.0.0.1:3000/patient/genome?patientId=[x]
-        router.push(`/patient/genome/${event.target.value}`);
-    };
   
     const uploadDNAFile = () => {
         updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm /></div></div>);
         toggleModalVisible(true);
     }  
+
+    // -------
+    // Patient
+    // -------
+    const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null); 
+    const [selectedPatientProfileId, setSelectedPatientProfileId] = useState<string | null>(null); 
+
+    const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        // console.log('handlePatientChange: event', event);
+        // http://127.0.0.1:3000/patient/genome?patientId=[x]
+        router.push(`/patient/genome/${event.target.value}`);
+    };
  
     const patientProfiles = useLiveQuery( 
         async () => patientsIndexedDb.patientProfile.toArray()
@@ -43,28 +48,39 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         if (router.isReady) {  
             const patientId = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id; 
 
-            if(patientProfiles) {
-                // console.log(JSON.stringify(patientProfiles));
+            if(patientProfiles) { 
                 const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
                 setSelectedPatientProfile(patientProfileMatch);
+                console.log('patientProfileMatch', patientProfileMatch.patientId);
+                setSelectedPatientProfileId(patientProfileMatch.patientId);
             } 
         }
     }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
 
-    // Gene Variants List
+    // ------
+    // Genome
+    // ------
 
-    const [selectedGenomeId, setSelectedGenomeId] = useState<string| null>(null);
-    // const [selectedPatientGenome, setsSelectedPatientGenome] = useState<IPatientGenome | null>(null);
+    const [selectedPatientGenome, setSelectedPatientGenome] = useState<IPatientGenome | null>(null);  
+    const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
+
+    const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log('handleGenomeChange: event', event.target.value); 
+        setSelectedPatientGenomeId(event.target.value); 
+    }; 
     
     const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
-        // async () => patientsIndexedDb.patientGenome.toArray()
-        async () => patientsIndexedDb.patientGenome.where('patientId').equals("aa1205b7-504b-4b3e-a9dc-d9b67e4f08b3").toArray()
-        // async () => patientsIndexedDb.patientGenome.where('patientId').anyOf().toArray()
-        //.toArray(),
-        // .equals(selectedPatientProfile.patientId)
-        // [selectedPatientProfile]
-    );
-    console.log(JSON.stringify(selectedPatientGenomes));
+        async () => {
+            console.log('selectedPatientProfileId', selectedPatientProfileId);
+            const x = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(selectedPatientProfileId)).toArray(); 
+            // console.log(x);
+            x.then((xx) => {
+                console.log(xx);
+            }); 
+            return x;
+        },
+        [selectedPatientProfileId]
+    ); 
     // const selectedPatientGenomesCount = useLiveQuery(
     //     async() => patientsIndexedDb.patientGenome.count()
     // ); 
@@ -73,37 +89,69 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     //     [selectedGenomeId]
     // );
 
-    const handleGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log('handleGenomeChange: event', event);
-        // http://127.0.0.1:3000/patient/genome?patientId=[x]
-        // router.push(`/patient/genome/${event.target.value}`);
+    // useEffect(() => { 
+    //     if(selectedPatientGenomes) {
+    //         // console.log(JSON.stringify(selectedPatientGenomes));
+    //         const patientProfileMatch = selectedPatientGenomes.find((x) => x.patientId == patientId);
+    //         setSelectedPatientProfile(patientProfileMatch);
+    //     }  
+    // }, [patientProfiles, patientProfilesCount]);   
 
-        setSelectedGenomeId(event.target.value); 
-    };
+    // ------------------
+    // Gene Variants List
+    // ------------------
+
+    const [selectedPatientGeneVariant, setSelectedPatientGeneVariant] = useState<IPatientGenomeVariant | null>(null); 
+    const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null);
+    const selectedPatientGeneVariants = useLiveQuery(// IPatientGeneVariant[]
+        async () => patientsIndexedDb.patientGenomeVariant.toArray() 
+    );
     
     return (
         <Layout>
-            <div className="page-header">Patient Genome (Gene Variants)</div>
-            <Select selectData={patientProfiles} selectDataKey={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOption={selectedPatientProfile} handleSelectChange={handlePatientChange} />
+            <div className="page-header">Patient Genome (Gene Variants) Viewer</div>
+
+            <p>Patient Profile Count: {patientProfilesCount}</p>            
+            <Select selectData={patientProfiles} selectDataKey={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOption={selectedPatientProfile} handleSelectChange={handleSelectedPatientChange} />
+            
+            <br />
             <h2 className="table-header">Patient Data</h2>
-            <p>Patient Profile Count: {patientProfilesCount}</p>
+
             {!selectedPatientProfile || error ? (
                 <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
             ) : (
                 <div>
                     <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
+                    {(JSON.stringify(selectedPatientProfile))} 
+                    <br />
+                    <hr />
+
                     <button
                         className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
                         onClick={uploadDNAFile}
                     >
                         Upload DNA File
                     </button> 
-                    {/* <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'datetimestamp'} selectTitle={"Select a DNA file to browse:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenomes} handleSelectChange={handleGenomeChange} />
-                    <p>Patient DNA files Count: {selectedPatientGenomesCount}</p>
-                    <h2 className="table-header">Genome Data</h2>
-                    <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientSelectedGenome.patientGenomeId}</p>
-                    <p>{selectedPatientSelectedGenome.patientGenomeId}</p>
-                    <GeneVariantList patient_id={String(selectedPatientSelectedGenome.patientGenomeId)} />  */}
+                    <br /><br />
+                    <hr /> 
+
+                    {!selectedPatientProfileId ? (
+                        <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
+                    ) : (
+                        <div>
+                            selectedPatientGenomes: {( JSON.stringify(selectedPatientGenomes ))} 
+                            <p>Patient DNA files Count: {selectedPatientGenomes.length}</p>
+                            <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'patientGenomeId'} selectTitle={"Select a Genome:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
+                            {/* <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome[0].patientGenomeId}</p> */}
+
+                            <hr />
+                            <strong>Gene Variants:</strong><br />
+                            {/* <h2 className="table-header">Genome Data</h2>
+                            <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
+                            {/* <p>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
+                            {/* <GeneVariantList patient_id={String(selectedPatientSelectedGenome.patientGenomeId)} />  */} 
+                        </div>
+                    )} 
                 </div>
             )} 
             <style jsx>{`
