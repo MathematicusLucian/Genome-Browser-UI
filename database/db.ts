@@ -1,5 +1,10 @@
 import Dexie, { type EntityTable } from 'dexie';
 import { v4 as uuidv4 } from 'uuid';
+import { demoGenome, demoMultipleGenomes, demoPatients, homoSapiensChromosomes } from './demoData';
+
+interface IChromosome {
+  chromsomeName: string;
+}
 
 interface IPatientProfile {
   patientId: string;
@@ -55,6 +60,13 @@ interface IFullReport {
 }
 
 const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
+  // Dexie.js Schema: The chromosomeName is defined as the primary key of the object store, 
+  // ensuring that if a record with the same chromosomeName already exists, it won't be inserted again
+  chromosome: EntityTable<
+  IChromosome,
+      'chromsomeName' // primary key "chromsomeName" (for the typings only)
+  >;
+} & {
   patientProfile: EntityTable<
   IPatientProfile,
       'patientId' // primary key "patientId" (for the typings only)
@@ -68,7 +80,8 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
 
 // Schema declaration:
 patientsIndexedDb.version(1).stores({
-  patientProfile: "++patientId, patientName, datetimestamp", // "patientProfile": primary key "id" 
+  chromosome: 'chromosomeName, species', 
+  patientProfile: "++patientId, patientName, datetimestamp",
   patientGenome: "++patientGenomeId, rsid, genotype, patientId, chromosome, position, datetimestamp"
 });
 
@@ -79,99 +92,29 @@ patientsIndexedDb.tables.forEach(function (table) {
     console.log("Schema of " + table.name + ": " + JSON.stringify(table.schema));
 }); 
 
-const patientIds = [
-  uuidv4(), uuidv4(), uuidv4()
-]
+// Function to add chromosomes to the IndexedDB (check if the table exists)
+async function addDemoDataIfDatabaseEmpty() {
+  try {
+    // Check if the 'chromosome' table is empty (i.e., no records yet)
+    const chromosomesCount = await patientsIndexedDb.chromosome.count(); 
+    if(!chromosomesCount) {
+      await patientsIndexedDb.chromosome.bulkPut(homoSapiensChromosomes);
+    }
 
-// const patientProfileBulkAddRowsDemo = patientsIndexedDb.patientProfile.bulkPut([{
-//   patientId: patientIds[0],
-//   patientName: 'John Smith',
-//   datetimestamp: Date.now()
-// },{
-//   patientId: patientIds[1],
-//   patientName: 'Hannah James',
-//   datetimestamp: Date.now()
-// },{
-//   patientId: patientIds[2],
-//   patientName: 'Eric Mombasa',
-//   datetimestamp: Date.now()
-// }]);
+    const patientProfileCount = await patientsIndexedDb.patientProfile.count(); 
+    if(!patientProfileCount) {
+      await patientsIndexedDb.patientProfile.bulkPut(demoPatients);
+    }
 
-// const patientGenomeAddDemoRow = patientsIndexedDb.patientGenome.add({
-//   patientGenomeId: uuidv4(),
-//   rsid: 'i12435',
-//   patientId: patientIds[0],
-//   chromosome: '1',
-//   position: '1',
-//   genotype: 'AA',
-//   datetimestamp: Date.now()
-// }); 
-
-// const patientGenomeBulkAddRowsDemo = patientsIndexedDb.patientGenome.bulkPut([{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'rs134242',
-//     patientId: patientIds[0],
-//     chromosome: '4',
-//     position: '7',
-//     genotype: 'TC',
-//     datetimestamp: Date.now()
-//   },{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'rs145345',
-//     patientId: patientIds[0],
-//     chromosome: '5',
-//     position: '14',
-//     genotype: 'CC',
-//     datetimestamp: Date.now()
-//   },{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'rs153435',
-//     patientId: patientIds[0],
-//     chromosome: '12',
-//     position: '10',
-//     genotype: 'AA',
-//     datetimestamp: Date.now()
-//   },{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'i12435',
-//     patientId: patientIds[1],
-//     chromosome: '8',
-//     position: '5',
-//     genotype: 'GG',
-//     datetimestamp: Date.now()
-//   },{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'rs134242',
-//     patientId: patientIds[1],
-//     chromosome: '4',
-//     position: '7',
-//     genotype: 'TC',
-//     datetimestamp: Date.now()
-//   },{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'rs145345',
-//     patientId: patientIds[1],
-//     chromosome: '8',
-//     position: '2',
-//     genotype: 'AG',
-//     datetimestamp: Date.now()
-//   },{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'i15435',
-//     patientId: patientIds[2],
-//     chromosome: '5',
-//     position: '14',
-//     genotype: 'CC',
-//     datetimestamp: Date.now()
-//   },{
-//     patientGenomeId: uuidv4(),
-//     rsid: 'i91436',
-//     patientId: patientIds[2],
-//     chromosome: '5',
-//     position: '5',
-//     genotype: 'GG',
-//     datetimestamp: Date.now()
-// }]); 
+    const patientGenomesCount = await patientsIndexedDb.patientGenome.count(); 
+    if(!patientGenomesCount) {
+      await patientsIndexedDb.patientGenome.add(demoGenome);  
+      await patientsIndexedDb.patientGenome.bulkPut(demoMultipleGenomes); 
+    }
+  } catch (error) {
+    console.error('Error adding chromosomes:', error);
+  }
+}
 
 export type { IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport}; 
-export { patientsIndexedDb };
+export { patientsIndexedDb, addDemoDataIfDatabaseEmpty };

@@ -16,6 +16,10 @@ const Layout = ({ children }) => {
       DrawerContext
   );   
 
+  useEffect(() => {
+    addDemoDataIfDatabaseEmpty();
+  }, []);
+
   return (
     <div className={styles.container}>
       <Head>

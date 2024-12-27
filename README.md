@@ -4,7 +4,7 @@
 
 The Genome Browser scans/analyses DNA files from popular family tree providers (23andMe, Ancestry.com, etc.), comparing the genome of the user with published literature on health risks/conditions that their gene variants are correlated to. SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler.
 
-For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser **IndexedDB**.)
+For security reasons, the user's patient data is not shared to the server, but remains on their machine (**Dexie.js** to interface with **IndexedDB** database storage in the web browser.)
 
 - This repo is the **React**-based (TypeScript) UI client application (with **NextJs**), and which queries the Genome Browser API.
 - The API/Orchestrator for this project is here: [Genome Browser API](https://github.com/MathematicusLucian/Genome-Browser-API).
@@ -141,3 +141,11 @@ navigator.webkitPersistentStorage.requestQuota (
     }, function(e) { console.log('Error', e); }
 );
 ```
+
+### Dexie,js
+
+Dexie.js simplifies working with IndexedDB in JavaScript. Dexie provides a promise-based API to manage IndexedDB, making it much easier to interact with compared to the native IndexedDB API.
+
+- **Dexie.js Schema**: The chromosomeName is defined as the primary key of the object store, ensuring that if a record with the same chromosomeName already exists, it won't be inserted again.
+- **Error Handling**: Any errors in adding chromosomes are caught in the catch block and logged to the console.
+- **Efficient Checks**: Instead of directly checking the presence of the table, this method checks if the table is empty by counting existing records. This ensures that the bulkPut operation only happens if the table is empty.
