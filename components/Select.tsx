@@ -3,29 +3,35 @@ import React, { useEffect, useState } from 'react';
 import { IPatientProfile } from '@/database/db';
 
 interface SelectProps {
-    patientProfiles: any;
-    selectedOptionProfile: IPatientProfile,
+    selectData: any;
+    selectTitle: string;
+    key: any;
+    displayField: string;
+    placeholder: string;
+    selectedOptionProfile: any; // IPatientProfile,
     error: any;
-    handlePatientChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const Select: React.FC<SelectProps> = ({ patientProfiles, selectedOptionProfile, error, handlePatientChange }) => {
+const Select: React.FC<SelectProps> = ({ selectData, key, displayField, selectTitle, placeholder, selectedOptionProfile, error, handleSelectChange }) => {
     const [selectedOptionId, setSelectedOptionId] = useState<any>(null); 
 
     useEffect(() => {  
-        setSelectedOptionId(selectedOptionProfile.patientId);
-    }, [selectedOptionProfile]);  
+        if(key) {
+            setSelectedOptionId(selectedOptionProfile[key]);
+        }
+    }, [selectedOptionProfile, key]);  
 
-    return !patientProfiles || error ? (
+    return !selectData || !key || error ? (
             <div>Error: {error}</div>
         ) : (
             <div className="dropdown"> 
-                <label htmlFor="patient-select">Select a Patient Profile:</label>
-                <select id="patient-select" onChange={handlePatientChange}>
-                    <option value="">--Please choose a patient--</option>
-                    {patientProfiles.map((profile: IPatientProfile) => (
-                        <option key={profile.patientId} value={profile.patientId} selected={profile.patientId==selectedOptionId}>
-                            {profile.patientName} - {profile.patientId}
+                <label htmlFor={`${key}-select`}>{selectTitle}</label>
+                <select id={`${key}-select`} onChange={handleSelectChange}>
+                    <option value="">--{placeholder}--</option>
+                    {selectData.map((profile: any) => (
+                        <option key={profile[key]} value={profile[key]} selected={profile[key]==selectedOptionId}>
+                            {profile[displayField]}
                         </option>
                     ))}
                 </select>

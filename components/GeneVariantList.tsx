@@ -6,11 +6,11 @@ import { patientsIndexedDb } from '@/database/db';
 import TableGrid from "@/components/TableGrid";
 import { useRouter } from "next/router";
 
-interface GenomeListProps {
+interface GeneVariantListProps {
   patient_id: string;
 }
 
-const GenomeList: FC<GenomeListProps> = (props) => {  
+const GeneVariantList: FC<GeneVariantListProps> = (props) => {  
   const [status, setStatus] = useState('');
   const [error, setError] = useState(null);  
   const [rowData, setRowData] = useState([]);
@@ -136,4 +136,4 @@ const GenomeList: FC<GenomeListProps> = (props) => {
   );
 };
 
-export default GenomeList;
+export default GeneVariantList;

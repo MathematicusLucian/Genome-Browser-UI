@@ -96,7 +96,7 @@ const PatientList: FC = () => {
 
   return (
     <>
-      <div className="table-header">List of Patients</div>
+      {/* <div className="table-header">List of Patients</div> */}
       {/* <ul> 
         {patientProfiles?.map((patientProfile) => (
           <li key={patientProfile.patientId}>

@@ -5,7 +5,7 @@ import { ModalContext, DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
 import Select from '../../../components/Select'; 
 import UploadForm from '../../../components/UploadForm'; 
-import GenomeList from "@/components/GenomeList";
+import GeneVariantList from "@/components/GeneVariantList";
 import TableGrid from '../../../components/TableGrid'; 
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
@@ -66,20 +66,25 @@ const GeneVariantRisksReportPage: React.FC<GeneVariantRisksReportPageProps> = (p
                 <div>Error: {error}</div>
             ) : (
                 <div>
-                    <Select patientProfiles={patientProfiles} error={error} selectedOptionProfile={selectedPatientProfile} handlePatientChange={handlePatientChange} />
+                    <div className="page-header">Patient Genome (Gene Variants)</div>
+                    <Select selectData={patientProfiles} key={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOptionProfile={selectedPatientProfile} handleSelectChange={handlePatientChange} />
                     <p>Patient Profile Count: {patientProfilesCount}</p>
                     <h2 className="table-header">Patient Data</h2>
                     <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
                     <p>{selectedPatientProfile.patientName}</p>
-                    <GenomeList patient_id={String(selectedPatientProfile.patientId)} /> 
+                    <GeneVariantList patient_id={String(selectedPatientProfile.patientId)} /> 
                 </div>
             )}
             <style jsx>{`
-                p, label, select {
+                p, div, li, input, label, select, button {
                     font-size: 0.8em;
-                } 
-            `}
-            </style>
+                }
+                .page-header { 
+                    font-size: 1em;
+                    padding: 0.1rem 0 0 0;
+                    font-weight: 900;
+                }
+            `}</style>
         </Layout>
     );
 };

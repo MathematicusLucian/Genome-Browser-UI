@@ -5,7 +5,7 @@ import { ModalContext, DrawerContext } from '../../../context';
 import Layout from '../../../components/Layout';
 import Select from '../../../components/Select'; 
 import UploadForm from '../../../components/UploadForm'; 
-import GenomeList from "@/components/GenomeList";
+import GeneVariantList from "@/components/GeneVariantList";
 import TableGrid from '../../../components/TableGrid'; 
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
@@ -21,6 +21,8 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
     const isIndexedDatabase = true;
 
     const router = useRouter(); 
+
+    console.log(props);
 
     const handlePatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log('handlePatientChange: event', event);
@@ -46,40 +48,57 @@ const GenonePage: React.FC<GenonePageProps> = (props) => {
 
             if(patientProfiles) {
                 console.log(JSON.stringify(patientProfiles));
-                const s = patientProfiles.find((x) => x.patientId == patientId);
-                console.log('s', s);
-                setSelectedPatientProfile(s);
+                const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
+                setSelectedPatientProfile(patientProfileMatch);
             } 
         }
     }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
     
     return (
         <Layout>
-            <button
-            className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
-            onClick={uploadDNAFile}
-            >
-                Upload DNA File
-            </button> 
-
+            <div className="page-header">Patient Genome (Gene Variants)</div>
+            <Select selectData={patientProfiles} key={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOptionProfile={selectedPatientProfile} handleSelectChange={handlePatientChange} />
+            <h2 className="table-header">Patient Data</h2>
+            <p>Patient Profile Count: {patientProfilesCount}</p>
             {!selectedPatientProfile || error ? (
-                <div>Error: {error}</div>
+                <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
             ) : (
                 <div>
-                    <Select patientProfiles={patientProfiles} error={error} selectedOptionProfile={selectedPatientProfile} handlePatientChange={handlePatientChange} />
-                    <p>Patient Profile Count: {patientProfilesCount}</p>
-                    <h2 className="table-header">Patient Data</h2>
                     <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
-                    <p>{selectedPatientProfile.patientName}</p>
-                    <GenomeList patient_id={String(selectedPatientProfile.patientId)} /> 
+                    <button
+                        className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
+                        onClick={uploadDNAFile}
+                    >
+                        Upload DNA File
+                    </button> 
+                    {/* <Select selectData={genomeProfiles} selectTitle={"Select a DNA file to browse:"} placeholder={"Please choose a genome"} error={error} selectedOptionProfile={selectedGenomeProfile} handleSelectChange={handleGenomeChange} />
+                    <p>Patient DNA files Count: {pgenomeProfilesCount}</p>
+                    <h2 className="table-header">Genome Data</h2> */}
+                    {/* <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientGenome.patientGenomeId}</p>
+                    <p>{selectedPatientGenome.patientGenomeId}</p>
+                    <GeneVariantList patient_id={String(selectedPatientGenome.patientGenomeId)} />  */}
                 </div>
-            )}
+            )} 
             <style jsx>{`
-                p, label, select {
+                p, div, li, input, label, select, button {
                     font-size: 0.8em;
-                } 
-            `}
-            </style>
+                }
+                .page-header { 
+                    font-size: 1em;
+                    padding: 0.1rem 0 0 0;
+                    font-weight: 900;
+                }
+                .table-header { 
+                font-size: 1em;
+                padding: 0.1rem 0 0 0;
+                font-weight: 900;
+                }
+                .profile-count {
+                font-size: 0.8em;
+                font-weight: 600;
+                padding: 0.5em;
+                }
+            `}</style> 
         </Layout>
     );
 };
