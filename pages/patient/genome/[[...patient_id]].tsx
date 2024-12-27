@@ -66,28 +66,25 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log('handleGenomeChange: event', event.target.value); 
-        setSelectedPatientGenomeId(event.target.value); 
+        // if(patientProfiles) { 
+        //     const patientGenomeMatch = selectedPatientGenomes.find((x) => x.patientGenomeId == event.target.value);
+            // setSelectedPatientGenome(patientGenomeMatch);
+            // setSelectedPatientGenomeId(event.target.value); 
+        // }
     }; 
     
     const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
         async () => {
-            console.log('selectedPatientProfileId', selectedPatientProfileId);
+            // console.log('selectedPatientProfileId', selectedPatientProfileId);
             const x = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(selectedPatientProfileId)).toArray(); 
             // console.log(x);
             x.then((xx) => {
-                console.log(xx);
+                // console.log(xx);
             }); 
             return x;
         },
         [selectedPatientProfileId]
-    ); 
-    // const selectedPatientGenomesCount = useLiveQuery(
-    //     async() => patientsIndexedDb.patientGenome.count()
-    // ); 
-    // const selectedPatientSelectedGenome = useLiveQuery(// IPatientGenome[]
-    //     async () => patientsIndexedDb.patientGenome.where('patientGenomeId').equals(selectedGenomeId).toArray(),
-    //     [selectedGenomeId]
-    // );
+    );  
 
     // useEffect(() => { 
     //     if(selectedPatientGenomes) {
@@ -102,10 +99,20 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // ------------------
 
     const [selectedPatientGeneVariant, setSelectedPatientGeneVariant] = useState<IPatientGenomeVariant | null>(null); 
-    const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null);
-    const selectedPatientGeneVariants = useLiveQuery(// IPatientGeneVariant[]
-        async () => patientsIndexedDb.patientGenomeVariant.toArray() 
-    );
+    const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null); 
+    
+    const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
+        async () => {
+            // console.log('selectedPatientProfileId', selectedPatientProfileId);
+            const x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray(); 
+            console.log(x);
+            x.then((xx) => {
+                console.log(xx);
+            }); 
+            return [];
+        },
+        [selectedPatientGenomeId]
+    );  
     
     return (
         <Layout>
@@ -135,21 +142,27 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                     <br /><br />
                     <hr /> 
 
-                    {!selectedPatientProfileId ? (
-                        <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
+                    {!selectedPatientGenomes ? (
+                        <div>No genomes. Perhaps no DNA file has been uploaded. {error}</div>
                     ) : (
                         <div>
                             selectedPatientGenomes: {( JSON.stringify(selectedPatientGenomes ))} 
                             <p>Patient DNA files Count: {selectedPatientGenomes.length}</p>
                             <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'patientGenomeId'} selectTitle={"Select a Genome:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
-                            {/* <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome[0].patientGenomeId}</p> */}
-
-                            <hr />
-                            <strong>Gene Variants:</strong><br />
-                            {/* <h2 className="table-header">Genome Data</h2>
-                            <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
-                            {/* <p>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
-                            {/* <GeneVariantList patient_id={String(selectedPatientSelectedGenome.patientGenomeId)} />  */} 
+                            {/* 
+                            {!selectedPatientGenomeId ? (
+                                <div>Please provide a patient genome ID. If the table is empty, the profile may not exist. {error}</div>
+                            ) : (
+                                <div>                            
+                                    <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId}</p>
+                                    <hr />
+                                    <strong>Gene Variants:</strong><br />
+                                    {/* <h2 className="table-header">Genome Data</h2>
+                                    <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
+                                    {/* <p>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
+                                    {/* <GeneVariantList patient_id={String(selectedPatientSelectedGenome.patientGenomeId)} />  */} 
+                            {/*}    </div>
+                            )}  */}
                         </div>
                     )} 
                 </div>
