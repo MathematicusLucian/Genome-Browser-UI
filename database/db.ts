@@ -1,6 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie';
 import { v4 as uuidv4 } from 'uuid';
-import { IChromosome, IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport } from '../models/db';
+import { IChromosome, IHumanGene, IGeneVariantMapping, IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport } from '../models/db';
 import { demoGenome, demoMultipleGenomes, demoPatients, homoSapiensChromosomes } from './demoData';
 
 const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
@@ -9,6 +9,16 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
   chromosome: EntityTable<
   IChromosome,
       'chromsomeName' // primary key "chromsomeName" (for the typings only)
+  >;
+} & {
+  humanGene: EntityTable<
+  IHumanGene,
+      'geneName' // primary key "geneName" (for the typings only)
+  >;
+} & {
+  geneVariantMapping: EntityTable<
+  IGeneVariantMapping,
+      'geneVariant' // primary key "geneVariant" (for the typings only)
   >;
 } & {
   patientProfile: EntityTable<
@@ -25,6 +35,8 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
 // Schema declaration:
 patientsIndexedDb.version(1).stores({
   chromosome: 'chromosomeName, species', 
+  humanGenes: 'geneName, chromosomeName',
+  geneVariantMapping: 'geneVariant, geneName',
   patientProfile: "++patientId, patientName, datetimestamp",
   patientGenome: "++patientGenomeId, rsid, genotype, patientId, chromosome, position, datetimestamp"
 });
@@ -37,7 +49,7 @@ patientsIndexedDb.tables.forEach(function (table) {
 }); 
 
 // Function to add chromosomes to the IndexedDB (check if the table exists)
-async function addDemoDataIfDatabaseEmpty() {
+async function addDemoDataIfDatabaseTablesEmpty() {
   try {
     // Check if the 'chromosome' table is empty (i.e., no records yet)
     const chromosomesCount = await patientsIndexedDb.chromosome.count(); 
@@ -61,4 +73,4 @@ async function addDemoDataIfDatabaseEmpty() {
 }
 
 export type { IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport }; 
-export { patientsIndexedDb, addDemoDataIfDatabaseEmpty };
+export { patientsIndexedDb, addDemoDataIfDatabaseTablesEmpty };

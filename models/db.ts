@@ -2,6 +2,16 @@ export interface IChromosome {
     chromsomeName: string;
 }
 
+export interface IHumanGene {
+    geneName: string;
+    chromosomeName: string;
+}
+
+export interface IGeneVariantMapping {
+    geneVariant: string;
+    geneName: string;
+}
+
 export interface IPatientProfile {
     patientId: string;
     patientName: string;

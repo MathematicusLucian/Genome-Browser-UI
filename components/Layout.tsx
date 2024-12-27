@@ -7,6 +7,7 @@ import Header from './Header';
 import Footer from './Footer'; 
 import Modal from './Modal';
 import Drawer from './Drawer';
+import { addDemoDataIfDatabaseTablesEmpty } from "@/database/db";
 
 const Layout = ({ children }) => {      
   const { modalContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(
@@ -17,7 +18,7 @@ const Layout = ({ children }) => {
   );   
 
   useEffect(() => {
-    addDemoDataIfDatabaseEmpty();
+    addDemoDataIfDatabaseTablesEmpty();
   }, []);
 
   return (
