@@ -1,63 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie';
 import { v4 as uuidv4 } from 'uuid';
+import { IChromosome, IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport } from '../models/db';
 import { demoGenome, demoMultipleGenomes, demoPatients, homoSapiensChromosomes } from './demoData';
-
-interface IChromosome {
-  chromsomeName: string;
-}
-
-interface IPatientProfile {
-  patientId: string;
-  patientName: string;
-  datetimestamp: number;
-}
-
-interface IPatientGenome {
-  patientGenomeId: string;
-  rsid: string;
-  genotype: string;
-  chromosome: string;
-  position: string; 
-  datetimestamp: number;
-  patientId: string;
-}
-
-interface IPatientProfileAndGenome {
-  patientProfileAndGenome: string
-  rsid: string;
-  genotype: string;
-  chromosome: string;
-  position: string;
-  patientId: string;
-  patientName: string;
-}
-
-interface ISnpPairsResearch {
-  rsid_genotypes: string;
-  rsid: string;
-  allele1: string;
-  allele2: string; 
-  magnitude: string; 
-  risk: string;
-  notes: string;
-}
-
-interface IFullReport {
-  rsid_genotypes: string;
-  rsid: string;
-  allele1: string;
-  allele2: string;
-  chromosome: string;
-  position: string;
-  genotype: string;
-  magnitude: string; 
-  risk: string;
-  notes: string;
-  genotype_match: string;
-  datetimestamp: string;
-  patientId: string;
-  patientName: string;
-}
 
 const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
   // Dexie.js Schema: The chromosomeName is defined as the primary key of the object store, 
@@ -116,5 +60,5 @@ async function addDemoDataIfDatabaseEmpty() {
   }
 }
 
-export type { IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport}; 
+export type { IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport }; 
 export { patientsIndexedDb, addDemoDataIfDatabaseEmpty };
