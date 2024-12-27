@@ -1,26 +1,37 @@
 {
+  "name": "genome-browser-ui",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@next/env": "^15.1.2",
     "ag-grid-community": "^33.0.3",
     "ag-grid-enterprise": "^33.0.3",
     "ag-grid-react": "^33.0.3",
     "antd": "^5.22.6",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.7.9",
     "dexie": "^4.0.10",
+    "dexie-export-import": "^4.1.4",
     "dexie-react-hooks": "^1.1.7",
+    "downloadjs": "^1.4.7",
+    "formidable": "^3.5.2",
     "fs": "^0.0.1-security",
     "fs.promises": "^0.1.2",
     "next": "latest",
     "nextjs-chunk-upload-action": "^9.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "^3.4.17"
+    "react-drag-drop-files": "^2.4.0",
+    "tailwindcss": "^3.4.17",
+    "uuid": "^11.0.3"
   },
   "engines": {
     "node": ">=18"

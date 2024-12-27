@@ -1,13 +1,21 @@
+import React, { useEffect, useState } from 'react';
 // import Button from 'antd/es/button';
-import React from 'react';
+import { IPatientProfile } from '@/database/db';
 
 interface SelectProps {
     patientProfiles: any;
+    selectedOptionProfile: IPatientProfile,
     error: any;
     handlePatientChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const Select: React.FC<SelectProps> = ({ patientProfiles, error, handlePatientChange }) => {
+const Select: React.FC<SelectProps> = ({ patientProfiles, selectedOptionProfile, error, handlePatientChange }) => {
+    const [selectedOptionId, setSelectedOptionId] = useState<any>(null); 
+
+    useEffect(() => {  
+        setSelectedOptionId(selectedOptionProfile.patientId);
+    }, [selectedOptionProfile]); 
+
     return  !patientProfiles || error ? (
             <div>Error: {error}</div>
         ) : (
@@ -15,9 +23,10 @@ const Select: React.FC<SelectProps> = ({ patientProfiles, error, handlePatientCh
                 <label htmlFor="patient-select">Select a Patient Profile:</label>
                 <select id="patient-select" onChange={handlePatientChange}>
                     <option value="">--Please choose a patient--</option>
-                    {patientProfiles.map((profile: any) => (
-                        <option key={profile.patient_id} value={profile.patient_id}>
-                            {profile.patient_name}
+                    {patientProfiles.map((profile: IPatientProfile) => (
+                        <option key={profile.patientId} value={profile.patientId}>
+                             {/* selected={profile.patientId==selectedOptionId} */}
+                            {profile.patientName} - {profile.patientId}
                         </option>
                     ))}
                 </select>

@@ -5,11 +5,11 @@ import { useRouter } from 'next/router';
 import Layout from '../../../components/Layout';
 import PatientList from "@/components/PatientList"; 
 
-interface GenericPageProps {
-    opensidedrawer: (content: React.ReactNode) => void;
+interface PatientsListPageProps {
+    // opensidedrawer: (content: React.ReactNode) => void;
 }
 
- const GenericPage: React.FC<GenericPageProps> = (props) => {  
+ const PatientsListPage: React.FC<PatientsListPageProps> = (props) => {  
     const [error, setError] = useState(null); 
 
     const router = useRouter();
@@ -28,4 +28,4 @@ interface GenericPageProps {
     );
 };
 
-export default GenericPage;
+export default PatientsListPage;

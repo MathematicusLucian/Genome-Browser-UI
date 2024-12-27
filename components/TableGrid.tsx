@@ -34,6 +34,9 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
   const debounce = 0;
   const [windowWidth] = useWindowSize(debounce);
   const {width: containerWidth, ref} = useContainerWidth(debounce);
+
+  console.log("columnDefs", columnDefs);
+  console.log("rowData", rowData);
   
   const defaultColDef: agGrid.ColDef = {
     flex: 1,

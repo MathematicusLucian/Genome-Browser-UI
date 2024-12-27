@@ -4,7 +4,7 @@ import type {FC} from 'react';
 import TableGrid from './TableGrid';
 import type { IPatientProfile } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
-import { patientsIndexedDb, patientProfileTable } from "@/database/db"; 
+import { patientsIndexedDb } from "@/database/db"; 
 
 const PatientList: FC = () => {  
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const PatientList: FC = () => {
   const [columnDefs, setColumnDefs] = useState([]); 
   const [selectedDataRow, setSelectedDataRow] = useState<string | null>(null);
   const [patientProfilesCount, setPatientProfilesCount] = useState('');
-  const isLocalStorage = true;
+  const isIndexedDatabase = true;
 
   const fetchData = async () => {
       try {
@@ -37,14 +37,37 @@ const PatientList: FC = () => {
           setError(error.message);
       }
   };
+    
+  //     // useEffect(() => {
+  //     //     const fetchPatientProfiles = async () => {
+  //     //         const api_url = `${GENOME_BROWSER_API_PATH}/patient_genome/patient_profile`;
+  //     //         const response = await fetch(api_url);
+  //     //         if (!response.ok) {
+  //     //             throw new Error(`HTTP error! status: ${response.status}`);
+  //     //         }
+  //     //         return await response.json();
+  //     //     }
+  //     //     if(!isIndexedDatabase) {   
+  //     //         try {
+  //     //             const result: any = fetchPatientProfiles();
+  //     //             if (result.length > 0) {   
+  //     //                 setPatientProfiles(result); 
+  //     //                 return result;
+  //     //             } 
+  //     //         } catch (error) {
+  //     //             console.error('Error fetching patient profiles:', error);
+  //     //             setError(error.message);
+  //     //         }
+  //     //     }
+  //     // }, [patientProfiles]);  
 
-  const patientProfiles = useLiveQuery(
+  useLiveQuery(
     async () => {
-      if(isLocalStorage) {
-        const patientProfilesCount = await patientProfileTable.toCollection().count(function (count) {
+      if(isIndexedDatabase) {
+        const patientProfilesCount = await patientsIndexedDb.patientGenome.toCollection().count(function (count) {
           setPatientProfilesCount(String(count));
         });
-        let result = await patientProfileTable.toArray(); 
+        let result = await patientsIndexedDb.patientGenome.toArray(); 
         if (result.length > 0) {   
           setRowData(result); 
           return result;
@@ -52,6 +75,10 @@ const PatientList: FC = () => {
       }
     }, 
   );
+
+  const patientProfiles = useLiveQuery( 
+    () => patientsIndexedDb.patientProfile.toArray()
+  ); 
     
   useEffect(() => { 
     const columns = [
@@ -59,9 +86,8 @@ const PatientList: FC = () => {
       {"headerName":"patient_name","field":"patient_name", flex: 2, maxWidth: 120},
     ];
     setColumnDefs(columns);
-    
-    !isLocalStorage && fetchData();
-  }, [isLocalStorage]); 
+    !isIndexedDatabase && fetchData();
+  }, [isIndexedDatabase]); 
 
   const handleSelectedDataRowChange = (selectedDataRow: string) => {
       setSelectedDataRow(selectedDataRow);  
@@ -70,15 +96,18 @@ const PatientList: FC = () => {
   return (
     <>
       <div className="table-header">List of Patients</div>
-      {patientProfilesCount && (<div className="profile-count">{patientProfilesCount} patient profiles in total</div>)}
-      <hr />
-      {/* <ul> 
+      <ul> 
         {patientProfiles?.map((patientProfile) => (
-          <li key={patientProfile.patient_id}>
-            {patientProfile.patient_name}
+          <li key={patientProfile.patientId}>
+            {patientProfile.patientId}, 
+            {patientProfile.patientName}
           </li>
         ))}
-      </ul> */}
+      </ul> 
+
+      {/* <div>Error: {error} No genome data in database.</div> */}
+      {/* {patientProfilesCount && (<div className="profile-count">{patientProfilesCount} patient profiles in total</div>)}
+      <hr />
         {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patient_id}</div>}
         <TableGrid rowData={rowData} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
       <style jsx>{`
@@ -95,9 +124,9 @@ const PatientList: FC = () => {
             font-weight: 600;
             padding: 0.5em;
           }
-      `}</style>
+      `}</style> */}
     </>
   );
 }
 
-export default PatientList;
+export default PatientList; 

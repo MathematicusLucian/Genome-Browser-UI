@@ -19,6 +19,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api", "../SecretaryApp/index2.tsx", "../SecretaryApp/models/TodoItem.ts", "../SecretaryApp/models/TodoList.ts", "../SecretaryApp/database/todoDb.ts", "../SecretaryApp/database/usersDb.ts", "../SecretaryApp/database/populate.ts"],
   "exclude": ["node_modules"]
 }
