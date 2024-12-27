@@ -1,26 +1,32 @@
 import React, { useContext } from "react";
 import styles from '../styles/Layout.module.css';
 import ModeToggle from './ModeToggle';
+import { Separator } from "./ui/separator";
 
 const Header = () => { 
     
     return (
-        <header>
-            <div className="header-row bg-zinc-950 dark:bg-zinc-200 text-slate-100 dark:text-zinc-950">
-                <h1 className={styles.title}>Genome Browser 🔬🧬</h1>
-                <div className={styles.subtitle}>
-                    (<strong>Engineer:</strong> 
-                    <a href="https://github.com/MathematicusLucian" target="blank">
-                        MathematicusLucian
-                    </a>)
-                </div>
-                <div className={styles.subtitle}> 
-                     <ModeToggle children={undefined} />
-                </div>
-            </div>
-            <p className={styles.description}>
-            The <a href="https://github.com/MathematicusLucian/Genome-Browser-UI" target="blank">Genome Browser UI</a> is a Next.js React-based (TypeScript) UI client application, which queries the <a href="https://github.com/MathematicusLucian/Genome-Browser-API" target="blank">Genome Browser API</a> (FastAPI) server, to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
-            </p> 
+        <>
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4"> 
+                <div className="-ml-1">
+                    <h1 className={styles.title}>
+                        <a href="/" className="text-slate-950 dark:text-slate-100">
+                            Genome Browser 🔬🧬
+                        </a>
+                    </h1>
+                    <div className={styles.subtitle}>
+                        (<strong>Engineered by:</strong>&nbsp;
+                        <a href="https://github.com/MathematicusLucian" target="blank" className="dark:text-slate-100">
+                            MathematicusLucian
+                        </a>)
+                    </div>
+                </div> 
+                <Separator orientation="vertical" className="mr-2 h-4" />
+                <ModeToggle children={undefined} />
+            </header>
+            {<p className={styles.description}>
+                The <a href="https://github.com/MathematicusLucian/Genome-Browser-UI" target="blank">Genome Browser UI</a> is a Next.js React-based (TypeScript) UI client application, which queries the <a href="https://github.com/MathematicusLucian/Genome-Browser-API" target="blank">Genome Browser API</a> (FastAPI) server, to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
+            </p>}
             <style jsx>{`
                 .header-row {
                     width: 100%;
@@ -33,21 +39,21 @@ const Header = () => {
                     align-items: center;
                 } 
                 h1 {
-                    font-size: 1em;
+                    font-size: 1.4em;
                     font-weight: 900; 
                     white-space: nowrap;
                 }
                 div {
                     margin-left: 15px;
                     font-size: 0.9em; 
-                }
-                .theme-toggle-button {
-                    padding: 0.1em;
-                    margin: 0 15px;
-                    white-space: nowrap;
                 } 
+                p {
+                    max-width: 80%;
+                    padding: 1em;
+                    font-size: 0.8em;
+                }
             `}</style>
-        </header>
+        </>
     )
 };
 
