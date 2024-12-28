@@ -21,7 +21,7 @@ import {
           <li className="text-primary font-medium">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="hidden md:block ml-2 mr-2">Get Started</Button>
+                <Button className="hidden md:block ml-2 mr-2">DNA Analysis</Button>
               </DropdownMenuTrigger>
   
               <DropdownMenuContent align="start">
@@ -54,7 +54,7 @@ import {
           <div className="flex md:hidden mr-2 items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild> 
-                <span className="py-2 px-2 bg-gray-950 dark:bg-slate-100 text-slate-100 dark:text-zinc-950 rounded-md">Patient</span>
+                <span className="py-2 px-2 bg-gray-950 dark:bg-slate-100 text-slate-100 dark:text-zinc-950 rounded-md">DNA Analysis</span>
               </DropdownMenuTrigger>
   
               <DropdownMenuContent align="start">
