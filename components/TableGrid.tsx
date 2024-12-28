@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { flushSync } from 'react-dom';
 import { AgGridReact } from "ag-grid-react";
 import * as agGrid from "ag-grid-community";  
+import { colorSchemeDark, themeQuartz } from 'ag-grid-community';
 import { useContainerWidth } from "../utils/useContainerWidth";
 import { useWindowSize } from "../utils/useWindowSize";
 import { Button } from "./ui/button";
@@ -36,9 +37,19 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
   const [windowWidth] = useWindowSize(debounce);
   const {width: containerWidth, ref} = useContainerWidth(debounce);
 
-  console.log("columnDefs", columnDefs);
-  console.log("rowData", rowData);
+  // console.log("columnDefs", columnDefs);
+  // console.log("rowData", rowData);
   
+  const agGridTheme = themeQuartz 
+    .withParams(
+        {
+            backgroundColor: '#201008',
+            foregroundColor: '#FFFFFFCC',
+            browserColorScheme: 'dark',
+        },
+        'dark-red'
+    ); 
+
   const defaultColDef: agGrid.ColDef = {
     flex: 1,
     minWidth: 50, 
@@ -78,6 +89,8 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
     };
   }, []);
 
+  const mode=true;
+
   useEffect(() => {
     if (gridApi) {
       // gridApi.sizeColumnsToFit();
@@ -90,7 +103,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
   }, [windowWidth, containerWidth, gridApi]);
 
   return (
-    <div className="ag-theme-alpine grid-container">
+    <div className="grid-container" data-ag-theme-mode="mode">
       <div className="flex justify-between align-middle m-1 mt-3 text-xs text-[#4b5563]">
           <Button
             className="rounded px-3 py-1 text-xs border-zinc-950 dark:border-zinc-200"
@@ -100,7 +113,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           </Button>
       </div>
       <AgGridReact
-        className="ag-grid"
+        className={"ag-grid text-zinc-700 dark:text-white ag-theme-alpine dark:ag-theme-alpine-dark"} 
         ref={gridRef} 
         columnDefs={columnDefs}
         rowData={rowData}
@@ -113,8 +126,12 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
         autoSizeStrategy={autoSizeStrategy}
         enableCellTextSelection={true}
         ensureDomOrder={true}
+        theme={agGridTheme}
       ></AgGridReact>
       <style jsx global>{`
+      //  .ag-body, .ag-layout-normal, .ag-chart, .ag-dnd-ghost, .ag-popup, .ag-root-wrapper, .ag-body-viewport, &.ag-layout-normal, .ag-layout-normal, .ag-ltr {
+      //     background-color: transparent !important;
+      //   }
         .grid-container {
           height: 55vh;
           width: 100%;
@@ -133,7 +150,8 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           text-align: left;
         }
         .ag-grid .ag-cell {
-          color: #4b5563;
+          background-color: transparent !important;
+          // color: #4b5563;
           border-color: #e5e7eb;
           margin: 0 auto;
           padding: 0.5rem;
@@ -141,13 +159,14 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           line-height: 1.0;
         }
         .ag-grid .ag-header-cell {
-          background-color: #f9fafb;
+          // background-color: #f9fafb;
+          background-color: transparent !important;
           border-color: #e5e7eb;
           margin: 0 auto;
           padding: 0.7rem;
           font-weight: 600;
           font-size: 0.7rem;
-          color: #374151;
+          // color: #374151;
         }
       `}</style>
     </div>

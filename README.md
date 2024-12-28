@@ -4,7 +4,7 @@
 
 The Genome Browser scans/analyses DNA files from popular family tree providers (23andMe, Ancestry.com, etc.), comparing the genome of the user with published literature on health risks/conditions that their [gene variants](https://en.wikipedia.org/wiki/Human_genetic_variation) are correlated to. SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler.
 
-For security reasons, the user's patient data is not shared to the server, but remains on their machine (**Dexie.js** to interface with **IndexedDB** database storage in the web browser.)
+For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser **IndexedDB**.) The SNP data from published literature is provisioned by the server.
 
 - This repo is the **React**-based (TypeScript) UI client application (with **NextJs**), and which queries the Genome Browser API.
 - The API/Orchestrator for this project is here: [Genome Browser API](https://github.com/MathematicusLucian/Genome-Browser-API).
@@ -15,7 +15,11 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 
 1. A dashboard UI (grids/tables, charts, etc.) to browse DNA files. Present the major/minor alleles of gene variants, their associated gene, chromosome position, etc..
 
-2. Compare the DNA file to published literature, i.e. generate a report of the potential health conditions/risks associated with the gene varients that the patient's genome features.
+2. **Long-term**: Cronjob to trigger Python script to download and parse weekly VCF releases of CIViC and ClinVar data, and upload such to a Postgres database. Separate tables will be generated for genome builds [GRCh37](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.13/) and [GRCh38](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.26/) (Genome Reference Consortium Human genome builds 37, and 38; also known as hg38; these builds relate to the [1000 genome project](https://www.internationalgenome.org/human-genome-structural-variation-consortium/)), as well as for mono-allelic variants and complex multi-allelic variants. Rhe tables will be augmented with allele frequencies from the ExAC and gnomAD datasets as these are often consulted when analyzing ClinVar variants.
+
+![chromosomes.png](./assets/chromosomes.png)
+
+3. Compare the DNA file to published literature, i.e. generate a report of the potential health conditions/risks associated with the gene varients that the patient's genome features.
 
 **This also serves to demonstrate:**
 
