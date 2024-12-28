@@ -15,13 +15,13 @@ import {
     return (
       <>
 
-        {/* Desktop */}
+        {/* Mobile */}
 
         <ul className="hidden md:flex items-center gap-10 text-card-foreground">
           <li className="text-primary font-medium">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <span className="cursor-pointer">Patient</span>
+                <Button className="hidden md:block ml-2 mr-2">Get Started</Button>
               </DropdownMenuTrigger>
   
               <DropdownMenuContent align="start">
@@ -44,18 +44,17 @@ import {
           </li>
         </ul>
 
-        {/* Mobile */}
+        {/* Desktop */}
   
         <div className="flex items-center">
           <Button variant="secondary" className="hidden md:block px-2">
             Login
           </Button>
-          <Button className="hidden md:block ml-2 mr-2">Get Started</Button>
   
           <div className="flex md:hidden mr-2 items-center gap-2">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <span className="py-2 px-2 bg-gray-100 dark:bg-gray-950 rounded-md">Patient</span>
+              <DropdownMenuTrigger asChild> 
+                <span className="py-2 px-2 bg-gray-950 dark:bg-slate-100 text-slate-100 dark:text-zinc-950 rounded-md">Patient</span>
               </DropdownMenuTrigger>
   
               <DropdownMenuContent align="start">
