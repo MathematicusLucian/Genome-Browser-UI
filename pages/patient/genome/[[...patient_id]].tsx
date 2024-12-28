@@ -35,7 +35,6 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [selectedPatientProfileId, setSelectedPatientProfileId] = useState<string | null>(null); 
 
     const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        // console.log('handlePatientChange: event', event);
         // http://127.0.0.1:3000/patient/genome?patientId=[x]
         router.push(`/patient/genome/${event.target.value}`);
     };
@@ -52,9 +51,10 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
             if(patientProfiles) { 
                 const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
-                setSelectedPatientProfile(patientProfileMatch);
-                console.log('patientProfileMatch', patientProfileMatch.patientId);
-                setSelectedPatientProfileId(patientProfileMatch.patientId);
+                if(patientProfileMatch) {
+                    setSelectedPatientProfile(patientProfileMatch);
+                    setSelectedPatientProfileId(patientProfileMatch.patientId);
+                }
             } 
         }
     }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
@@ -67,22 +67,17 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
 
     const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log('handleGenomeChange: event', event.target.value); 
-        // if(patientProfiles) { 
-        //     const patientGenomeMatch = selectedPatientGenomes.find((x) => x.patientGenomeId == event.target.value);
-            // setSelectedPatientGenome(patientGenomeMatch);
-            // setSelectedPatientGenomeId(event.target.value); 
-        // }
+        const targetPatientGenomeId = event.target.value;
+        console.log(targetPatientGenomeId);
+        setSelectedPatientGenomeId(targetPatientGenomeId); 
+        const targetPatientGenome = selectedPatientGenomes.find((x) => x.patientGenomeId = targetPatientGenomeId);
+        console.log(targetPatientGenome);
+        setSelectedPatientGenome(targetPatientGenome); 
     }; 
     
     const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
-        async () => {
-            // console.log('selectedPatientProfileId', selectedPatientProfileId);
-            const x = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(selectedPatientProfileId)).toArray(); 
-            // console.log(x);
-            x.then((xx) => {
-                // console.log(xx);
-            }); 
+        async () => { 
+            const x = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(selectedPatientProfileId)).toArray();  
             return x;
         },
         [selectedPatientProfileId]
@@ -105,13 +100,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     
     const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
         async () => {
-            // console.log('selectedPatientProfileId', selectedPatientProfileId);
-            const x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray(); 
-            console.log(x);
-            x.then((xx) => {
-                console.log(xx);
-            }); 
-            return [];
+            const x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+            return x;
         },
         [selectedPatientGenomeId]
     );  
@@ -130,8 +120,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                 <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
             ) : (
                 <div>
-                    <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
-                    {(JSON.stringify(selectedPatientProfile))} 
+                    <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}, <span>Patient Name: </span>{selectedPatientProfile.patientName}</p>
 
                     <Separator className="my-4" />
 
@@ -144,7 +133,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                     </Button> 
 
                     <Separator className="my-4" />
-
+                    {/* {(JSON.stringify(selectedPatientGenomes))} */}
                     {!selectedPatientGenomes ? (
                         <div>No genomes. Perhaps no DNA file has been uploaded. {error}</div>
                     ) : (
@@ -152,42 +141,50 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                             selectedPatientGenomes: {( JSON.stringify(selectedPatientGenomes ))} 
                             <p>Patient DNA files Count: {selectedPatientGenomes.length}</p>
                             <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'patientGenomeId'} selectTitle={"Select a Genome:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
-                            {/* 
-                            {!selectedPatientGenomeId ? (
-                                <div>Please provide a patient genome ID. If the table is empty, the profile may not exist. {error}</div>
-                            ) : (
-                                <div>                            
-                                    <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId}</p>
-                                    <hr />
-                                    <strong>Gene Variants:</strong><br />
-                                    {/* <h2 className="table-header">Genome Data</h2>
-                                    <p className="table-sub-header"><span>Genome ID: </span>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
-                                    {/* <p>{selectedPatientSelectedGenome.patientGenomeId}</p> */}
-                                    {/* <GeneVariantList patient_id={String(selectedPatientSelectedGenome.patientGenomeId)} />  */} 
-                            {/*}    </div>
-                            )}  */}
+
+                            {!selectedPatientGenomes || !selectedPatientGenome? (
+                                <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>
+                            ) : (                                                  
+                                // <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId}</p>
+                                <hr />
+
+                                // {!selectedPatientGenomeVariants ? (
+                                //     <div>Please provide a patient genome ID. If the table is empty, the profile may not exist. {error}</div>
+                                // ) : (
+                                //     <div>       
+                                //         <h2 className="table-header">Gene Variants</h2>  
+                                //         {(JSON.stringify(selectedPatientGenomeVariants))}
+                                //         {/* <GeneVariantList patient_id={String(selectedPatientGenomeVariants)} />   */}
+                                //     </div>
+                                // )} 
+                            )} 
+                            
                         </div>
                     )} 
+
                 </div>
             )} 
             <style jsx>{`
                 p, div, li, input, label, select, button {
-                    font-size: 0.8em;
+                    font-size: 0.8rem;
                 }
                 .page-header { 
-                    font-size: 1em;
+                    font-size: 1rem;
                     padding: 0.1rem 0 0 0;
                     font-weight: 900;
                 }
                 .table-header { 
-                    font-size: 1em;
+                    font-size: 1rem;
                     padding: 0.1rem 0 0 0;
                     font-weight: 900;
                 }
+                .table-sub-header span {
+                    font-weight: 900;
+                }
                 .profile-count {
-                    font-size: 0.8em;
+                    font-size: 0.8rem;
                     font-weight: 600;
-                    padding: 0.5em;
+                    padding: 0.5rem;
                 }
             `}</style> 
         </Layout>

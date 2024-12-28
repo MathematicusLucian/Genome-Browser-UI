@@ -42,12 +42,12 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
 
 // Schema declaration:
 patientsIndexedDb.version(1).stores({
-  chromosome: 'chromosomeName, species', 
-  humanGene: 'geneName, chromosomeName',
-  geneVariantMapping: 'geneVariant, geneName',
+  chromosome: '++chromosomeName, species', 
+  humanGene: '++geneName, chromosomeName',
+  geneVariantMapping: '++geneVariant, geneName',
   patientProfile: "++patientId, patientName, datetimestamp",
   patientGenome: "++patientGenomeId, rsid, genotype, patientId, chromosome, position, datetimestamp",
-  patientGenomeVariant: "++patientGeneVariantId, rsid, genotype, patientId, chromosome, position, datetimestamp"
+  patientGenomeVariant: "++patientGeneVariantId, rsid, genotype, patientId, chromosome, position, datetimestamp, patientGenomeId"
 });
 
 patientsIndexedDb.open();

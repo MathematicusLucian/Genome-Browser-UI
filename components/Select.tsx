@@ -39,10 +39,10 @@ const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField
             </select>
             <style jsx>{`
                 p, label, select {
-                    font-size: 0.8em;
+                    font-size: 0.8rem;
                 }
                 label {
-                    padding: 0 0.5em;
+                    padding: 0 0.5rem;
                 }
                 select {
                     border: 1px rgb(222, 221, 221) solid;
