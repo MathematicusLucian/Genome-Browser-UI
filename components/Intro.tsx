@@ -1,9 +1,21 @@
 import React, { useState } from 'react';   
+import styles from '../styles/Layout.module.css'; 
+import { Button } from './ui/button';
 
 const Intro = () => {  
   return (
     <>  
-      <h2 className="title">Welcome . . .</h2>
+      <h2 className="title mt-6 mb-3">Welcome . . .</h2> 
+      <p className={styles.description}>
+          The <a href="https://github.com/MathematicusLucian/Genome-Browser-UI" target="blank">
+              Genome Browser UI
+          </a> is a Next.js React-based (TypeScript) UI client application, which queries the <a href="https://github.com/MathematicusLucian/Genome-Browser-API" target="blank">
+              Genome Browser API
+          </a> (FastAPI) server, to present genome (gene variant) data (patient data is combined with SNP pairs data to show health risks.) 
+          SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. 
+          For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
+      </p>
+      <Button className="w-full text-sm w-50 mt-7">Get Started</Button>
       <div className="flex flex-col md:flex-row xs:flex-col gap-10 p-10">
         <div className="flex-1 ">
           <img src={"../assets/full_report.png"} />
@@ -57,7 +69,7 @@ const Intro = () => {
           font-weight: 600;
         }
         p {
-          padding: 0.6em
+          padding: 0.7em
         } 
         ul {
           padding-top: 0.4rem;

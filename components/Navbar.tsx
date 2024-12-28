@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import styles from '../styles/Layout.module.css';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -7,30 +6,17 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
   import { Menu } from "lucide-react";
-  import { Card } from "@/components/ui/card";
   import ModeToggle from './ModeToggle';
   import { Button } from "@/components/ui/button";
-  import { Separator } from "@/components/ui/separator";
   import { nanoid } from "nanoid";
   import Link from "next/link";
   
   const Navbar = () => {
     return (
-      <Card className="container bg-card py-3 px-4 border-0 flex items-center justify-between gap-6 rounded-2xl mt-5">
-        <div className="-ml-1 text-primary cursor-pointer">
-            <h1 className={styles.title}>
-                <a href="/" className="text-slate-950 dark:text-slate-100">
-                    Genome Browser 🔬🧬
-                </a>
-            </h1>
-            <div className={styles.subtitle}>
-                (<strong>Engineered by:</strong>&nbsp;
-                <a href="https://github.com/MathematicusLucian" target="blank" className="dark:text-slate-100">
-                    MathematicusLucian
-                </a>)
-            </div>
-        </div> 
-        <Separator orientation="vertical" className="mr-2 h-4" />
+      <>
+
+        {/* Desktop */}
+
         <ul className="hidden md:flex items-center gap-10 text-card-foreground">
           <li className="text-primary font-medium">
             <DropdownMenu>
@@ -57,6 +43,8 @@ import {
             <a href="#faqs">FAQs</a>
           </li>
         </ul>
+
+        {/* Mobile */}
   
         <div className="flex items-center">
           <Button variant="secondary" className="hidden md:block px-2">
@@ -67,7 +55,7 @@ import {
           <div className="flex md:hidden mr-2 items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <span className="py-2 px-2 bg-gray-100 rounded-md">Patient</span>
+                <span className="py-2 px-2 bg-gray-100 dark:bg-gray-950 rounded-md">Patient</span>
               </DropdownMenuTrigger>
   
               <DropdownMenuContent align="start">
@@ -104,17 +92,16 @@ import {
                     Login
                   </Button>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Button className="w-full text-sm">Get Started</Button>
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-  
-          {/* <ModeToggle /> */}
+
+          {/* Theme Toggle */}
+
           <ModeToggle children={undefined} />
-        </div>
-      </Card>
+          </div>
+
+          </>
     );
   };
   
