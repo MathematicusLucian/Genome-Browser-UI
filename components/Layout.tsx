@@ -23,11 +23,11 @@ const RootLayout = ({ children }) => {
   return (
     <div className="flex flex-col h-screen p-0 m-0 top-0">
 
-      <div className="w-full text-center border-b border-grey p-4 bg-slate-100 dark:bg-gray-950 sticky top-0">
+      <div className="w-full text-center border-b border-grey p-4 bg-slate-100 dark:bg-gray-950 fixed sticky top-0">
         <Header />
       </div>
 
-      <main className="flex flex-col flex-1 h-screen overflow-y-scroll bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white pt-100 ">
+      <main className="flex flex-col flex-1 h-screen overflow-y-scroll bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white pt-100">
 
         <Modal isOpen={modalVisible} onClose={toggleModalVisible} content={modalContent} /> 
         <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} content={drawerContent} />

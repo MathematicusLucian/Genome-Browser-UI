@@ -15,7 +15,7 @@ const Intro = () => {
           SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler. 
           For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser IndexedDB.)
       </p>
-      <Button className="w-full text-sm w-50 mt-7">Get Started</Button>
+      <Button className="w-full text-sm w-50 mt-7 flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white">Get Started</Button>
       <div className="flex flex-col md:flex-row xs:flex-col gap-10 p-10">
         <div className="flex-1 ">
           <img src={"../assets/full_report.png"} />

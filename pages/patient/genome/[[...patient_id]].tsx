@@ -30,7 +30,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     }
   
     const uploadDNAFile = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientId={patientId} /></div></div>);
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div></div>);
         toggleModalVisible(true);
     }  
 
@@ -124,7 +124,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
             <div className="flex flex-row">
 
                 <Button
-                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200"
+                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
                     variant="outline"
                     onClick={createNewPatient}
                 >
@@ -132,7 +132,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                 </Button> 
 
                 {patientId && (<Button
-                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200"
+                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
                     variant="outline"
                     onClick={uploadDNAFile}
                 >

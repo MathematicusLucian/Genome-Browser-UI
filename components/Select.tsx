@@ -26,9 +26,11 @@ const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField
     return !selectData || !selectDataKey || error ? (
         <div>Error: {error}</div>
     ) : (
-        <div className="dropdown"> 
+        <div className="dropdown">
             <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> 
-            <select id={`${selectDataKey}-select`} onChange={handleSelectChange}>
+            <select id={`${selectDataKey}-select`} onChange={handleSelectChange}
+                className='bg-gray-950 dark:bg-slate-100 text-xs text-white dark:text-zinc-900'
+            >
                  {/* value={selectedOptionId}>  */}
                 <option value="">--{placeholder}--</option>
                 {selectData.map((profile: any) => (

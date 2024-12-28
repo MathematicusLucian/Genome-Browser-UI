@@ -124,6 +124,7 @@ The project follows a structured directory layout to organise the codebase effic
 ## Getting Started
 
 - `npm run dev`: Starts the development server. Browse to `http://127.0.0.1:3000/`.
+- Force shutdown Node/Python app running locally: Find `psid` with the command `lsof -i :3000` (or `8000` for the FastAPI backe-end), then `kill -9 [psid]`.
 - `npm run build`: Builds the app for production.
 - `npm start`: Runs the built app in production mode.
 

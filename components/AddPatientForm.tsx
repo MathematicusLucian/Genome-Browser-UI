@@ -164,7 +164,11 @@ const AddPatientForm: FC = () => {  // { defaultAge } = { defaultAge: 21 }
             value={patientName}
             onChange={(ev) => setPatientName(ev.target.value)}
           /> 
-          <button type="submit">Add</button> 
+          <button 
+              className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
+              type="submit">
+              Add
+            </button> 
       </form> */}
 
        <div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm /></div></div>
