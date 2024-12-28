@@ -19,6 +19,7 @@ interface GenomePageProps {
 const GenomePage: React.FC<GenomePageProps> = (props) => {  
     const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
+    const [patientId, setPatientId] = useState<string>([]);
     const [error, setError] = useState(null); 
     // Router
     const router = useRouter();  
@@ -28,8 +29,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         toggleModalVisible(true);
     }
   
-    const uploadDNAFile = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm /></div></div>);
+    const uploadDNAFile = (patientId) => {
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientId={patientId} /></div></div>);
         toggleModalVisible(true);
     }  
 
@@ -54,8 +55,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     ); 
     useEffect(() => {
         if (router.isReady) {  
-            const patientId = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id; 
-
+            setPatientId(Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id);
             if(patientProfiles) { 
                 const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
                 if(patientProfileMatch) {
@@ -129,13 +129,13 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                     Create New Patient
                 </Button> 
 
-                <Button
+                {patientId && (<Button
                     className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200"
                     variant="outline"
                     onClick={uploadDNAFile}
                 >
                     Upload DNA File
-                </Button> 
+                </Button>)}
 
             </div>
             

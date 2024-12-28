@@ -4,14 +4,15 @@ import { ImportOptions, peakImportFile } from "dexie-export-import";
 // import { uploadFile } from "../utils/upload-action"; 
 import axios from 'axios';
 import { FileUploader } from "react-drag-drop-files";
-import { IPatientGenome, patientGenomeTable } from "@/database/db";
+import { v4 as uuidv4 } from 'uuid';
+import { patientsIndexedDb } from "@/database/db";
+import { IPatientGenome, IPatientGenomeVariant } from "@/models/db";
 
-export default function UploadForm() {
+export default function UploadForm({patientId}) {
   const [status, setStatus] = useState(''); 
   const [importProgress, setImportProgress] = useState(0); 
   const [file, setFile] = useState<File>(null); 
   const [patientName, setPatientName] = useState('');
-  const patientId = '1'; 
   const fileTypes = ["TXT"]; 
   const chunkSize = 900000; // 0.9MB  
   let totalChunks = 0;
@@ -113,17 +114,32 @@ export default function UploadForm() {
     const vcfDataRowsWithoutHeadingText = vcfDataRows.filter((x) => String(x).startsWith('rs') || String(x).startsWith('i'));
     const vcfDelimitedRow = vcfDataRowsWithoutHeadingText.map((x: any) => x.split('\t')); 
     vcfDelimitedRow.map((vcfRow) => {
-      // Database
       try {
-        console.log(vcfRow);
-        const patientGenome: IPatientGenome = { 
-          patient_id: patientId, 
-          rsid: vcfRow[0], 
-          chromosome: vcfRow[1], 
-          position: vcfRow[2], 
-          genotype: vcfRow[3], 
+        // Database 
+        if(!patientId) {
+          patientsIndexedDb.patientProfile.where('patientName').equals('Default Profile');
         }
-        patientGenomeTable.add(patientGenome);
+        const patientGenomeId = uuidv4();
+        const patientGeneVariantId = uuidv4();
+        const vcfSource = 'undefined';
+        const patientGenome: IPatientGenome = {  
+          patientGenomeId: patientGenomeId,
+          source: vcfSource,
+          datetimestamp: Date.now(),
+          patientId: patientId,
+        }
+        patientsIndexedDb.patientGenome.add(patientGenome);
+        console.log(vcfRow);
+        const patientGenomeVariant: IPatientGenomeVariant = { 
+          patientGeneVariantId: patientGeneVariantId,
+          rsid: vcfRow[0],
+          genotype: vcfRow[3],
+          chromosome: vcfRow[1],
+          position: vcfRow[2],
+          datetimestamp: Date.now(),
+          patientGenomeId: patientGenomeId,
+        }
+        patientsIndexedDb.patientGenomeVariant.add(patientGenomeVariant);
       } catch (error) {
           console.error('Error addind gene varients to database:', error);
       }
@@ -139,6 +155,7 @@ export default function UploadForm() {
   return (
     <> 
       <div className="file-uploader">
+        <div>Selected Patient Id: {patientId}</div>
         {importProgress==0 && (<FileUploader
             multiple={false}
             uploadedLabel={false}
