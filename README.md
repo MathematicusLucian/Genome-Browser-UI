@@ -21,13 +21,16 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 
 - A _React_ implementation (with **NexrtJs**)
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.
-- React Context and Providers
+- **React Provider**/**Context**, e.g. Dark/Light mode
 - Consideration of DRY/SOLID principles, and Gang of Four design patterns
 - **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser `IndexedDB`.) (See section below on `Dexie.js`, etc..)
+- **shadncn/ui**
 
 ## Pages/Views
 
 ### Upload a DNA test results (VCF) file
+
+![select_patient](./assets/select_dna_file.png)
 
 If a patient file does not exist, the user is prompted to create one (the default name is `Default Profile`.)
 
@@ -35,15 +38,19 @@ The patient software allows for the upload of several DNA files per patient, as 
 
 ### Browse gene variants (SNPs) present in the patient genome
 
-From the dropdown, the user can select which profile to view:
-
-![select_patient](./assets/select_patient.png)
-
 **The rows represent the gene variants associated with the patient.**
 
 (The `rsid` columns is the identifier for the SNP pairs; and a crucial factor in many cases, with respect to risk, is the `genotype` that the user has inherited from their parents - hence, generaly, this consists of two letters, i.e. one from each parent.)
 
-![patient_genome](./assets/patient_genome.png)
+![genome_viewer_dark_mode](./assets/genome_viewer_dark_mode_.png)
+
+Dark/light mode available:
+
+![genome_viewer_light_mode](./assets/genome_viewer_light_mode.png)
+
+From the dropdown, the user can select which profile to view:
+
+![select_patient](./assets/select_patient_profile.png)
 
 ### Health Risk/Correlation Report
 

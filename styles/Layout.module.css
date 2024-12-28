@@ -19,14 +19,9 @@
   padding-top: 0rem;
 }
 
-.childcontainer {
-  padding: 1em 0;
-}
-
 .title,
 .subtitle,
 .description,
-.childcontainer,
 .footerwrapper {
   text-align: center;
   flex-basis: 95%;

@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
 import { ModalContext, DrawerContext } from '../../../context';
-import Layout from '../../../components/Layout';
-import Select from '../../../components/Select'; 
-import UploadForm from '../../../components/UploadForm'; 
+import Layout from '@/components/Layout';
+import Select from '@/components/Select'; 
+import UploadForm from '@/components/UploadForm'; 
 import GeneVariantList from "@/components/GeneVariantList";
-import TableGrid from '../../../components/TableGrid'; 
+import TableGrid from '@/components/TableGrid'; 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
@@ -22,11 +22,18 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [error, setError] = useState(null); 
     // Router
     const router = useRouter();  
+
+    const createNewPatient = () => {
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Create New patient</h2><div className="mt-2 px-7 py-3">CreatePatientForm</div></div>);
+        toggleModalVisible(true);
+    }
   
     const uploadDNAFile = () => {
         updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm /></div></div>);
         toggleModalVisible(true);
     }  
+
+    const handleSelectedDataRowChange = () => {}
 
     // -------
     // Patient
@@ -81,15 +88,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
             return x;
         },
         [selectedPatientProfileId]
-    );  
-
-    // useEffect(() => { 
-    //     if(selectedPatientGenomes) {
-    //         // console.log(JSON.stringify(selectedPatientGenomes));
-    //         const patientProfileMatch = selectedPatientGenomes.find((x) => x.patientId == patientId);
-    //         setSelectedPatientProfile(patientProfileMatch);
-    //     }  
-    // }, [patientProfiles, patientProfilesCount]);   
+    );
 
     // ------------------
     // Gene Variants List
@@ -105,58 +104,85 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         },
         [selectedPatientGenomeId]
     );  
+
+    const columns = [
+        {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
+        {"headerName":"genotype","field":"genotype", flex: 1, maxWidth: 80},
+        {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 100},
+        {"headerName":"position","field":"position", flex: 2, maxWidth: 120},
+        {"headerName":"datetimestamp","field":"datetimestamp", flex: 1, maxWidth: 120}, 
+        {"headerName":"patientId","field":"patientId", flex: 1, maxWidth: 280}, 
+        {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 1, maxWidth: 280},
+    ];
     
     return (
         <Layout>
             <div className="page-header">Patient Genome (Gene Variants) Viewer</div>
 
-            <p>Patient Profile Count: {patientProfilesCount}</p>            
+            <div className="flex flex-row">
+
+                <Button
+                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200"
+                    variant="outline"
+                    onClick={createNewPatient}
+                >
+                    Create New Patient
+                </Button> 
+
+                <Button
+                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200"
+                    variant="outline"
+                    onClick={uploadDNAFile}
+                >
+                    Upload DNA File
+                </Button> 
+
+            </div>
+            
+            <Separator className="my-2" /> 
+
+            <p><em>Patient Profile Count: {patientProfilesCount}</em></p>      
+
             <Select selectData={patientProfiles} selectDataKey={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOption={selectedPatientProfile} handleSelectChange={handleSelectedPatientChange} />
             
-            <br />
-            <h2 className="table-header">Patient Data</h2>
+            <Separator className="my-4" /> 
+            
+            <p className="table-sub-header"><span>Patient Data</span></p>
 
             {!selectedPatientProfile || error ? (
                 <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
             ) : (
                 <div>
-                    <p className="table-sub-header"><span>Patient ID: </span>{selectedPatientProfile.patientId}, <span>Patient Name: </span>{selectedPatientProfile.patientName}</p>
+                    <p className="table-sub-header"><span>Patient Name: </span>{selectedPatientProfile.patientName} | <span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
 
-                    <Separator className="my-4" />
-
-                    <Button
-                        className="rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200"
-                        variant="outline"
-                        onClick={uploadDNAFile}
-                    >
-                        Upload DNA File
-                    </Button> 
-
-                    <Separator className="my-4" />
-                    {/* {(JSON.stringify(selectedPatientGenomes))} */}
                     {!selectedPatientGenomes ? (
                         <div>No genomes. Perhaps no DNA file has been uploaded. {error}</div>
                     ) : (
                         <div>
-                            selectedPatientGenomes: {( JSON.stringify(selectedPatientGenomes ))} 
-                            <p>Patient DNA files Count: {selectedPatientGenomes.length}</p>
+                            <Separator className="my-4" /> 
+
+                            <p><em>Patient DNA files Count: {selectedPatientGenomes.length}</em></p>
                             <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'patientGenomeId'} selectTitle={"Select a Genome:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
 
-                            {!selectedPatientGenomes || !selectedPatientGenome? (
+                            {!selectedPatientGenome ? (
                                 <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>
-                            ) : (                                                  
-                                // <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId}</p>
-                                <hr />
+                            ) : (                  
+                                <>                            
+                                    <Separator className="my-4" /> 
+                                    
+                                    <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId} | <span>Date:</span> {selectedPatientGenome.patientGenomeId}</p>                             
 
-                                // {!selectedPatientGenomeVariants ? (
-                                //     <div>Please provide a patient genome ID. If the table is empty, the profile may not exist. {error}</div>
-                                // ) : (
-                                //     <div>       
-                                //         <h2 className="table-header">Gene Variants</h2>  
-                                //         {(JSON.stringify(selectedPatientGenomeVariants))}
-                                //         {/* <GeneVariantList patient_id={String(selectedPatientGenomeVariants)} />   */}
-                                //     </div>
-                                // )} 
+                                    {!selectedPatientGenomeVariants ? (
+                                        <div>Please provide a patient genome ID. If the table is empty, the profile may not exist. {error}</div>
+                                    ) : (
+                                        <div>      
+                                            <br />
+                                            <h2 className="table-header">Gene Variants</h2>   
+                                            {/* <GeneVariantList patient_id={String(selectedPatientGenomeVariants)} />  */}
+                                            <TableGrid rowData={selectedPatientGenomeVariants} columnDefs={columns} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
+                                        </div>
+                                    )} 
+                                </>   
                             )} 
                             
                         </div>

@@ -21,25 +21,22 @@ const RootLayout = ({ children }) => {
   }, []);
 
   return (
-    <div className={styles.container}>
+    <div className="flex flex-col h-screen p-0 m-0 top-0">
 
-      <Modal isOpen={modalVisible} onClose={toggleModalVisible} content={modalContent} /> 
-      <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} content={drawerContent} />
+      <div className="w-full text-center border-b border-grey p-4 sticky top-0">
+        <Header />
+      </div>
 
-      <main className="flex flex-col h-screen bg-slate-100 dark:bg-zinc-950 text-zinc-950 dark:text-white">
-      {/* className={styles.grid}> */}
+      <main className="flex flex-col flex-1 h-screen overflow-y-scroll bg-slate-100 dark:bg-zinc-950 text-zinc-950 dark:text-white pt-100 ">
 
-        <div className="p-0 m-0">
-          <Header />
-        </div>
+        <Modal isOpen={modalVisible} onClose={toggleModalVisible} content={modalContent} /> 
+        <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} content={drawerContent} />
 
-        <div className="p-0 pt-10 m-0 flex-grow">
-          {/* {styles.childcontainer}>  */}
+        <div className="p-0 m-0 flex flex-col flex-1 flex-grow w-full">
           {children}
         </div>
 
-        <div className="p-0 m-0">
-        {/* footerwrapper */}
+        <div className="w-full bg-zinc-200 dark:bg-zinc-950 text-center border-t border-grey p-4 sticky m-0 bottom-0 z-index-9999">
           <Footer />
         </div>
 

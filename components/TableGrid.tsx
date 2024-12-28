@@ -5,6 +5,7 @@ import { AgGridReact } from "ag-grid-react";
 import * as agGrid from "ag-grid-community";  
 import { useContainerWidth } from "../utils/useContainerWidth";
 import { useWindowSize } from "../utils/useWindowSize";
+import { Button } from "./ui/button";
 
 agGrid.ModuleRegistry.registerModules([agGrid.AllCommunityModule, agGrid.ValidationModule]);
 
@@ -90,13 +91,13 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
 
   return (
     <div className="ag-theme-alpine grid-container">
-      <div className="flex justify-between align-middle mb-4 text-lg text-[#4b5563]">
-          <button
-            className="rounded bg-gray-200 px-3 py-1 mt-3 text-xs"
+      <div className="flex justify-between align-middle m-1 mt-3 text-xs text-[#4b5563]">
+          <Button
+            className="rounded px-3 py-1 text-xs border-zinc-950 dark:border-zinc-200"
             onClick={clearFilters}
           >
             Clear Filters
-          </button>
+          </Button>
       </div>
       <AgGridReact
         className="ag-grid"
@@ -115,7 +116,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
       ></AgGridReact>
       <style jsx global>{`
         .grid-container {
-          height: 65vh;
+          height: 55vh;
           width: 100%;
           padding: 0; 
         }
