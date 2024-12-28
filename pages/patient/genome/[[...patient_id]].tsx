@@ -19,7 +19,7 @@ interface GenomePageProps {
 const GenomePage: React.FC<GenomePageProps> = (props) => {  
     const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
-    const [patientId, setPatientId] = useState<string>([]);
+    const [patientId, setPatientId] = useState<string>('');
     const [error, setError] = useState(null); 
     // Router
     const router = useRouter();  
@@ -29,7 +29,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         toggleModalVisible(true);
     }
   
-    const uploadDNAFile = (patientId) => {
+    const uploadDNAFile = () => {
         updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientId={patientId} /></div></div>);
         toggleModalVisible(true);
     }  
@@ -54,8 +54,10 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         async() => patientsIndexedDb.patientProfile.count()
     ); 
     useEffect(() => {
-        if (router.isReady) {  
-            setPatientId(Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id);
+        if (router.isReady) {
+            const p = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id;  
+            console.log('p', p);
+            setPatientId(p);
             if(patientProfiles) { 
                 const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
                 if(patientProfileMatch) {

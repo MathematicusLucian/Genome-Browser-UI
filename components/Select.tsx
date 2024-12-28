@@ -28,8 +28,8 @@ const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField
     ) : (
         <div className="dropdown"> 
             <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> 
-            {/* {selectedOptionId} */}
-            <select id={`${selectDataKey}-select`} onChange={handleSelectChange} value={selectedOptionId}> 
+            <select id={`${selectDataKey}-select`} onChange={handleSelectChange}>
+                 {/* value={selectedOptionId}>  */}
                 <option value="">--{placeholder}--</option>
                 {selectData.map((profile: any) => (
                     <option key={profile[selectDataKey]} value={profile[selectDataKey]}> 

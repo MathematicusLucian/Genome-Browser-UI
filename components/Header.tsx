@@ -8,8 +8,8 @@ const Header = () => {
     
     return (
         <>
-            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 top sticky"> 
-                <Card className="container bg-card py-3 px-4 border-0 flex items-center justify-between gap-6 rounded-2xl mt-5">
+            <header className="flex h-16 shrink-0 items-center gap-2 px-4 top sticky"> 
+                <Card className="container rounded-2xl bg-card bg-slate-200 dark:bg-gray-900 py-3 px-4 border-0 flex items-center justify-between gap-6 mt-5">
                     
                     <div className="-ml-1 text-primary cursor-pointer">
                         <h1 className={styles.title}>
