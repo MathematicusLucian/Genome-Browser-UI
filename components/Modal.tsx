@@ -22,13 +22,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content, isOkButtonViisi
     };
 
     return ( 
-        <div className={`modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center ${isOpen ? 'open' : ''}`}
+        <div className={`modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center text-center ${isOpen ? 'open' : ''}`}
             onClick={handleCancel} 
         >
                 <div className="p-8 border w-50 shadow-lg rounded-md bg-white dark:bg-gray-900">
                     <div className="text-center">
                         {content && (
-                            <div className="text-md text-gray-900 dark:text-white">
+                            <div className="text-sm text-gray-900 dark:text-white">
                                 {content} 
                             </div>
                         )}
@@ -42,6 +42,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content, isOkButtonViisi
                         </Button>)}
                     </div>
                 </div>
+
             <style jsx>{`
                 .modal {
                     position: fixed;
