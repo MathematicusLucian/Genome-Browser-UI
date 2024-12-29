@@ -34,11 +34,15 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 
 ### Upload a DNA test results (VCF) file
 
-![select_patient](./assets/select_dna_file.png)
+A drag-and-drop file uploader feature:
+
+![select_patient](./assets/uploader_view.png)
 
 If a patient file does not exist, the user is prompted to create one (the default name is `Default Profile`.)
 
 The patient software allows for the upload of several DNA files per patient, as they potentially could have several such as files, as there are many popular family tree providers (23andMe, Ancestry.com, etc..)
+
+![select_patient](./assets/select_dna_file.png)
 
 ### Browse gene variants (SNPs) present in the patient genome
 

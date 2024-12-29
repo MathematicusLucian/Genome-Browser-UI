@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { patientsIndexedDb} from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
 import { IChromosome, IPatientProfile, IPatientGenome, IPatientGenomeVariant } from "@/models/db"; 
+import DataGridFilter from "@/components/DataGridFllter";
 
 interface GenomePageProps {
 }
@@ -20,9 +21,15 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
     const [patientId, setPatientId] = useState<string>('');
+    const [searchTermEntered, setSearchTermEntered] = useState(null); 
+    const [dataStatus, setDataStatus] = useState<string>('');
     const [error, setError] = useState(null); 
     // Router
     const router = useRouter();  
+  
+    const updateDataStatus = (e: any) => {
+        setDataStatus(e);
+    }  
 
     const createNewPatient = () => {
         updateModalTitle("Create New Patient");
@@ -90,9 +97,6 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
  
     const patientProfiles = useLiveQuery( 
         async () => patientsIndexedDb.patientProfile.toArray()
-    );
-    const patientProfilesCount = useLiveQuery(
-        async() => patientsIndexedDb.patientProfile.count()
     ); 
     useEffect(() => {
         if (router.isReady) {
@@ -106,7 +110,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                 }
             } 
         }
-    }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
+    }, [router.isReady, router.asPath, patientProfiles]);   
 
     // --------------
     // Patient Genome
@@ -130,18 +134,29 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         [selectedPatientProfileId]
     );
 
-    // ------------------
-    // Gene Variants List
-    // ------------------
+    // --------------------------------------------------------------------------------------------
+    // Risk Report 
+    // (Comparing Patient Gene Variants with Published Literature, e.g. SNP data, such as ClinVar.)
+    // --------------------------------------------------------------------------------------------
     
     const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
         async () => {
-            const x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+            let x: any = [];
+            // searchTermEntered("cancer");
+            if(selectedPatientGenomeId && searchTermEntered) {
+                x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+            } else if(selectedPatientGenomeId && !selectedChromosome) {
+                x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+            } else if(selectedPatientGenomeId && selectedChromosome) {
+                const chromosomeToQueryBy = selectedChromosome['chromosomeName'].replace('Chromosome','').replace(' ','');
+                console.log(chromosomeToQueryBy);
+                x = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
+            }
             return x;
         },
-        [selectedPatientGenomeId]
+        [selectedPatientGenomeId, selectedChromosome]
     );  
-
+    
     const columns = [
         {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
         {"headerName":"genotype","field":"genotype", flex: 1, maxWidth: 80},
@@ -178,62 +193,52 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
             
             <Separator className="my-2" /> 
 
-            <p><em>Patient Profile Count: {patientProfilesCount}</em></p>      
+            <div>{dataStatus}</div>
 
-            <Select selectData={patientProfiles} selectDataKey={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOption={selectedPatientProfile} handleSelectChange={handleSelectedPatientChange} />
-            
+            <div className="flex flex-row">
+
+                <DataGridFilter 
+                    dataAsList={patientProfiles} 
+                    error={error}
+                    selectedSelectItem={selectedPatientProfile} 
+                    handleSelectedItemChange={handleSelectedPatientChange} 
+                    selectDataKey={'patientId'} 
+                    displayField={'patientName'} 
+                    selectTitle={"Patient Profile:"} 
+                    placeholder={"Please choose a patient"}
+                    updateStatus={updateDataStatus} 
+                />
+
+                <DataGridFilter 
+                    dataAsList={selectedPatientGenomes} 
+                    error={error}
+                    selectedSelectItem={selectedPatientGenome} 
+                    handleSelectedItemChange={handleSelectedPatientGenomeChange} 
+                    selectDataKey={'patientGenomeId'} 
+                    displayField={'datetimestamp'} 
+                    selectTitle={"Genome:"} 
+                    placeholder={"Please choose a DNA file"}
+                    updateStatus={updateDataStatus} 
+                />
+
+                <DataGridFilter 
+                    dataAsList={chromosomesList} 
+                    error={error}
+                    selectedSelectItem={selectedPatientGenome} 
+                    handleSelectedItemChange={handleSelectedChromosomeChange} 
+                    selectDataKey={'chromosomeName'} 
+                    displayField={'chromosomeName'} 
+                    selectTitle={"Chromosome:"} 
+                    placeholder={"Please choose a chromosome"}
+                    updateStatus={updateDataStatus} 
+                />
+
+            </div>
+
             <Separator className="my-4" /> 
+
+            <RiskReport riskReportRowsData={selectedPatientGenomeVariants} columns={columns} handleSelectedDataRowChange={handleSelectedDataRowChange} />
             
-            <p className="table-sub-header"><span>Patient Data</span></p>
-
-            {!selectedPatientProfile || error ? (
-                <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
-            ) : (
-                <div>
-                    <p className="table-sub-header"><span>Patient Name: </span>{selectedPatientProfile.patientName} | <span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
-
-                    {!selectedPatientGenomes ? (
-                        <div>No genomes. Perhaps no DNA file has been uploaded. {error}</div>
-                    ) : (
-                        <div>
-                            <Separator className="my-4" /> 
-
-                            <p><em>Patient DNA files Count: {selectedPatientGenomes.length}</em></p>
-                            <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
-
-                            {!chromosomesList ? (
-                                <div>Database error. No reference chromosome data. {error}</div>
-                            ) : (                  
-                                <>                            
-                                    <Separator className="my-4" /> 
-
-                                    <p>{JSON.stringify(chromosomesList)}</p> 
-                                
-                                    <Select selectData={chromosomesList} selectDataKey={'chromosomeName'} displayField={'chromosomeName'} selectTitle={"Select a Chromosome:"} placeholder={"Please choose a chromosome to view"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedChromosomeChange} />
-                                            
-                                    <p className="table-sub-header"><span>Chromosome: </span>{JSON.stringify(selectedChromosome)}</p> 
-
-                                    {!selectedPatientGenome ? (
-                                        <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>
-                                    ) : (                  
-                                        <>                            
-                                            <Separator className="my-4" /> 
-                                            
-                                            <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId} | <span>Date:</span> {selectedPatientGenome.patientGenomeId}</p> 
-
-                                            <RiskReport riskReportRowsData={selectedPatientGenomeVariants} columns={columns} handleSelectedDataRowChange={handleSelectedDataRowChange} />     
-                                        </>   
-                                    )} 
-
-                                </> 
-
-                            )} 
-                            
-                        </div>
-                    )} 
-
-                </div>
-            )} 
             <style jsx>{`
                 p, div, li, input, label, select, button {
                     font-size: 0.8rem;
@@ -250,12 +255,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                 }
                 .table-sub-header span {
                     font-weight: 900;
-                }
-                .profile-count {
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    padding: 0.5rem;
-                }
+                } 
             `}</style> 
         </Layout>
     );
