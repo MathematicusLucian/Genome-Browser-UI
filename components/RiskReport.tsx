@@ -7,7 +7,7 @@ import { IFullReport } from "@/models/db";
 interface RiskReportProps {
   riskReportRowsData: any;
   columns: any;
-  handleSelectedDataRowChange:() => void
+  handleSelectedDataRowChange:(e: any) => void
 }
 
 const RiskReport: FC<RiskReportProps> = ({riskReportRowsData, columns, handleSelectedDataRowChange}) => {   

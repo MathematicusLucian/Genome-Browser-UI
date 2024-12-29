@@ -34,22 +34,16 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
   }; 
 
   const handleFile = async (chunkFormDataBuffer) => { 
-    console.log('handleFile: chunkFormDataBuffer', chunkFormDataBuffer);
     const vcfDataRows = await chunkFormDataBuffer.split(/\r\n|\n/); 
-    console.log('vcfDataRows', vcfDataRows);
     const vcfDataRowsWithoutHeadingText = await vcfDataRows.filter((x) => String(x).startsWith('rs') || String(x).startsWith('i'));
-    console.log('vcfDataRowsWithoutHeadingText', vcfDataRowsWithoutHeadingText);
     const vcfDelimitedRow = await vcfDataRowsWithoutHeadingText.map((x: any) => x.split('\t')); 
-    console.log('vcfDelimitedRow', vcfDelimitedRow);
     const patientGenomeId = uuidv4();
     try {
       // Database 
-      console.log('patientId', patientId);
       if(!patientId) {
         const defaultProfile: IPatientProfile = await patientsIndexedDb.patientProfile.where('patientName').equals('Default Profile').toArray()[0];
         setPatientId(defaultProfile.patientId); 
       }
-      console.log('patientId after null check', patientId);
       const vcfSource = 'undefined';
       const patientGenome: IPatientGenome = {  
         patientGenomeId: patientGenomeId,
@@ -57,15 +51,12 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
         datetimestamp: Date.now(),
         patientId: patientId,
       }
-      console.log('patientGenome', patientGenome);
       await patientsIndexedDb.patientGenome.add(patientGenome);
     } catch (error) {
         console.error('Error adding genome to database:', error);
     }
     await vcfDelimitedRow.map(async (vcfRow) => {
-      console.log('vcfRow', vcfRow);
       try {
-        console.log(vcfRow);
         const patientGeneVariantId = uuidv4();
         const patientGenomeVariant: IPatientGenomeVariant = { 
           patientGeneVariantId: patientGeneVariantId,
@@ -76,7 +67,6 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
           datetimestamp: Date.now(),
           patientGenomeId: patientGenomeId,
         }
-        console.log('patientGenomeVariant', patientGenomeVariant);
         await patientsIndexedDb.patientGenomeVariant.add(patientGenomeVariant);
       } catch (error) {
           console.error('Error adding gene varients to database:', error);
@@ -85,27 +75,15 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
   }
 
   const addGeneVariants = async (chunkBlob: Blob) => {
-    console.log('addGeneVariants: chunkBlob', chunkBlob);
-    console.log('addGeneVariants: chunkBlob size', chunkBlob.size);
     const reader = new FileReader();
     reader.onload = async () => await handleFile(reader.result);
     reader.readAsText(chunkBlob);
   }
 
   const uploadNextChunksRecursively = async (fileSelectedForUpload: File) => {
-    console.log('uploadNextChunksRecursively: file', fileSelectedForUpload);
-    console.log('end', end);
-    console.log('file.size', fileSelectedForUpload.size)
     if (end <= fileSelectedForUpload.size) {
-
-
       end = start + chunkSize; 
-
-
-      console.log('end <= file.size');
       const chunkBlob = fileSelectedForUpload.slice(start, end);
-      console.log('uploadNextChunksRecursively: chunkBlob size', chunkBlob.size);
-      console.log('chunkBlob', chunkBlob);
       await addGeneVariants(chunkBlob);
       const temp = `Chunk ${ chunkNumber + 1 }/${totalChunks} uploaded successfully`;
       setStatus(temp); 
@@ -116,34 +94,24 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
     } else {
       setImportProgress(0);
       setStatus("File upload completed");
-      end = start + chunkSize; 
     }
   }; 
 
   const handleFileUpload = async(file: File) => { 
-    console.log('handleFileUpload: file', file);
-    console.log('handleFileUpload: file.size', file.size);
     setFileSelectedForUpload(file);
-    console.log('handleFileUpload: fileSelectedForUpload', fileSelectedForUpload);
-    // if (!fileSelectedForUpload) {
-    //   // alert("Please select a file to upload.");
-    //   console.log("Please select a file to upload.");
-    //   return;
-    // }
-    // if(fileSelectedForUpload) {
+    if (!file) {
+      // alert("Please select a file to upload.");
+      console.log("Please select a file to upload.");
+      return;
+    }
+    if(file) {
       totalChunks = Math.ceil(file.size / chunkSize);
       console.log('totalChunks', totalChunks);
       chunkProgress = 100 / totalChunks;
       console.log('chunkProgress', chunkProgress);
       setImportProgress(0);
-      await uploadNextChunksRecursively(file); 
-      // totalChunks = Math.ceil(fileSelectedForUpload.size / chunkSize);
-      // console.log('totalChunks', totalChunks);
-      // chunkProgress = 100 / totalChunks;
-      // console.log('chunkProgress', chunkProgress);
-      // setImportProgress(0);
-      // await uploadNextChunksRecursively(fileSelectedForUpload); 
-    // }
+      await uploadNextChunksRecursively(file);  
+    }
   }
 
   const updateImportProgress = ({ totalRows, completedRows }: { totalRows: any, completedRows: number }): boolean => {

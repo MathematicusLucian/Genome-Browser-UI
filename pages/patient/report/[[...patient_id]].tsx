@@ -16,8 +16,8 @@ interface GenomePageProps {
 }
 
 const GenomePage: React.FC<GenomePageProps> = (props) => {  
-    const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
-    const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
+    const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
+    const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
     const [patientId, setPatientId] = useState<string>('');
     const [error, setError] = useState(null); 
     // Router
@@ -32,15 +32,30 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div></div>);
         toggleModalVisible(true);
     }  
+    
+    // --------------
+    // Drawer Content
+    // --------------
+    
+    const genomeDetailsDrawerContent = (content) => {
+        return (
+            <>
+                <Separator className="my-4" /> 
+                {content && (
+                    <div>
+                        {Object.entries(content).map(([key, value]: any): any => (
+                            <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
+                        ))}
+                    </div>
+                )} 
+            </>
+        );
+    };
 
     const handleSelectedDataRowChange = (e) => {
-        // updateDrawerContent(<div>
-        //     <h2 className="text-2xl font-bold text-gray-900">Risk Report Item Details</h2>
-        //     {e.array.forEach(element => 
-        //         <div>A: {element}</div>
-        //     )} 
-        // </div>);
-        // toggleDrawerVisible(true);
+        updateDrawerTitle("Risk/SNP (Gene Variant) Details");
+        updateDrawerContent(genomeDetailsDrawerContent(e)); 
+        toggleDrawerVisible(true);
     }
 
     // -------
@@ -51,7 +66,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         // http://127.0.0.1:3000/patient/genome?patientId=[x]
-        router.push(`/patient/genome/${event.target.value}`);
+        router.push(`/patient/report/${event.target.value}`);
     };
  
     const patientProfiles = useLiveQuery( 
@@ -168,7 +183,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                             <Separator className="my-4" /> 
 
                             <p><em>Patient DNA files Count: {selectedPatientGenomes.length}</em></p>
-                            <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'patientGenomeId'} selectTitle={"Select a Genome:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
+                            <Select selectData={selectedPatientGenomes} selectDataKey={'datetimestamp'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
 
                             {!selectedPatientGenome ? (
                                 <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>

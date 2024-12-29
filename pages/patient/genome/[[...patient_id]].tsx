@@ -37,7 +37,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // Drawer Content
     // --------------
     
-    const genomeDetailsDrawerContent = (title, content) => {
+    const genomeDetailsDrawerContent = (content) => {
         return (
             <>
                 <Separator className="my-4" /> 
@@ -55,8 +55,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
               
     const handleSelectedDataRowChange = (e) => {
-        updateDrawerTitle("Gene Variant ");
-        updateDrawerContent(genomeDetailsDrawerContent('Gene Variant Details', e)); 
+        updateDrawerTitle("Gene Variant Details");
+        updateDrawerContent(genomeDetailsDrawerContent(e)); 
         toggleDrawerVisible(true);
     }
 
@@ -185,7 +185,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                             <Separator className="my-4" /> 
 
                             <p><em>Patient DNA files Count: {selectedPatientGenomes.length}</em></p>
-                            <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'patientGenomeId'} selectTitle={"Select a Genome:"} placeholder={"Please choose a genome"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
+                            <Select selectData={selectedPatientGenomes} selectDataKey={'datetimestamp'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
 
                             {!selectedPatientGenome ? (
                                 <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>
