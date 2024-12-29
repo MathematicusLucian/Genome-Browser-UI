@@ -24,6 +24,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [searchTermEntered, setSearchTermEntered] = useState(null); 
     const [dataStatus, setDataStatus] = useState<string>('');
     const [error, setError] = useState(null); 
+    const dashboardTitle = 'Patient Genome (Gene Variants) Viewer';
 
     // ------
     // Router
@@ -115,8 +116,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null);  
 
     const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        if(event.target.value != patientId) {
-            console.log('handleSelectedPatientChange', event.target.value);
+        if(event.target.value != patientId) { 
             // http://127.0.0.1:3000/patient/genome?patientId=[x]
             router.push(`/patient/report/${event.target.value}`);
         }
@@ -148,8 +148,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
 
     const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log('handleSelectedPatientGenomeChange', event.target.value);
-        const targetPatientGenomeId = event.target.value;
+         const targetPatientGenomeId = event.target.value;
         setSelectedPatientGenomeId(targetPatientGenomeId); 
         const targetPatientGenome = selectedPatientGenomes.find((x) => x.patientGenomeId = targetPatientGenomeId);
         setSelectedPatientGenome(targetPatientGenome); 
@@ -157,10 +156,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     
     const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
         async () => { 
-            console.log('useLiveQuery setPatientId', patientId);
-            const dexieResponse = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(patientId)).toArray();  
-            console.log(dexieResponse.then((y) => console.log(y)));
-            return dexieResponse;
+             const dexieResponse = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(patientId)).toArray();  
+             return dexieResponse;
         },
         [patientId] 
     );
@@ -180,10 +177,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                 dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
             } else if(selectedPatientGenomeId && selectedChromosome) {
                 const chromosomeToQueryBy = selectedChromosome['chromosomeName'].replace('Chromosome','').replace(' ','');
-                console.log(chromosomeToQueryBy);
-                dexieResponse = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
-            }
-            // console.log(typeof(dexieResponse)==DexiePromise ? dexieResponse.then((y) => console.log(y)) : []);
+                 dexieResponse = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
+            } 
             return dexieResponse;
         },
         [selectedPatientGenomeId, selectedChromosome]
@@ -201,12 +196,12 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     
     return (
         <Layout>
-            <div className="text-2xl">Patient Genome (Gene Variants) Viewer</div>
+            <div className="text-xl">{dashboardTitle}</div>
 
             <div className="flex flex-row">
 
                 <Button
-                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
+                    className="flex-0.5 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
                     variant="outline"
                     onClick={createNewPatient}
                 >
@@ -214,7 +209,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                 </Button> 
 
                 {patientId && (<Button
-                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
+                    className="flex-0.5 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
                     variant="outline"
                     onClick={uploadDNAFile}
                 >
