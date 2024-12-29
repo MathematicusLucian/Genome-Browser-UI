@@ -1,10 +1,8 @@
 'use client'
 import React, { useState, useEffect, useMemo } from "react";
-import type {FC} from 'react'; 
-import { useLiveQuery } from 'dexie-react-hooks'; 
-import { patientsIndexedDb } from '@/database/db'; 
+import type {FC} from 'react';  
 import TableGrid from "@/components/TableGrid";
-import { useRouter } from "next/router";
+import { IPatientGenomeVariant } from "@/models/db";
 
 interface GeneVariantListProps {
   geneVariantList: any;
@@ -13,7 +11,8 @@ interface GeneVariantListProps {
 }
 
 const GeneVariantList: FC<GeneVariantListProps> = ({geneVariantList, columns, handleSelectedDataRowChange}) => {   
-
+  const [selectedPatientGeneVariant, setSelectedPatientGeneVariant] = useState<IPatientGenomeVariant | null>(null); 
+  const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null); 
   const error = () => {};
   
   return (

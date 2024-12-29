@@ -5,8 +5,7 @@ import { ModalContext, DrawerContext } from '../../../context';
 import Layout from '@/components/Layout';
 import Select from '@/components/Select'; 
 import UploadForm from '@/components/UploadForm'; 
-import GeneVariantList from "@/components/GeneVariantList";
-import TableGrid from '@/components/TableGrid'; 
+import GeneVariantList from "@/components/GeneVariantList"; 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
@@ -14,8 +13,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { IPatientGenomeVariant } from "@/models/db"; 
 
 interface GenomePageProps {
-    // opensidedrawer: (content: React.ReactNode) => void;
 }
+
 const GenomePage: React.FC<GenomePageProps> = (props) => {  
     const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
@@ -34,7 +33,16 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         toggleModalVisible(true);
     }  
 
-    const handleSelectedDataRowChange = () => {}
+    const handleSelectedDataRowChange = (e) => {
+        console.log(e);
+        // updateDrawerContent(<div>
+        //     <h2 className="text-2xl font-bold text-gray-900">Gene Variant Details</h2>
+        //     {/* {e.array.forEach(element => 
+        //         <div>A: {element}</div>
+        //     )}  */}
+        // </div>);
+        // toggleDrawerVisible(true);
+    }
 
     // -------
     // Patient
@@ -95,9 +103,6 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // ------------------
     // Gene Variants List
     // ------------------
-
-    const [selectedPatientGeneVariant, setSelectedPatientGeneVariant] = useState<IPatientGenomeVariant | null>(null); 
-    const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null); 
     
     const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
         async () => {
