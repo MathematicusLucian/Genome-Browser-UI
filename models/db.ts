@@ -1,5 +1,6 @@
 export interface IChromosome {
     chromsomeName: string;
+    species: string;
 }
 
 export interface IHumanGene {

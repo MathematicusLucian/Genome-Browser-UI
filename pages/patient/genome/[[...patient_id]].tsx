@@ -52,7 +52,6 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         );
     };
 
-
               
     const handleSelectedDataRowChange = (e) => {
         updateDrawerTitle("Gene Variant Details");
@@ -63,6 +62,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // -------
     // Patient
     // -------
+
     const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null); 
     const [selectedPatientProfileId, setSelectedPatientProfileId] = useState<string | null>(null); 
 
@@ -92,9 +92,9 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         }
     }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
 
-    // ------
-    // Genome
-    // ------
+    // --------------
+    // Patient Genome
+    // --------------
 
     const [selectedPatientGenome, setSelectedPatientGenome] = useState<IPatientGenome | null>(null);  
     const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
@@ -185,7 +185,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                             <Separator className="my-4" /> 
 
                             <p><em>Patient DNA files Count: {selectedPatientGenomes.length}</em></p>
-                            <Select selectData={selectedPatientGenomes} selectDataKey={'datetimestamp'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
+                            <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
 
                             {!selectedPatientGenome ? (
                                 <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>

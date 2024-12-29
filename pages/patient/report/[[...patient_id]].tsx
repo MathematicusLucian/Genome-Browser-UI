@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
-import { IPatientGenomeVariant } from "@/models/db"; 
+import { IChromosome, IPatientGenomeVariant } from "@/models/db"; 
 
 interface GenomePageProps {
 }
@@ -58,6 +58,22 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         toggleDrawerVisible(true);
     }
 
+    // --------------------
+    // Published Literature
+    // -------------------- 
+
+    const [selectedChromosome, setSelectedChromosome] = useState<IChromosome | null>(null);  
+
+    const handleSelectedChromosomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const targeChromosomeId = event.target.value;
+        const targetChromosome = chromosomesList.find((x) => x['chromosomeName'] == targeChromosomeId);
+        setSelectedChromosome(targetChromosome);
+    };
+ 
+    const chromosomesList = useLiveQuery( 
+        async () => patientsIndexedDb.chromosome.toArray()
+    ); 
+
     // -------
     // Patient
     // -------
@@ -78,7 +94,6 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     useEffect(() => {
         if (router.isReady) {
             const p = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id;  
-            console.log('p', p);
             setPatientId(p);
             if(patientProfiles) { 
                 const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
@@ -90,19 +105,17 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         }
     }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
 
-    // ------
-    // Genome
-    // ------
+    // --------------
+    // Patient Genome
+    // --------------
 
     const [selectedPatientGenome, setSelectedPatientGenome] = useState<IPatientGenome | null>(null);  
     const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
 
     const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const targetPatientGenomeId = event.target.value;
-        console.log(targetPatientGenomeId);
         setSelectedPatientGenomeId(targetPatientGenomeId); 
         const targetPatientGenome = selectedPatientGenomes.find((x) => x.patientGenomeId = targetPatientGenomeId);
-        console.log(targetPatientGenome);
         setSelectedPatientGenome(targetPatientGenome); 
     }; 
     
@@ -183,18 +196,34 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                             <Separator className="my-4" /> 
 
                             <p><em>Patient DNA files Count: {selectedPatientGenomes.length}</em></p>
-                            <Select selectData={selectedPatientGenomes} selectDataKey={'datetimestamp'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
+                            <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
 
-                            {!selectedPatientGenome ? (
-                                <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>
+                            {!chromosomesList ? (
+                                <div>Database error. No reference chromosome data. {error}</div>
                             ) : (                  
                                 <>                            
                                     <Separator className="my-4" /> 
-                                    
-                                    <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId} | <span>Date:</span> {selectedPatientGenome.patientGenomeId}</p> 
 
-                                    <RiskReport riskReportRowsData={selectedPatientGenomeVariants} columns={columns} handleSelectedDataRowChange={handleSelectedDataRowChange} />     
-                                </>   
+                                    <p>{JSON.stringify(chromosomesList)}</p> 
+                                
+                                    <Select selectData={chromosomesList} selectDataKey={'chromosomeName'} displayField={'chromosomeName'} selectTitle={"Select a Chromosome:"} placeholder={"Please choose a chromosome to view"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedChromosomeChange} />
+                                            
+                                    <p className="table-sub-header"><span>Chromosome: </span>{JSON.stringify(selectedChromosome)}</p> 
+
+                                    {!selectedPatientGenome ? (
+                                        <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>
+                                    ) : (                  
+                                        <>                            
+                                            <Separator className="my-4" /> 
+                                            
+                                            <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId} | <span>Date:</span> {selectedPatientGenome.patientGenomeId}</p> 
+
+                                            <RiskReport riskReportRowsData={selectedPatientGenomeVariants} columns={columns} handleSelectedDataRowChange={handleSelectedDataRowChange} />     
+                                        </>   
+                                    )} 
+
+                                </> 
+
                             )} 
                             
                         </div>
