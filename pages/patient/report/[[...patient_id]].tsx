@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { patientsIndexedDb} from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
-import { IChromosome, IPatientProfile, IPatientGenome, IPatientGenomeVariant } from "@/models/db"; 
+import { IChromosome, IPatientProfile, IPatientGenome, IPatientGenomeVariant, ISnpPairsResearch } from "@/models/db"; 
 import DataGridFilter from "@/components/DataGridFllter";
 
 interface GenomePageProps {
@@ -105,11 +105,38 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     // Data Enrichment: SNP Pairs (ClinVar, etc.)
 
-    const fetchClinVarNotes = () => {
+    const fetchClinVarNotes = () => { 
 
+        const mockClinVarNotesData: ISnpPairsResearch[] = [
+            // `risk` would now be locally determined
+            {rsid_genotypes: "", rsid: "I4000324", allele1: "D", allele2: "I", magnitude: "4,0", risk: "", notes: "cystic fibrosis carrier"},
+            {rsid_genotypes: "", rsid: "I4000336", allele1: "A", allele2: "T", magnitude: "4,0", risk: "", notes: "Fanconi Anemia carrier"},
+            {rsid_genotypes: "", rsid: "I4000339", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Familial Hypercholesterolemia Type B"},
+            {rsid_genotypes: "", rsid: "I4000386", allele1: "C", allele2: "T", magnitude: "3.5,0", risk: "", notes: "carrier for Gaucher's disease; increased risk for Parkinsons"},
+            {rsid_genotypes: "", rsid: "I4000386", allele1: "T", allele2: "T", magnitude: "5,0", risk: "", notes: "Gaucher's disease"},
+            {rsid_genotypes: "", rsid: "I4000410", allele1: "T", allele2: "T", magnitude: "5,0", risk: "", notes: "familial mediterranean fever"},
+            {rsid_genotypes: "", rsid: "I4000412", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Fanconi Anemia (FANCC-related)"},
+            {rsid_genotypes: "", rsid: "I4000422", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Maple Syrup Urine Disease Type 1B"},
+            {rsid_genotypes: "", rsid: "I4000422", allele1: "A", allele2: "G", magnitude: "4,0", risk: "", notes: "Maple Syrup Urine Disease Type 1B carrier"},
+        ];
+
+        return mockClinVarNotesData;
     };
-    const enrichPatientVariantsDataWithClinVarNotes = () => {
 
+    const enrichPatientVariantsDataWithClinVarNotes = async () => {
+
+        const mockClinVarNotesData = fetchClinVarNotes();
+
+        const enrichedData = await selectedPatientGenomeVariants.map((patientVariant) => {
+            for(let snp in mockClinVarNotesData) {
+                if(mockClinVarNotesData[snp]['rsid'] == patientVariant.rsid) {
+                    patientVariant['notes'] = mockClinVarNotesData[snp]['rsid'];
+                }
+            }
+            return patientVariant;
+        })
+        
+        return enrichedData;
     };
 
     // -------
