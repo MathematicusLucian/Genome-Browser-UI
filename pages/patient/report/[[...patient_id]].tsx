@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { ModalContext, DrawerContext } from '../../../context';
 import Layout from '@/components/Layout';
 import Select from '@/components/Select'; 
+import CreatePatientForm from "@/components/CreatePatientForm";
 import UploadForm from '@/components/UploadForm';  
 import RiskReport from "@/components/RiskReport"; 
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     const createNewPatient = () => {
         updateModalTitle("Create New Patient");
-        updateModalContent(<div className="mt-2 px-7 py-3">CreatePatientForm</div>);
+        updateModalContent(<div className="mt-2 px-7 py-3"><CreatePatientForm /></div>);
         toggleModalVisible(true);
     }
   
