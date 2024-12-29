@@ -22,6 +22,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
     const [patientId, setPatientId] = useState<string>('');
     const [searchTermEntered, setSearchTermEntered] = useState(null); 
+    const [enrichedData, setEnrichedData] = useState(null); 
     const [dataStatus, setDataStatus] = useState<string>('');
     const [error, setError] = useState(null); 
     const dashboardTitle = 'Patient Risk Report';
@@ -107,36 +108,22 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     const fetchClinVarNotes = () => { 
 
+        // Not actual ClinVar notes; not actual correlatons.
+
         const mockClinVarNotesData: ISnpPairsResearch[] = [
             // `risk` would now be locally determined
-            {rsid_genotypes: "", rsid: "I4000324", allele1: "D", allele2: "I", magnitude: "4,0", risk: "", notes: "cystic fibrosis carrier"},
-            {rsid_genotypes: "", rsid: "I4000336", allele1: "A", allele2: "T", magnitude: "4,0", risk: "", notes: "Fanconi Anemia carrier"},
-            {rsid_genotypes: "", rsid: "I4000339", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Familial Hypercholesterolemia Type B"},
-            {rsid_genotypes: "", rsid: "I4000386", allele1: "C", allele2: "T", magnitude: "3.5,0", risk: "", notes: "carrier for Gaucher's disease; increased risk for Parkinsons"},
-            {rsid_genotypes: "", rsid: "I4000386", allele1: "T", allele2: "T", magnitude: "5,0", risk: "", notes: "Gaucher's disease"},
-            {rsid_genotypes: "", rsid: "I4000410", allele1: "T", allele2: "T", magnitude: "5,0", risk: "", notes: "familial mediterranean fever"},
-            {rsid_genotypes: "", rsid: "I4000412", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Fanconi Anemia (FANCC-related)"},
-            {rsid_genotypes: "", rsid: "I4000422", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Maple Syrup Urine Disease Type 1B"},
-            {rsid_genotypes: "", rsid: "I4000422", allele1: "A", allele2: "G", magnitude: "4,0", risk: "", notes: "Maple Syrup Urine Disease Type 1B carrier"},
+            {rsid_genotypes: "", rsid: "rs28415373", allele1: "C", allele2: "C", magnitude: "4,0", risk: "", notes: "cystic fibrosis carrier"},
+            {rsid_genotypes: "", rsid: "rs3131972", allele1: "G", allele2: "G", magnitude: "4,0", risk: "", notes: "Fanconi Anemia carrier"},
+            {rsid_genotypes: "", rsid: "rs4477212", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Familial Hypercholesterolemia Type B"},
+            {rsid_genotypes: "", rsid: "rs2340592", allele1: "A", allele2: "G", magnitude: "3.5,0", risk: "", notes: "carrier for Gaucher's disease; increased risk for Parkinsons"},
+            {rsid_genotypes: "", rsid: "rs4970383", allele1: "C", allele2: "C", magnitude: "5,0", risk: "", notes: "Gaucher's disease"},
+            {rsid_genotypes: "", rsid: "rs3128117", allele1: "C", allele2: "C", magnitude: "5,0", risk: "", notes: "familial mediterranean fever"},
+            {rsid_genotypes: "", rsid: "rs28391282", allele1: "G", allele2: "G", magnitude: "5,0", risk: "", notes: "Fanconi Anemia (FANCC-related)"},
+            {rsid_genotypes: "", rsid: "rs6665000", allele1: "A", allele2: "A", magnitude: "5,0", risk: "", notes: "Maple Syrup Urine Disease Type 1B"},
+            {rsid_genotypes: "", rsid: "rs13303106", allele1: "A", allele2: "G", magnitude: "4,0", risk: "", notes: "Maple Syrup Urine Disease Type 1B carrier"},
         ];
 
         return mockClinVarNotesData;
-    };
-
-    const enrichPatientVariantsDataWithClinVarNotes = async () => {
-
-        const mockClinVarNotesData = fetchClinVarNotes();
-
-        const enrichedData = await selectedPatientGenomeVariants.map((patientVariant) => {
-            for(let snp in mockClinVarNotesData) {
-                if(mockClinVarNotesData[snp]['rsid'] == patientVariant.rsid) {
-                    patientVariant['notes'] = mockClinVarNotesData[snp]['rsid'];
-                }
-            }
-            return patientVariant;
-        })
-        
-        return enrichedData;
     };
 
     // -------
@@ -197,21 +184,38 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // (Comparing Patient Gene Variants with Published Literature, e.g. SNP data, such as ClinVar.)
     // --------------------------------------------------------------------------------------------
     
+    const enrichPatientVariantsDataWithClinVarNotes = async (dexieResponse) => {
+        const mockClinVarNotesData = fetchClinVarNotes();
+
+        const enrichmentResult = await dexieResponse.map((patientVariant) => {
+            for(let snp in mockClinVarNotesData) {
+                if(mockClinVarNotesData[snp]['rsid'] == patientVariant.rsid) {
+                    patientVariant['notes'] = mockClinVarNotesData[snp]['notes'];
+                }
+            }
+            return patientVariant;
+        })
+
+        return enrichmentResult;
+    };
+
     const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
         async () => {
             let dexieResponse: any = [];
             // searchTermEntered("cancer");
             if(selectedPatientGenomeId && searchTermEntered) {
                 dexieResponse = [];
-                // dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+                // dexieResponse = await patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
             } else if(selectedPatientGenomeId && !selectedChromosome) {
                 setDataStatus('Please select a chromosome, or input a search term');
                 console.log('Please select a chromosome, or input a search term');
                 dexieResponse = [];
-                // dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
             } else if(selectedPatientGenomeId && selectedChromosome) {
                 const chromosomeToQueryBy = selectedChromosome['chromosomeName'].replace('Chromosome','').replace(' ','');
-                dexieResponse = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
+                dexieResponse = await patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
+                dexieResponse = await enrichPatientVariantsDataWithClinVarNotes(dexieResponse);
+                // dexieResponse = await patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+                // setEnrichedData(dexieResponse);
             } 
             return dexieResponse;
         },
@@ -221,11 +225,13 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const columns = [
         {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
         {"headerName":"genotype","field":"genotype", flex: 1, maxWidth: 80},
-        {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 100},
-        {"headerName":"position","field":"position", flex: 2, maxWidth: 120},
-        {"headerName":"datetimestamp","field":"datetimestamp", flex: 1, maxWidth: 120}, 
-        {"headerName":"patientId","field":"patientId", flex: 1, maxWidth: 280}, 
-        {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 1, maxWidth: 280},
+        {"headerName":"notes","field":"notes", flex: 4, maxWidth: 500},
+        {"headerName":"magnitude","field":"magnitude", flex: 1, maxWidth: 100},
+        {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 140},
+        {"headerName":"position","field":"position", flex: 1, maxWidth: 120},
+        {"headerName":"datetimestamp","field":"datetimestamp", flex: 2, maxWidth: 120}, 
+        {"headerName":"patientId","field":"patientId", flex: 2, maxWidth: 120}, 
+        {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 2, maxWidth: 120},
     ];
     
     return (

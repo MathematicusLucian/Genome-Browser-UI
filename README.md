@@ -32,7 +32,21 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 
 ## Pages/Views
 
-### Upload a DNA test results (VCF) file
+### Health Risk/Correlation Report (`patient/report/`)
+
+The report compares the gene variants of the patient with published literature to indiciate which of their respective SNPs are associated with health conditions.
+
+_(Note, the image below features mock data; this is not actual SNP data.)_
+
+![risk-report](./assets/risk-report.png)
+
+### Browse gene variants (SNPs) present in the patient genome (`patient/genome/`)
+
+From the dropdown, the user can select which profile to view:
+
+![select_patient](./assets/select_patient_profile.png)
+
+**Upload a DNA test results (VCF) file**
 
 A drag-and-drop file uploader feature:
 
@@ -44,35 +58,23 @@ The patient software allows for the upload of several DNA files per patient, as 
 
 ![select_patient](./assets/select_dna_file.png)
 
-### Browse gene variants (SNPs) present in the patient genome
-
 **The rows represent the gene variants associated with the patient.**
 
 (The `rsid` columns is the identifier for the SNP pairs; and a crucial factor in many cases, with respect to risk, is the `genotype` that the user has inherited from their parents - hence, generaly, this consists of two letters, i.e. one from each parent.)
 
 ![genome_viewer_dark_mode](./assets/genome_viewer_dark_mode_.png)
 
-From the dropdown, the user can select which profile to view:
-
-![select_patient](./assets/select_patient_profile.png)
-
-### Health Risk/Correlation Report
-
-The report compares the gene variants of the patient with published literature to indiciate which of their respective SNPs are associated with health conditions.
-
-![full_report](./assets/full_report.png)
-
 If a user clicks on a row, the app will launch a drawer featuring the details for the gene variant.
 
 ![gene_variant_details](./assets/gene_variant_details.png)
 
-### List of Patients
+### List of Patients (`patient/list/`)
 
 Patient genomes that the user has uploaded.
 
 ![list_of_patients](./assets/list_of_patients.png)
 
-Dark/light mode available:
+**Dark/light mode available**:
 
 ![genome_viewer_light_mode](./assets/list_of_patients_light_mode.png)
 
