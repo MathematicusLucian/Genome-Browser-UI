@@ -10,8 +10,7 @@ const PatientList: FC = () => {
   const [error, setError] = useState(null);
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]); 
-  const [selectedDataRow, setSelectedDataRow] = useState<string | null>(null);
-  const [patientProfilesCount, setPatientProfilesCount] = useState('');
+  const [selectedDataRow, setSelectedDataRow] = useState<string | null>(null); 
   const isIndexedDatabase = true;
 
   const fetchData = async () => {
@@ -68,8 +67,8 @@ const PatientList: FC = () => {
     !isIndexedDatabase && fetchData();
   }, [isIndexedDatabase]); 
 
-  const handleSelectedDataRowChange = (selectedDataRow: string) => {
-      setSelectedDataRow(selectedDataRow);  
+  const handleSelectedDataRowChange = (dataRow: string) => {
+      setSelectedDataRow(dataRow);  
   }; 
 
   return (
