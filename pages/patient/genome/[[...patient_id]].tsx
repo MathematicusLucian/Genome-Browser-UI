@@ -16,32 +16,48 @@ interface GenomePageProps {
 }
 
 const GenomePage: React.FC<GenomePageProps> = (props) => {  
-    const { modelContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(ModalContext);
-    const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
+    const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
+    const { drawerTitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
     const [patientId, setPatientId] = useState<string>('');
     const [error, setError] = useState(null); 
     // Router
     const router = useRouter();  
 
     const createNewPatient = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Create New patient</h2><div className="mt-2 px-7 py-3">CreatePatientForm</div></div>);
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create New patient</h2><div className="mt-2 px-7 py-3">CreatePatientForm</div></div>);
         toggleModalVisible(true);
     }
   
     const uploadDNAFile = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div></div>);
+        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div></div>);
         toggleModalVisible(true);
     }  
 
+    // --------------
+    // Drawer Content
+    // --------------
+    
+    const genomeDetailsDrawerContent = (title, content) => {
+        return (
+            <>
+                <Separator className="my-4" /> 
+                {content && (
+                    <div>
+                        {Object.entries(content).map(([key, value]: any): any => (
+                            <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
+                        ))}
+                    </div>
+                )} 
+            </>
+        );
+    };
+
+
+              
     const handleSelectedDataRowChange = (e) => {
-        console.log(e);
-        // updateDrawerContent(<div>
-        //     <h2 className="text-2xl font-bold text-gray-900">Gene Variant Details</h2>
-        //     {/* {e.array.forEach(element => 
-        //         <div>A: {element}</div>
-        //     )}  */}
-        // </div>);
-        // toggleDrawerVisible(true);
+        updateDrawerTitle("Gene Variant ");
+        updateDrawerContent(genomeDetailsDrawerContent('Gene Variant Details', e)); 
+        toggleDrawerVisible(true);
     }
 
     // -------

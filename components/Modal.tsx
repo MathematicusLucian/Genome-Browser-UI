@@ -4,12 +4,13 @@ import { Button } from "./ui/button";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  title: any;
   content: any;
   isOkButtonViisible?: any;
   isCancelButtonViisible?: any;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content, isOkButtonViisible, isCancelButtonViisible=true }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButtonViisible, isCancelButtonViisible=true }) => {
     const closable = true; 
     const handleOk = () => {
         onClose();

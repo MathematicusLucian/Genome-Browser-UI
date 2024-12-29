@@ -8,28 +8,35 @@ import { DrawerContext, ModalContext } from '../context';
 
 function App({ Component, pageProps }: AppProps) { 
 
+  const [drawerTitle, setDrawerTitle] = useState(false);
   const [drawerContent, setDrawerContent] = useState(null);
-  const [modalContent, setModalContent] = useState(null);
-  const [style, setStyle] = useState("light");
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState(null);
+  const [modalContent, setModalContent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [style, setStyle] = useState("light");
 
+  function updateDrawerTitle(value) { 
+    setDrawerTitle(value);
+  }
   function updateDrawerContent(value) { 
     setDrawerContent(value);
-  }
-  function updateModalContent(value) { 
-    setModalContent(value);
-  }
-  function toggleTheme() {
-    setStyle(style => (style === "light" ? "dark" : "light"));
   }
   function toggleDrawerVisible() {
     setDrawerVisible(!drawerVisible);
   }
+   function updateModalTitle(value) {
+    setModalTitle(value);
+  }
+  function updateModalContent(value) { 
+    setModalContent(value);
+  }
   function toggleModalVisible() {
     setModalVisible(!modalVisible);
   }
-
+  function toggleTheme() {
+    setStyle(style => (style === "light" ? "dark" : "light"));
+  }
 
   const themeContextValue = useMemo(() => ({
     style,
@@ -37,15 +44,19 @@ function App({ Component, pageProps }: AppProps) {
   }), [style]);
 
   const drawerContextValue = useMemo(() => ({
+    drawerTitle,
     drawerContent,
     drawerVisible,
+    updateDrawerTitle,
     updateDrawerContent,
     toggleDrawerVisible,
   }), [drawerContent, drawerVisible]);
 
   const modalContextValue = useMemo(() => ({
+    modalTitle,
     modalContent,
     modalVisible,
+    updateModalTitle,
     updateModalContent,
     toggleModalVisible,
   }), [modalContent, modalVisible]);

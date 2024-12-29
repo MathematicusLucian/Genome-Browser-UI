@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect, useContext } from "react";
 import { ModalContext, DrawerContext } from '../context';
-import styles from '../styles/Layout.module.css';
 import Header from './Header';
 import Footer from './Footer'; 
 import Modal from './Modal';
@@ -9,10 +8,10 @@ import Drawer from './Drawer';
 import { addDemoDataIfDatabaseTablesEmpty } from "@/database/db";
 
 const RootLayout = ({ children }) => {      
-  const { modalContent, modalVisible, updateModalContent, toggleModalVisible } = useContext(
+  const { modelTitle, modalContent, modalVisible, updatModalTitle, updateModalContent, toggleModalVisible } = useContext(
     ModalContext
   );    
-  const { drawerContent, drawerVisible, updateDrawerContent, toggleDrawerVisible } = useContext(
+  const { drawerTitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(
       DrawerContext
   );   
 
@@ -29,8 +28,8 @@ const RootLayout = ({ children }) => {
 
       <main className="flex flex-col flex-1 h-screen overflow-y-scroll bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white pt-100">
 
-        <Modal isOpen={modalVisible} onClose={toggleModalVisible} content={modalContent} /> 
-        <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} content={drawerContent} />
+        <Modal isOpen={modalVisible} onClose={toggleModalVisible} title={modelTitle} content={modalContent} /> 
+        <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} title={drawerTitle} content={drawerContent} />
 
         <div className="p-0 m-0 flex flex-col flex-1 flex-grow w-full">
           {children}

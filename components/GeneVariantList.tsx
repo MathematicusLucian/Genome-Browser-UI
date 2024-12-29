@@ -7,7 +7,7 @@ import { IPatientGenomeVariant } from "@/models/db";
 interface GeneVariantListProps {
   geneVariantList: any;
   columns: any;
-  handleSelectedDataRowChange:() => void
+  handleSelectedDataRowChange:(e: any) => void
 }
 
 const GeneVariantList: FC<GeneVariantListProps> = ({geneVariantList, columns, handleSelectedDataRowChange}) => {   
