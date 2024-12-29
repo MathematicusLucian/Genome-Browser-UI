@@ -172,18 +172,9 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                                 <>                            
                                     <Separator className="my-4" /> 
                                     
-                                    <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId} | <span>Date:</span> {selectedPatientGenome.patientGenomeId}</p>                             
+                                    <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId} | <span>Date:</span> {selectedPatientGenome.patientGenomeId}</p> 
 
-                                    {!selectedPatientGenomeVariants ? (
-                                        <div>Please provide a patient genome ID. If the table is empty, the profile may not exist. {error}</div>
-                                    ) : (
-                                        <div>      
-                                            <br />
-                                            <h2 className="table-header">Gene Variants</h2>   
-                                            {/* <GeneVariantList patient_id={String(selectedPatientGenomeVariants)} />  */}
-                                            <TableGrid rowData={selectedPatientGenomeVariants} columnDefs={columns} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
-                                        </div>
-                                    )} 
+                                    <GeneVariantList geneVariantList={selectedPatientGenomeVariants} columns={columns} handleSelectedDataRowChange={handleSelectedDataRowChange} />     
                                 </>   
                             )} 
                             
