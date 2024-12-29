@@ -112,27 +112,29 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // Patient
     // -------
 
-    const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null); 
-    const [selectedPatientProfileId, setSelectedPatientProfileId] = useState<string | null>(null); 
+    const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null);  
 
     const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log('handleSelectedPatientChange', event.target.value);
-        // http://127.0.0.1:3000/patient/genome?patientId=[x]
-        router.push(`/patient/report/${event.target.value}`);
+        if(event.target.value != patientId) {
+            console.log('handleSelectedPatientChange', event.target.value);
+            // http://127.0.0.1:3000/patient/genome?patientId=[x]
+            router.push(`/patient/report/${event.target.value}`);
+        }
     };
  
     const patientProfiles = useLiveQuery( 
         async () => patientsIndexedDb.patientProfile.toArray()
     ); 
+
     useEffect(() => {
+
         if (router.isReady) {
-            const p = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id;  
-            setPatientId(p);
+            const patientIdFromRouter = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id;   
+            setPatientId(patientIdFromRouter);
             if(patientProfiles) { 
                 const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
                 if(patientProfileMatch) {
                     setSelectedPatientProfile(patientProfileMatch);
-                    setSelectedPatientProfileId(patientProfileMatch.patientId);
                 }
             } 
         }
@@ -155,10 +157,12 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     
     const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
         async () => { 
-            const x = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(selectedPatientProfileId)).toArray();  
-            return x;
+            console.log('useLiveQuery setPatientId', patientId);
+            const dexieResponse = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(patientId)).toArray();  
+            console.log(dexieResponse.then((y) => console.log(y)));
+            return dexieResponse;
         },
-        [selectedPatientProfileId]
+        [patientId] 
     );
 
     // --------------------------------------------------------------------------------------------
@@ -168,18 +172,19 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     
     const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
         async () => {
-            let x: any = [];
+            let dexieResponse: any = [];
             // searchTermEntered("cancer");
             if(selectedPatientGenomeId && searchTermEntered) {
-                x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+                dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
             } else if(selectedPatientGenomeId && !selectedChromosome) {
-                x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+                dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
             } else if(selectedPatientGenomeId && selectedChromosome) {
                 const chromosomeToQueryBy = selectedChromosome['chromosomeName'].replace('Chromosome','').replace(' ','');
                 console.log(chromosomeToQueryBy);
-                x = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
+                dexieResponse = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
             }
-            return x;
+            // console.log(typeof(dexieResponse)==DexiePromise ? dexieResponse.then((y) => console.log(y)) : []);
+            return dexieResponse;
         },
         [selectedPatientGenomeId, selectedChromosome]
     );  
@@ -220,7 +225,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
             
             <Separator className="my-2" /> 
 
-            <div>{dataStatus}</div>
+            <div className="text-xs">{dataStatus}</div>
 
             <div className="flex flex-row">
 
@@ -235,7 +240,6 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                     placeholder={"Please choose a patient"}
                     updateStatus={updateDataStatus} 
                 />
-
                 <DataGridFilter 
                     dataAsList={selectedPatientGenomes} 
                     error={error}
