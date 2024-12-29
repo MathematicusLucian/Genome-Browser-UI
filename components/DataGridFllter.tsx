@@ -6,7 +6,7 @@ const DataGridFilter: React.FC<any> = ({dataAsList, error, selectedSelectItem, h
 
     const selectStatus = (!dataAsList || error)
         ? `Please provide a ${selectDataKey}. If the table is empty, the profile, or genome may not exist. ${error}`
-        : `Patient Profile Count: ${dataAsList.length}`;
+        : `The ${selectDataKey} count: ${dataAsList.length}`;
 
     updateStatus(selectStatus);
 

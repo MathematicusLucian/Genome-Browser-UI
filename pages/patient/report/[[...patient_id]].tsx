@@ -175,12 +175,16 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
             let dexieResponse: any = [];
             // searchTermEntered("cancer");
             if(selectedPatientGenomeId && searchTermEntered) {
-                dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+                dexieResponse = [];
+                // dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
             } else if(selectedPatientGenomeId && !selectedChromosome) {
-                dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+                setDataStatus('Please select a chromosome, or input a search term');
+                console.log('Please select a chromosome, or input a search term');
+                dexieResponse = [];
+                // dexieResponse = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
             } else if(selectedPatientGenomeId && selectedChromosome) {
                 const chromosomeToQueryBy = selectedChromosome['chromosomeName'].replace('Chromosome','').replace(' ','');
-                 dexieResponse = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
+                dexieResponse = patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
             } 
             return dexieResponse;
         },
