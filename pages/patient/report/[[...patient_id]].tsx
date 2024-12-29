@@ -24,22 +24,38 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [searchTermEntered, setSearchTermEntered] = useState(null); 
     const [dataStatus, setDataStatus] = useState<string>('');
     const [error, setError] = useState(null); 
+
+    // ------
     // Router
+    // ------
+
     const router = useRouter();  
-  
+
+    // ------
+    // Status
+    // ------
+
     const updateDataStatus = (e: any) => {
         setDataStatus(e);
     }  
 
+    // -------------
+    // Modal Content
+    // -------------
+
+    const modalContent = (contentSlot: any) => (
+        <div className="mt-2 px-7 py-3">{contentSlot}</div>
+    );
+
     const createNewPatient = () => {
         updateModalTitle("Create New Patient");
-        updateModalContent(<div className="mt-2 px-7 py-3"><CreatePatientForm /></div>);
+        updateModalContent(modalContent(<CreatePatientForm />));
         toggleModalVisible(true);
     }
   
     const uploadDNAFile = () => {
         updateModalTitle("Upload Patient File");
-        updateModalContent(<div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div>);
+        updateModalContent(modalContent(<UploadForm patientIdFromParentComponent={patientId} />));
         toggleModalVisible(true);
     }  
     
@@ -47,13 +63,13 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // Drawer Content
     // --------------
     
-    const genomeDetailsDrawerContent = (content) => {
+    const genomeDetailsDrawerContent = (contentSlot) => {
         return (
             <>
                 <Separator className="my-4" /> 
-                {content && (
+                {contentSlot && (
                     <div>
-                        {Object.entries(content).map(([key, value]: any): any => (
+                        {Object.entries(contentSlot).map(([key, value]: any): any => (
                             <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
                         ))}
                     </div>
@@ -72,6 +88,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // Published Literature
     // -------------------- 
 
+    // Chromosomes
+
     const [selectedChromosome, setSelectedChromosome] = useState<IChromosome | null>(null);  
 
     const handleSelectedChromosomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -84,13 +102,21 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         async () => patientsIndexedDb.chromosome.toArray()
     ); 
 
+    // SNP Pairs (ClinVar, etc.)
+
+    const fetchClinVar = () => {
+
+    };
+
     // -------
     // Patient
     // -------
+
     const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null); 
     const [selectedPatientProfileId, setSelectedPatientProfileId] = useState<string | null>(null); 
 
     const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log('handleSelectedPatientChange', event.target.value);
         // http://127.0.0.1:3000/patient/genome?patientId=[x]
         router.push(`/patient/report/${event.target.value}`);
     };
@@ -120,6 +146,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
 
     const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log('handleSelectedPatientGenomeChange', event.target.value);
         const targetPatientGenomeId = event.target.value;
         setSelectedPatientGenomeId(targetPatientGenomeId); 
         const targetPatientGenome = selectedPatientGenomes.find((x) => x.patientGenomeId = targetPatientGenomeId);
@@ -169,7 +196,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     
     return (
         <Layout>
-            <div className="page-header">Patient Genome (Gene Variants) Viewer</div>
+            <div className="text-2xl">Patient Genome (Gene Variants) Viewer</div>
 
             <div className="flex flex-row">
 
@@ -238,25 +265,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
             <Separator className="my-4" /> 
 
             <RiskReport riskReportRowsData={selectedPatientGenomeVariants} columns={columns} handleSelectedDataRowChange={handleSelectedDataRowChange} />
-            
-            <style jsx>{`
-                p, div, li, input, label, select, button {
-                    font-size: 0.8rem;
-                }
-                .page-header { 
-                    font-size: 1rem;
-                    padding: 0.1rem 0 0 0;
-                    font-weight: 900;
-                }
-                .table-header { 
-                    font-size: 1rem;
-                    padding: 0.1rem 0 0 0;
-                    font-weight: 900;
-                }
-                .table-sub-header span {
-                    font-weight: 900;
-                } 
-            `}</style> 
+    
         </Layout>
     );
 };
