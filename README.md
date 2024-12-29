@@ -48,10 +48,6 @@ The patient software allows for the upload of several DNA files per patient, as 
 
 ![genome_viewer_dark_mode](./assets/genome_viewer_dark_mode_.png)
 
-Dark/light mode available:
-
-![genome_viewer_light_mode](./assets/genome_viewer_light_mode.png)
-
 From the dropdown, the user can select which profile to view:
 
 ![select_patient](./assets/select_patient_profile.png)
@@ -71,6 +67,10 @@ If a user clicks on a row, the app will launch a drawer featuring the details fo
 Patient genomes that the user has uploaded.
 
 ![list_of_patients](./assets/list_of_patients.png)
+
+Dark/light mode available:
+
+![genome_viewer_light_mode](./assets/list_of_patients_light_mode.png)
 
 ## UI Client Architecture
 
