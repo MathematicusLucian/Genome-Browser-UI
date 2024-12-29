@@ -8,7 +8,7 @@ import Drawer from './Drawer';
 import { addDemoDataIfDatabaseTablesEmpty } from "@/database/db";
 
 const RootLayout = ({ children }) => {      
-  const { modelTitle, modalContent, modalVisible, updatModalTitle, updateModalContent, toggleModalVisible } = useContext(
+  const { modalTitle, modalContent, modalVisible, updatModalTitle, updateModalContent, toggleModalVisible } = useContext(
     ModalContext
   );    
   const { drawerTitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(
@@ -28,7 +28,7 @@ const RootLayout = ({ children }) => {
 
       <main className="flex flex-col flex-1 h-screen overflow-y-scroll bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white pt-100">
 
-        <Modal isOpen={modalVisible} onClose={toggleModalVisible} title={modelTitle} content={modalContent} /> 
+        <Modal isOpen={modalVisible} onClose={toggleModalVisible} title={modalTitle} content={modalContent} /> 
         <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} title={drawerTitle} content={drawerContent} />
 
         <div className="p-0 m-0 flex flex-col flex-1 flex-grow w-full">

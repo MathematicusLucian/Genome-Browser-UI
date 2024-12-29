@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { ModalContext, DrawerContext } from '../../../context';
 import Layout from '@/components/Layout';
 import Select from '@/components/Select'; 
+import CreatePatientForm from "@/components/CreatePatientForm";
 import UploadForm from '@/components/UploadForm'; 
 import GeneVariantList from "@/components/GeneVariantList"; 
 import { Button } from "@/components/ui/button";
@@ -24,12 +25,14 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const router = useRouter();  
 
     const createNewPatient = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create New patient</h2><div className="mt-2 px-7 py-3">CreatePatientForm</div></div>);
+        updateModalTitle("Create New Patient");
+        updateModalContent(<div className="mt-2 px-7 py-3"><CreatePatientForm /></div>);
         toggleModalVisible(true);
     }
   
     const uploadDNAFile = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div></div>);
+        updateModalTitle("Upload Patient File");
+        updateModalContent(<div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div>);
         toggleModalVisible(true);
     }  
 

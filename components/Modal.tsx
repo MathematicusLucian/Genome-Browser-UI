@@ -7,11 +7,11 @@ interface ModalProps {
   onClose: () => void;
   title: any;
   content: any;
-  isOkButtonViisible?: any;
-  isCancelButtonViisible?: any;
+  isOkButtonVisible?: any;
+  isCancelButtonVisible?: any;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButtonViisible, isCancelButtonViisible=true }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButtonVisible, isCancelButtonVisible=true }) => {
     const closable = true; 
     const handleOk = () => {
         onClose();
@@ -30,16 +30,24 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButt
                 <div className="p-8 border w-50 shadow-lg rounded-md bg-white dark:bg-gray-900">
             
                     <div className="flex flex-row text-center">
-                        {isOkButtonViisible && (<Button className="close-button rounded px-3 py-1 mt-3 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900"
-                            onClick={handleOk}>
-                            Upload
-                        </Button>)}
-                        {isCancelButtonViisible && (<Button className="close-button rounded px-3 py-1 mt-3 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900"
-                            onClick={handleCancel}>
-                            Close
-                        </Button>)}
+                        <div className="flex-1 h-4">
+                            <h2 className="p-0 mt-4 px-4 mt-0 text-xl font-bold text-gray-900 dark:text-white leading-relaxed">{title ? title : ('404')}</h2>
+                        </div>
                         <Separator orientation="vertical" className="mx-2 h-4" /> 
-                        <h2 className="px-4 mt-3 text-xl font-bold text-gray-900 dark:text-white leading-snug">{title ? title : ('404')}</h2>
+                        <div className="flex-1 h-4">
+                            {isOkButtonVisible &&  (
+                                <Button className="close-button rounded px-3 py-1 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900"
+                                onClick={handleOk}>
+                                    Upload
+                                </Button>
+                            )}  
+                            {isCancelButtonVisible && (
+                                <Button className="close-button rounded px-3 py-1 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900"
+                                onClick={handleCancel}>
+                                    Close
+                                </Button>
+                            )} 
+                        </div>
                     </div>
                     
                     <div className="drawer-content pl-10 p-25">    
@@ -71,7 +79,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButt
                 h1 {
                     font-size: 1rem;
                 }
-                h2, p, label, li {
+                p, label, li {
                     font-size: 0.8rem;
                 }
                 .modal.open {

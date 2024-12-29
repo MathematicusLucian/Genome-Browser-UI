@@ -15,12 +15,12 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, title, content }) => {
         <div className={`drawer bg-slate-200 dark:bg-gray-900 py-3 px-4 border-0 ${isOpen ? 'open' : ''}`}>  
         
             <div className="flex flex-row">
+                <h2 className="px-4 mt-3 text-xl font-bold text-gray-900 dark:text-white leading-snug">{title ? title : ('404')}</h2>
+                <Separator orientation="vertical" className="mx-2 h-4" />
                 <Button className="close-button rounded px-3 mt-2 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900"
                     onClick={onClose}>
                     Close
                 </Button>  
-                <Separator orientation="vertical" className="mx-2 h-4" />
-                <h2 className="px-4 mt-3 text-xl font-bold text-gray-900 dark:text-white leading-snug">{title ? title : ('404')}</h2>
             </div>
 
             <div className="drawer-content pl-10 p-25">                  
@@ -30,7 +30,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, title, content }) => {
             <style jsx>{`
                 .drawer { 
                     text-align: left;
-                     border-color: #e5e7eb;
+                    border-color: #e5e7eb;
                     margin: 0 auto;
                     padding: 0.6rem;
                     font-size: 0.9rem;
