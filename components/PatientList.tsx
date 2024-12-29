@@ -18,6 +18,7 @@ const PatientList: FC = () => {
       try {
           // const api_url = patient_id = ? `http://127.0.0.1:8000/patient_genome/patient_profile/${patient_id}` : `http://127.0.0.1:8000/patient_genome/patient_profile`);
           const api_url = `http://127.0.0.1:8000/patient_genome/patient_profile`;
+          // `${GENOME_BROWSER_API_PATH}/patient_genome/patient_profile`;
           const response = await fetch(api_url);
           if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
@@ -36,30 +37,7 @@ const PatientList: FC = () => {
           console.error('Error fetching data:', error);
           setError(error.message);
       }
-  };
-    
-  //     // useEffect(() => {
-  //     //     const fetchPatientProfiles = async () => {
-  //     //         const api_url = `${GENOME_BROWSER_API_PATH}/patient_genome/patient_profile`;
-  //     //         const response = await fetch(api_url);
-  //     //         if (!response.ok) {
-  //     //             throw new Error(`HTTP error! status: ${response.status}`);
-  //     //         }
-  //     //         return await response.json();
-  //     //     }
-  //     //     if(!isIndexedDatabase) {   
-  //     //         try {
-  //     //             const result: any = fetchPatientProfiles();
-  //     //             if (result.length > 0) {   
-  //     //                 setPatientProfiles(result); 
-  //     //                 return result;
-  //     //             } 
-  //     //         } catch (error) {
-  //     //             console.error('Error fetching patient profiles:', error);
-  //     //             setError(error.message);
-  //     //         }
-  //     //     }
-  //     // }, [patientProfiles]);  
+  }; 
 
   // useLiveQuery(
   //   async () => {
@@ -95,20 +73,8 @@ const PatientList: FC = () => {
   }; 
 
   return (
-    <>
-      {/* <div className="table-header">List of Patients</div> */}
-      {/* <ul> 
-        {patientProfiles?.map((patientProfile) => (
-          <li key={patientProfile.patientId}>
-            {patientProfile.patientId}, 
-            {patientProfile.patientName}
-          </li>
-        ))}
-      </ul>  */}
-      {/* <div>Error: {error} No genome data in database.</div> */}
-      {patientProfilesCount && (<div className="profile-count">{patientProfilesCount} patient profiles in total</div>)}
-      <hr />
-      {/* {selectedDataRow && <div>Selected Patient ID: {selectedDataRow.patientId}</div>} */}
+    <> 
+      {patientProfiles && (<div className="profile-count">{patientProfiles.length} patient profiles in total</div>)}
       <TableGrid rowData={patientProfiles} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
       <style jsx>{`
         p, div, li, input, label, select, button {
