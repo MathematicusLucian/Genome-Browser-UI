@@ -138,7 +138,6 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
   return (
     <> 
       <div className="file-uploader">
-        <h2>Upload a DNA file</h2>
         <div><span>Patient Id: </span>{patientId}</div>
         {importProgress==0 && (
           <div className="m-4 rounded bg-white">

@@ -8,9 +8,9 @@ import UploadForm from '@/components/UploadForm';
 import RiskReport from "@/components/RiskReport"; 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
+import { patientsIndexedDb} from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
-import { IChromosome, IPatientGenomeVariant } from "@/models/db"; 
+import { IChromosome, IPatientProfile, IPatientGenome, IPatientGenomeVariant } from "@/models/db"; 
 
 interface GenomePageProps {
 }
@@ -24,12 +24,14 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const router = useRouter();  
 
     const createNewPatient = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Create New patient</h2><div className="mt-2 px-7 py-3">CreatePatientForm</div></div>);
+        updateModalTitle("Create New Patient");
+        updateModalContent(<div className="mt-2 px-7 py-3">CreatePatientForm</div>);
         toggleModalVisible(true);
     }
   
     const uploadDNAFile = () => {
-        updateModalContent(<div><h2 className="text-2xl font-bold text-gray-900">Upload Patient File</h2><div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div></div>);
+        updateModalTitle("Upload Patient File");
+        updateModalContent(<div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div>);
         toggleModalVisible(true);
     }  
     
@@ -70,7 +72,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         setSelectedChromosome(targetChromosome);
     };
  
-    const chromosomesList = useLiveQuery( 
+    const chromosomesList = useLiveQuery(// IChromosome[]
         async () => patientsIndexedDb.chromosome.toArray()
     ); 
 

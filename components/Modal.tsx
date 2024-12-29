@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 interface ModalProps {
   isOpen: boolean;
@@ -27,12 +28,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButt
             onClick={handleCancel} 
         >
                 <div className="p-8 border w-50 shadow-lg rounded-md bg-white dark:bg-gray-900">
-                    <div className="text-center">
-                        {content && (
-                            <div className="text-sm text-gray-900 dark:text-white">
-                                {content} 
-                            </div>
-                        )}
+            
+                    <div className="flex flex-row text-center">
                         {isOkButtonViisible && (<Button className="close-button rounded px-3 py-1 mt-3 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900"
                             onClick={handleOk}>
                             Upload
@@ -41,7 +38,18 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButt
                             onClick={handleCancel}>
                             Close
                         </Button>)}
+                        <Separator orientation="vertical" className="mx-2 h-4" /> 
+                        <h2 className="px-4 mt-3 text-xl font-bold text-gray-900 dark:text-white leading-snug">{title ? title : ('404')}</h2>
                     </div>
+                    
+                    <div className="drawer-content pl-10 p-25">    
+                        {content && (
+                            <div className="text-sm text-gray-900 dark:text-white">
+                                {content} 
+                            </div>
+                        )}
+                    </div> 
+
                 </div>
 
             <style jsx>{`
