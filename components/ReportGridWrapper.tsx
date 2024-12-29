@@ -4,13 +4,13 @@ import type {FC} from 'react';
 import TableGrid from "@/components/TableGrid";
 import { IFullReport } from "@/models/db";
 
-interface RiskReportProps {
+interface ReportGridWrapperProps {
   riskReportRowsData: any;
   columns: any;
   handleSelectedDataRowChange:(e: any) => void
 }
 
-const RiskReport: FC<RiskReportProps> = ({riskReportRowsData, columns, handleSelectedDataRowChange}) => {   
+const ReportGridWrapper: FC<ReportGridWrapperProps> = ({riskReportRowsData, columns, handleSelectedDataRowChange}) => {   
   const [selectedRiskReportItem, setSelectedRiskReportItem] = useState<IFullReport | null>(null); 
   const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null); 
   const error = () => {};
@@ -31,4 +31,4 @@ const RiskReport: FC<RiskReportProps> = ({riskReportRowsData, columns, handleSel
   );
 };
 
-export default RiskReport;
+export default ReportGridWrapper;
