@@ -24,7 +24,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const [searchTermEntered, setSearchTermEntered] = useState(null); 
     const [dataStatus, setDataStatus] = useState<string>('');
     const [error, setError] = useState(null); 
-    const dashboardTitle = 'Patient Genome (Gene Variants) Viewer';
+    const dashboardTitle = 'Patient Risk Report';
 
     // ------
     // Router
@@ -103,9 +103,12 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         async () => patientsIndexedDb.chromosome.toArray()
     ); 
 
-    // SNP Pairs (ClinVar, etc.)
+    // Data Enrichment: SNP Pairs (ClinVar, etc.)
 
-    const fetchClinVar = () => {
+    const fetchClinVarNotes = () => {
+
+    };
+    const enrichPatientVariantsDataWithClinVarNotes = () => {
 
     };
 
