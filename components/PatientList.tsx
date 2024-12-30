@@ -7,9 +7,10 @@ import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks';
 import type { IPatientProfile } from "@/database/database";
 import { useLiveQuery } from "dexie-react-hooks"; 
 import { patientsIndexedDb } from "@/database/database"; 
+import { usePostSnpDataByRsidQuery } from "@/services/snpData";
 
 const PatientList: FC = () => {  
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]); 
   const [selectedDataRow, setSelectedDataRow] = useState<string | null>(null); 
@@ -36,7 +37,7 @@ const PatientList: FC = () => {
           setRowData(result); 
       } catch (error) {
           console.error('Error fetching data:', error);
-          setError(error.message);
+          // setError(error.message);
       }
   }; 
 
@@ -82,11 +83,27 @@ const PatientList: FC = () => {
     </option>
   )) : [];
 
+  const rsids = ["rs1000113","rs1000113"];
+  const { data, error, isLoading } = usePostSnpDataByRsidQuery(rsids);
+
   return (
     <> 
       {patientProfiles && (<div className="profile-count">{patientProfiles.length} patient profiles in total</div>)}
+
       {patientsList}
+
+      {error ? (
+        <>SNP data load error</>
+      ) : isLoading ? (
+        <>Loading SNP data...</>
+      ) : data ? (
+        <>
+          <h3>{JSON.stringify(data)}</h3> 
+        </>
+      ) : null}
+
       <TableGrid rowData={patientProfiles} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
+
       <style jsx>{`
         p, div, li, input, label, select, button {
           font-size: 0.8em;

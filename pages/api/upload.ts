@@ -5,7 +5,7 @@ import { open } from 'fs/promises';
 import { join } from 'path';
 import type { ChunkUploadHandler } from 'nextjs-chunk-upload-action';
 import { useState } from 'react';
-import { IPatientGenome, patientGenomeTable } from '@/database/database';
+import { IPatientGenome, patientsIndexedDb } from '@/database/database';
 import { v4 as uuidv4 } from 'uuid';
 // patient_id: uuidv4(),
 
@@ -22,7 +22,7 @@ export default async function handler(
 } 
 
 export const savePatientGeneVariantToIndexedDB = async (patientGenome) => { 
-  const patientGeneVariant = await patientGenomeTable.add(patientGenome);
+  const patientGeneVariant = await patientsIndexedDb.patientGenomeVariant.add(patientGenome);
 } 
 
 export const chunkUploadAction: ChunkUploadHandler<{ name: string }> = async (

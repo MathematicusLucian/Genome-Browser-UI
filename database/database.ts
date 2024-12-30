@@ -1,7 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie';
 import { v4 as uuidv4 } from 'uuid';
 import { IChromosome, IHumanGene, IGeneVariantMapping, IPatientProfile, IPatientGenome, IPatientProfileAndGenome, ISnpPairsResearch, IFullReport, IPatientGenomeVariant } from '../models/database';
-import { demoGeneVariantMapping, demoGenome, demoHumanGenes, demoMultipleGeneVariants, demoPatients, homoSapiensChromosomes } from './demoData';
+import { demoGeneVariantMapping, demoGenome, demoHumanGenes, demoMultipleGeneVariants, demoPatients, homoSapiensChromosomes } from '../state/demoState';
 
 // In IndexedDB, there are no explicit "tables" like in SQL databases, but rather object stores.
 // :. The database schema must be inspected during an upgrade or creation phase to check whether an object store already exists.

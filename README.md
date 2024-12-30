@@ -27,6 +27,7 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.
 - **React Provider**/**Context**, e.g. Dark/Light mode
 - Consideration of DRY/SOLID principles, and Gang of Four design patterns
+- **Redux** with **RTK** patterns, and **Axios**.
 - **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser `IndexedDB`.) (See section below on `Dexie.js`, etc..)
 - **shadncn/ui**
 

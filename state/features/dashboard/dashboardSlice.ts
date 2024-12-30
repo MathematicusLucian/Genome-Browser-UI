@@ -34,5 +34,5 @@ const dashboardlice = createSlice({
 })
 
 export const { dashboardAdded, dashboardUpdated } = dashboardlice.actions;
-export const { selectAllDashboard, selectDashboardById } = dashboardlice.selectors
+export const { selectAllDashboard, selectDashboardById } = dashboardlice.selectors;
 export default dashboardlice.reducer;

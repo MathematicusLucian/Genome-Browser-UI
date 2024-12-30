@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
+import axios from 'axios';
 import { initialPatientGenomeVariantState } from './state';
 import { IPatientGenomeVariant } from '../../../models/database';
 
@@ -34,5 +35,5 @@ const patientGeneVariantsSlice = createSlice({
 })
 
 export const { patientgenevariantAdded, patientgenevariantUpdated } = patientGeneVariantsSlice.actions;
-export const { selectAllPatientGeneVariants, selectPatientGeneVariantsById } = patientGeneVariantsSlice.selectors
+export const { selectAllPatientGeneVariants, selectPatientGeneVariantsById } = patientGeneVariantsSlice.selectors; 
 export default patientGeneVariantsSlice.reducer;
