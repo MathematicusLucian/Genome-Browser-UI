@@ -3,7 +3,8 @@ import '../styles/global.css'
 import type { AppProps } from 'next/app'
 import { useEffect, useMemo, useState } from "react"; 
 import Head from 'next/head'; 
-import { ThemeProvider } from "../providers/theme-provider";
+import { ThemeProvider } from "../providers/ThemeProvider";
+import StoreProvider from "../providers/StoreProvider";
 import { DrawerContext, ModalContext } from '../context'; 
 
 function App({ Component, pageProps }: AppProps) { 
@@ -71,6 +72,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       
+      <StoreProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -84,6 +86,7 @@ function App({ Component, pageProps }: AppProps) {
           </ModalContext.Provider>
 
         </ThemeProvider>
+        </StoreProvider>
       {/* </html> */}
     </>
   );

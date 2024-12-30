@@ -195,7 +195,7 @@ const ReportView: React.FC<ReportViewProps> = ({children, dashboardTitle, update
             buttonTitle: "Upload DNA File",
             onClickMethod: () => {
                 updateModalTitle("Upload Patient File");
-                updateModalContent(modalContent(<UploadForm patientIdFromParentComponent={patientId} />));       // move db callsto database/ folder
+                updateModalContent(modalContent(<UploadForm patientIdFromParentComponent={patientId} />));  
                 toggleModalVisible(true);
             },
             condtionVariable: patientId

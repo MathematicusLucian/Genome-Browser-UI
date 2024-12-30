@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import type {FC} from 'react';
 import TableGrid from './TableGrid';
+import reducer, { selectAllPatients } from '@/state/features/patients/patientsSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks';
 import type { IPatientProfile } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 
 import { patientsIndexedDb } from "@/database/db"; 
@@ -71,9 +73,19 @@ const PatientList: FC = () => {
       setSelectedDataRow(dataRow);  
   }; 
 
+  const dispatch = useAppDispatch()
+  const patients: any = useAppSelector(selectAllPatients)
+  
+  const patientsList = patients ? patients.map(user => (
+    <option key={user.id} value={user.id}>
+      {user.name}
+    </option>
+  )) : [];
+
   return (
     <> 
       {patientProfiles && (<div className="profile-count">{patientProfiles.length} patient profiles in total</div>)}
+      {patientsList}
       <TableGrid rowData={patientProfiles} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
       <style jsx>{`
         p, div, li, input, label, select, button {

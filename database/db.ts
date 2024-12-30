@@ -27,7 +27,7 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
   patientProfile: EntityTable<
     IPatientProfile,
     'patientId' // primary key "patientId" (for the typings only)
-  >;
+  >; 
 } & {
   patientGenome: EntityTable<
     IPatientGenome,
