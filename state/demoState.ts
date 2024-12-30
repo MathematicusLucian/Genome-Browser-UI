@@ -172,7 +172,7 @@ const demoMultipleGeneVariants = [
     patientGenomeId: demoPatientGenomeIds[0],
     chromosome: '12',
     position: '10',
-    genotype: 'AA',
+    genotype: 'AG',
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),
@@ -180,7 +180,7 @@ const demoMultipleGeneVariants = [
     patientGenomeId: demoPatientGenomeIds[2],
     chromosome: '8',
     position: '5',
-    genotype: 'GG',
+    genotype: 'CT',
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),
@@ -188,7 +188,7 @@ const demoMultipleGeneVariants = [
     patientGenomeId: demoPatientGenomeIds[2],
     chromosome: '4',
     position: '7',
-    genotype: 'TC',
+    genotype: 'GA',
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),

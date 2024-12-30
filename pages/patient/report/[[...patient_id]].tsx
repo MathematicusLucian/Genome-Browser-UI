@@ -2,13 +2,13 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
-import Dashboard from "@/components/Dashboard"; 
-import ReportGridWrapper from "@/components/ReportGridWrapper";
 import { Separator } from "@radix-ui/react-separator";
 import { DrawerContext, ModalContext } from "@/context";
-import CreatePatientForm from "@/components/CreatePatientForm";
-import UploadForm from "@/components/UploadForm";
 import ReportView from "@/components/ReportView";
+import { IFullReport } from "@/models/database";
+import ReportGridWrapper from "@/components/ReportGridWrapper";
+import { enrichedData } from "@/services/PatientData";
+import { demoMultipleGeneVariants } from "@/state/demoState";
 
 interface GenomePageProps {
 }
@@ -16,7 +16,18 @@ interface GenomePageProps {
 const GenomePage: React.FC<GenomePageProps> = (props) => {  
     const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
+
+
+    // REDUX
+    // Pull actual data in via Redux / patient data service
+
+    
     const [patientId, setPatientId] = useState<string>('');
+    const rsids: string[] = ["rs1000113","rs10156191", "rs10306114"];
+    let selectedPatientGenomeVariants: any =  demoMultipleGeneVariants;
+    const enrichedDataRows: any = enrichedData(rsids, selectedPatientGenomeVariants); 
+    const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null);  
+
 
     // ------
     // Router
@@ -26,9 +37,13 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     useEffect(() => {
         if (router.isReady) {
+
+            // REDUX
+
             setPatientId(String(router.query.patient_id));
+
         }
-    }, [router.isReady, router.asPath]); // patientProfiles    // move db callsto database/ folder
+    }, [router.isReady, router.asPath]);
 
     const handleSelectedPatientChange = (id) => {
         // http://127.0.0.1:3000/patient/genome?patientId=[x]
@@ -49,7 +64,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         return (
             <>
                 <Separator className="my-4" /> 
-                {contentSlot && (
+                {contentSlot && ( 
                     <div>
                         {Object.entries(contentSlot).map(([key, value]: any): any => (
                             <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
@@ -80,10 +95,9 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     return (
         <Layout>
-            <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectedPatientChange}> 
-                <div>Grid.....</div>
-                {selectedPatientGenomeVariants}
-                {/* <ReportGridWrapper riskReportRowsData={selectedPatientGenomeVariants} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} /> */}
+            <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectedPatientChange}>  
+
+                <ReportGridWrapper riskReportRowsData={enrichedDataRows} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} />
             </ReportView>
         </Layout>
     );

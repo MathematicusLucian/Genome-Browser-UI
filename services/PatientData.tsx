@@ -63,20 +63,30 @@ export const fetchData = async () => {
     }
 }; 
 
-export const enrichedData = () => {
-    const rsids = ["rs1000113","rs10156191", "rs10306114"];
-    let patientGeneVariants: any =  demoMultipleGeneVariants;
+export const enrichedData = (rsids: string[], patientGeneVariants: any) => {
     const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsids); 
-    const enrichmentResult = patientGeneVariants.map((patientVariant) => {
-        for(let snp in data) {
-          console.log('d', patientVariant);
-          console.log('d2', data[snp]);
-          if(data[snp]['rsid'] == patientVariant.rsid) {
-            console.log('banana');
-              patientVariant['notes'] = data[snp]['notes'];
-          } 
-          return patientVariant;
-        }
+
+    const enrichmentResult = patientGeneVariants && patientGeneVariants.map((patientVariant) => {
+
+        data && data.map((clinVar) => { 
+
+            if(clinVar.rsid == patientVariant.rsid) {
+                
+                 const clinVarGenotype = String(clinVar.allele1 + clinVar.allele2); 
+                const clinVarGenotypeReversed = String(clinVar.allele2 + clinVar.allele1);
+                const isAlleleMatch = clinVarGenotype == String(patientVariant.genotype);
+                const isAlleleMatchReversed = clinVarGenotypeReversed == String(patientVariant.genotype);
+                const alleleMatchBidirectional = isAlleleMatch || isAlleleMatchReversed;
+
+                if(alleleMatchBidirectional) {
+                    patientVariant.notes = clinVar.notes;  
+                }
+
+            }
+
+        })
+ 
+        return patientVariant;
     });
     return enrichmentResult;
 }

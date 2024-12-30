@@ -16,7 +16,6 @@ const Dashboard: React.FC<DashboardProps> = ({
 }) => {  
     const [dataStatus, setDataSatus] = useState();
 
-
     return (
         <>
             <div className="text-xl">{dashboardTitle}</div>
@@ -55,9 +54,10 @@ const Dashboard: React.FC<DashboardProps> = ({
 
             <Separator className="my-4" /> 
 
-            {/* {dashboardComponents.map((dashboardComponent) => (
+            {dashboardComponents.map((dashboardComponent) => (
                 <div>{dashboardComponent.component}</div>
-            ))} */}
+            ))}
+            
             {children}
                         
         </>

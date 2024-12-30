@@ -10,9 +10,12 @@ interface ReportGridWrapperProps {
   handleSelectedDataRowChange:(e: any) => void
 }
 
-const ReportGridWrapper: FC<ReportGridWrapperProps> = ({riskReportRowsData, columns, handleSelectedDataRowChange}) => {   
-  const [selectedRiskReportItem, setSelectedRiskReportItem] = useState<IFullReport | null>(null); 
-  const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null); 
+const ReportGridWrapper: FC<ReportGridWrapperProps> = ({
+  riskReportRowsData, 
+  columns,
+  handleSelectedDataRowChange
+}) => { 
+  
   const error = () => {};
   
   return (
