@@ -152,7 +152,7 @@ const demoGenome = [
 const demoMultipleGeneVariants = [
   {
     patientGeneVariantId: uuidv4(),
-    rsid: 'rs134242',
+    rsid: 'rs1000113',
     patientGenomeId: demoPatientGenomeIds[0],
     chromosome: '4',
     position: '7',
@@ -160,7 +160,7 @@ const demoMultipleGeneVariants = [
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),
-    rsid: 'rs145345',
+    rsid: 'rs10156191',
     patientGenomeId: demoPatientGenomeIds[0],
     chromosome: '5',
     position: '14',
@@ -168,7 +168,7 @@ const demoMultipleGeneVariants = [
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),
-    rsid: 'rs153435',
+    rsid: 'rs10306114',
     patientGenomeId: demoPatientGenomeIds[0],
     chromosome: '12',
     position: '10',
@@ -176,7 +176,7 @@ const demoMultipleGeneVariants = [
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),
-    rsid: 'i12435',
+    rsid: 'rs1000113',
     patientGenomeId: demoPatientGenomeIds[2],
     chromosome: '8',
     position: '5',
@@ -184,7 +184,7 @@ const demoMultipleGeneVariants = [
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),
-    rsid: 'rs134242',
+    rsid: 'rs10306114',
     patientGenomeId: demoPatientGenomeIds[2],
     chromosome: '4',
     position: '7',
@@ -192,7 +192,7 @@ const demoMultipleGeneVariants = [
     datetimestamp: Date.now()
   },{
     patientGeneVariantId: uuidv4(),
-    rsid: 'rs145345',
+    rsid: 'rs10156191',
     patientGenomeId: demoPatientGenomeIds[3],
     chromosome: '8',
     position: '2',

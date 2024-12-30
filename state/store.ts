@@ -5,7 +5,7 @@ import chromosomeReducer from './features/chromosome/chromosomeSlice'
 import patientProfileReducer from './features/patientProfile/patientProfileSlice'
 import patientGenomeReducer from './features/patientGenome/patientGenomeSlice'
 import patientGeneVariantReducer from './features/patientGeneVariant/patientGeneVariantSlice'
-import { snpResearchaApi } from '@/services/snpData'
+import { snpResearchaApi } from '@/services/ResearchData'
 
 const rootReducer = combineReducers({
   dashboard: dashboardReducer,

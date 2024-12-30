@@ -7,7 +7,8 @@ import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks';
 import type { IPatientProfile } from "@/database/database";
 import { useLiveQuery } from "dexie-react-hooks"; 
 import { patientsIndexedDb } from "@/database/database"; 
-import { usePostSnpDataByRsidQuery } from "@/services/snpData";
+import { usePostSnpDataByRsidQuery } from "@/services/ResearchData";
+import { demoMultipleGeneVariants } from "@/state/demoState";
 
 const PatientList: FC = () => {  
   // const [error, setError] = useState(null);
@@ -83,16 +84,33 @@ const PatientList: FC = () => {
     </option>
   )) : [];
 
-  const rsids = ["rs1000113","rs1000113"];
-  const { data, error, isLoading } = usePostSnpDataByRsidQuery(rsids);
+  const enrichedData = () => {
+    const rsids = ["rs1000113","rs10156191", "rs10306114"];
+    let patientGeneVariants: any =  demoMultipleGeneVariants;
+    const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsids); 
+    const enrichmentResult = patientGeneVariants.map((patientVariant) => {
+        for(let snp in data) {
+          console.log('d', patientVariant);
+          console.log('d2', data[snp]);
+          if(data[snp]['rsid'] == patientVariant.rsid) {
+            console.log('banana');
+              patientVariant['notes'] = data[snp]['notes'];
+          } 
+          return patientVariant;
+        }
+    });
+    return enrichmentResult;
+  }
 
   return (
     <> 
-      {patientProfiles && (<div className="profile-count">{patientProfiles.length} patient profiles in total</div>)}
+      {/* {patientProfiles && (<div className="profile-count">{patientProfiles.length} patient profiles in total</div>)} */}
 
-      {patientsList}
+      {/* {patientsList} */}
 
-      {error ? (
+      {JSON.stringify(enrichedData())}
+
+      {/* {error ? (
         <>SNP data load error</>
       ) : isLoading ? (
         <>Loading SNP data...</>
@@ -100,9 +118,9 @@ const PatientList: FC = () => {
         <>
           <h3>{JSON.stringify(data)}</h3> 
         </>
-      ) : null}
+      ) : null} */}
 
-      <TableGrid rowData={patientProfiles} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
+      {/* <TableGrid rowData={patientProfiles} columnDefs={columnDefs} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} /> */}
 
       <style jsx>{`
         p, div, li, input, label, select, button {
