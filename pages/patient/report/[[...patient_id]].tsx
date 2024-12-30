@@ -80,15 +80,9 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     return (
         <Layout>
-            <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectedPatientChange}>
-            
-            {/* 
-                selectedPatientGenomeVariants should be in  database file.
-
-                would have to move `state` variables to that file or to a shared location
-             */}
-
+            <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectedPatientChange}> 
                 <div>Grid.....</div>
+                {selectedPatientGenomeVariants}
                 {/* <ReportGridWrapper riskReportRowsData={selectedPatientGenomeVariants} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} /> */}
             </ReportView>
         </Layout>
@@ -96,9 +90,3 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 };
 
 export default GenomePage;
-
-// /snp_research/snp_research
-
-// request.body = [
-//      [ "rs1000113", "rs1000597" ]
-// ]
