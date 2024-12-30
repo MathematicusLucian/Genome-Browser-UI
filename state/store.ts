@@ -1,13 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
-import patientsReducer from './features/patients/patientsSlice'
+import chromosomeReducer from './features/chromosome/chromosomeSlice'
+import patientProfileReducer from './features/patientProfile/patientProfileSlice'
+import patientGenomeReducer from './features/patientGenome/patientGenomeSlice'
+import patientGeneVariantReducer from './features/patientGeneVariant/patientGeneVariantSlice'
 
 // Root Store
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-        patients: patientsReducer
-     } // 
+        chromosomes: chromosomeReducer,
+        patient: patientProfileReducer,
+        patientGenome: patientGenomeReducer,
+        patientGeneVariant: patientGeneVariantReducer
+     } 
   })
 }
 

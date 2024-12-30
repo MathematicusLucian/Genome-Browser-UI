@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type {FC} from 'react';
 import TableGrid from './TableGrid';
-import reducer, { selectAllPatients } from '@/state/features/patients/patientsSlice'
+import reducer, { selectAllPatients } from '@/state/features/patientProfile/patientProfileSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks';
 import type { IPatientProfile } from "@/database/db";
 import { useLiveQuery } from "dexie-react-hooks"; 

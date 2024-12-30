@@ -37,6 +37,7 @@ function App({ Component, pageProps }: AppProps) {
   }
   function toggleTheme() {
     setStyle(style => (style === "light" ? "dark" : "light"));
+    // also, update ag-grid styles
   }
 
   const themeContextValue = useMemo(() => ({
