@@ -5,8 +5,8 @@ import { ImportOptions, peakImportFile } from "dexie-export-import";
 import axios from 'axios';
 import { FileUploader } from "react-drag-drop-files";
 import { v4 as uuidv4 } from 'uuid';
-import { patientsIndexedDb } from "@/database/db";
-import { IPatientGenome, IPatientGenomeVariant, IPatientProfile } from "@/models/db";
+import { patientsIndexedDb } from "@/database/database";
+import { IPatientGenome, IPatientGenomeVariant, IPatientProfile } from "@/models/database";
 
 interface UploadFormProps {
   patientIdFromParentComponent: string;

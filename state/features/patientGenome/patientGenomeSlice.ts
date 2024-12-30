@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
-import { PatientGenome, initialState } from './state';
+import { initialState } from './state';
+import { IPatientGenome } from '../../../models/database';
 
 const fetchPatientGenomesFromState = (patientGenomeState) => {
     console.log('patientGenomeState', patientGenomeState);
@@ -10,11 +11,11 @@ const fetchPatientGenomeFromStateById = (patientGenomeState, patientgenomeId: st
     return patientGenomeState.find(patientgenome => patientgenome.id === patientgenomeId)
 }
 
-const addPatientGenomeToState = (state, action: PayloadAction<PatientGenome>) => {
+const addPatientGenomeToState = (state, action: PayloadAction<IPatientGenome>) => {
     state.push(action.payload)
 };
 
-const updatePatientGenomeInState = (state, action: PayloadAction<PatientGenome>) => {
+const updatePatientGenomeInState = (state, action: PayloadAction<IPatientGenome>) => {
     state.push(action.payload)
 };
 

@@ -1,8 +1,8 @@
-export interface Chromosome {
-    id: any;
-    name: any; 
-}
+import { IChromosome } from '../../../models/database';
 
-export const initialState: Chromosome[] = [
-    { id: '0', name: 'Default chromosome' }, 
+export const initialState: IChromosome[] = [
+    {  
+        chromsomeName: 'Default chromosome',
+        species: 'Homo sapiens',
+    }, 
 ]

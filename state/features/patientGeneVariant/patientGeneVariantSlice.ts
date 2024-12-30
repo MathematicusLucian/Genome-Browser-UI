@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
-import { PatientGeneVariant, initialState } from './state';
+import { initialPatientGenomeVariantState } from './state';
+import { IPatientGenomeVariant } from '../../../models/database';
 
 const fetchPatientGeneVariantsFromState = (patientGeneVariantsState) => {
     console.log('patientGeneVariantsState', patientGeneVariantsState);
@@ -10,17 +11,17 @@ const fetchPatientGeneVariantFromStateById = (patientGeneVariantsState, patientg
     return patientGeneVariantsState.find(patientgenevariant => patientgenevariant.id === patientgenevariantId)
 }
 
-const addPatientGeneVariantToState = (state, action: PayloadAction<PatientGeneVariant>) => {
+const addPatientGeneVariantToState = (state, action: PayloadAction<IPatientGenomeVariant>) => {
     state.push(action.payload)
 };
 
-const updatePatientGeneVariantInState = (state, action: PayloadAction<PatientGeneVariant>) => {
+const updatePatientGeneVariantInState = (state, action: PayloadAction<IPatientGenomeVariant>) => {
     state.push(action.payload)
 };
 
 const patientGeneVariantsSlice = createSlice({
     name: 'patientGeneVariant',
-    initialState: initialState,  
+    initialState: initialPatientGenomeVariantState,  
     reducers: {
         patientgenevariantAdded: addPatientGeneVariantToState,
         patientgenevariantUpdated: updatePatientGeneVariantInState,

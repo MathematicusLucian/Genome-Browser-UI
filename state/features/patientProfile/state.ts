@@ -1,8 +1,9 @@
-export interface PatientProfile {
-    id: any;
-    name: any; 
-}
+import { IPatientProfile } from '../../../models/database';
 
-export const initialState: PatientProfile[] = [
-    { id: '0', name: 'Default patient profile' }, 
+export const initialState: IPatientProfile[] = [
+    { 
+        patientId: '0', 
+        patientName: 'Default patient profile',
+        datetimestamp: Date.now()
+    }, 
 ]

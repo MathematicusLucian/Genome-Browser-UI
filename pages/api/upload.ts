@@ -5,7 +5,7 @@ import { open } from 'fs/promises';
 import { join } from 'path';
 import type { ChunkUploadHandler } from 'nextjs-chunk-upload-action';
 import { useState } from 'react';
-import { IPatientGenome, patientGenomeTable } from '@/database/db';
+import { IPatientGenome, patientGenomeTable } from '@/database/database';
 import { v4 as uuidv4 } from 'uuid';
 // patient_id: uuidv4(),
 

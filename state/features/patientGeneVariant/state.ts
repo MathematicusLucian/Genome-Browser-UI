@@ -1,8 +1,17 @@
-export interface PatientGeneVariant {
-    id: any;
-    name: any; 
-}
+import { IPatientGenomeVariant, ISnpPairsResearch, IFullReport } from '../../../models/database';
 
-export const initialState: PatientGeneVariant[] = [
-    { id: '0', name: 'Default patient gene variant' }, 
+export const initialPatientGenomeVariantState: IPatientGenomeVariant[] = [
+    { 
+        patientGeneVariantId: '1',
+        rsid: '1',
+        genotype: '1',
+        chromosome: '1',
+        position: '1',
+        datetimestamp: Date.now(),
+        patientGenomeId: 1
+    }, 
 ]
+
+export const ISnpPairsResearchState: ISnpPairsResearch[] = []
+
+export const IFullReportState: IFullReport[] = []

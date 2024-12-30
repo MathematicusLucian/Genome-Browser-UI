@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import type {FC} from 'react';  
 import TableGrid from "@/components/TableGrid";
-import { IPatientGenomeVariant } from "@/models/db";
+import { IPatientGenomeVariant } from "@/models/database";
 
 interface GeneVariantListProps {
   geneVariantList: any;

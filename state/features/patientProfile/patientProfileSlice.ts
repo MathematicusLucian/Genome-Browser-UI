@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
-import { PatientProfile, initialState } from './state';
+import { initialState } from './state';
+import { IPatientProfile } from '../../../models/database';
 
 const fetchPatientsFromState = (patientState) => {
     console.log('patientState', patientState);
@@ -10,11 +11,11 @@ const fetchPatientFromStateById = (patientState, patientId: string) => {
     return patientState.find(patient => patient.id === patientId)
 }
 
-const addPatientToState = (state, action: PayloadAction<PatientProfile>) => {
+const addPatientToState = (state, action: PayloadAction<IPatientProfile>) => {
     state.push(action.payload)
 };
 
-const updatePatientInState = (state, action: PayloadAction<PatientProfile>) => {
+const updatePatientInState = (state, action: PayloadAction<IPatientProfile>) => {
     state.push(action.payload)
 };
 

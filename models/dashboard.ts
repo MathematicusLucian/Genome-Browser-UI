@@ -1,3 +1,11 @@
+export interface IDashboard {
+    title: string;
+    dashboardProps: DashboardProps;
+    dashboardNavButtons: DashboardNavButtons;
+    dashboardNavDropdowns: DashboardNavDropdowns;
+    dashboardComponents: DashboardComponents;
+}
+
 export interface DashboardComponents {
     component: any; 
 }

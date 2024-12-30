@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
-import { Chromosome, initialState } from './state';
+import { initialState } from './state';
+import { IChromosome } from '../../../models/database';
 
 const fetchChromosomeFromState = (chromosomeState) => {
     console.log('chromosomeState', chromosomeState);
@@ -10,11 +11,11 @@ const fetchChromosomeFromStateById = (chromosomeState, chromosomeId: string) => 
     return chromosomeState.find(chromosome => chromosome.id === chromosomeId)
 }
 
-const addChromosomeToState = (state, action: PayloadAction<Chromosome>) => {
+const addChromosomeToState = (state, action: PayloadAction<IChromosome>) => {
     state.push(action.payload)
 };
 
-const updateChromosomeInState = (state, action: PayloadAction<Chromosome>) => {
+const updateChromosomeInState = (state, action: PayloadAction<IChromosome>) => {
     state.push(action.payload)
 };
 

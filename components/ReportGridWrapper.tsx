@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import type {FC} from 'react';  
 import TableGrid from "@/components/TableGrid";
-import { IFullReport } from "@/models/db";
+import { IFullReport } from "@/models/database";
 
 interface ReportGridWrapperProps {
   riskReportRowsData: any;

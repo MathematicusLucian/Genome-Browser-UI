@@ -4,9 +4,9 @@ import type {FC} from 'react';
 import TableGrid from './TableGrid';
 import reducer, { selectAllPatients } from '@/state/features/patientProfile/patientProfileSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks';
-import type { IPatientProfile } from "@/database/db";
+import type { IPatientProfile } from "@/database/database";
 import { useLiveQuery } from "dexie-react-hooks"; 
-import { patientsIndexedDb } from "@/database/db"; 
+import { patientsIndexedDb } from "@/database/database"; 
 
 const PatientList: FC = () => {  
   const [error, setError] = useState(null);

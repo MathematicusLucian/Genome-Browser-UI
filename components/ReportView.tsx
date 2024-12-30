@@ -1,9 +1,9 @@
 import { ReactNode, useContext, useState } from "react";
 import CreatePatientForm from "@/components/CreatePatientForm";
 import UploadForm from "@/components/UploadForm";
-import { IChromosome, IPatientGenome, IPatientProfile, ISnpPairsResearch } from "@/models/db";
+import { IChromosome, IPatientGenome, IPatientProfile, ISnpPairsResearch } from "@/models/database";
 import { useLiveQuery } from "dexie-react-hooks";
-import { patientsIndexedDb } from "@/database/db";
+import { patientsIndexedDb } from "@/database/database";
 import { DrawerContext, ModalContext } from "@/context";
 import Dashboard from "./Dashboard";
 

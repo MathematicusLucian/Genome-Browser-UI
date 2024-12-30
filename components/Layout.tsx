@@ -5,7 +5,7 @@ import Header from './Header';
 import Footer from './Footer'; 
 import Modal from './Modal';
 import Drawer from './Drawer';
-import { addDemoDataIfDatabaseTablesEmpty } from "@/database/db";
+import { addDemoDataIfDatabaseTablesEmpty } from "@/database/database";
 
 const RootLayout = ({ children }) => {      
   const { modalTitle, modalContent, modalVisible, updatModalTitle, updateModalContent, toggleModalVisible } = useContext(

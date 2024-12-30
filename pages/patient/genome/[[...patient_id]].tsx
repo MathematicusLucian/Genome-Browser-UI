@@ -9,9 +9,9 @@ import UploadForm from '@/components/UploadForm';
 import GeneVariantList from "@/components/GeneVariantList"; 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/db";
+import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/database";
 import { useLiveQuery } from "dexie-react-hooks"; 
-import { IPatientGenomeVariant } from "@/models/db"; 
+import { IPatientGenomeVariant } from "@/models/database"; 
 
 interface GenomePageProps {
 }
