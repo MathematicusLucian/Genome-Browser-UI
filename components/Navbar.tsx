@@ -1,18 +1,17 @@
 import React, { useContext } from "react";
+import Link from "next/link";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-  import { Menu } from "lucide-react";
-  import ModeToggle from './ModeToggle';
-  import { Button } from "@/components/ui/button";
-  import { nanoid } from "nanoid";
-  import Link from "next/link";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { nanoid } from "nanoid";
   
-  const Navbar = () => {
-    return (
+const Navbar = ({children}) => {
+  return (
       <>
 
         {/* Mobile */}
@@ -47,10 +46,6 @@ import {
         {/* Desktop */}
   
         <div className="flex items-center">
-          <Button variant="secondary" className="hidden md:block px-2">
-            Login
-          </Button>
-  
           <div className="flex md:hidden mr-2 items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild> 
@@ -87,20 +82,18 @@ import {
                   <a href="#faqs">FAQs</a>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Button variant="secondary" className="w-full text-sm">
-                    Login
-                  </Button>
+                  { children }
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
 
-          {/* Theme Toggle */}
+        <div className="flex items-center">  
+          { children }
+        </div>
 
-          <ModeToggle children={undefined} />
-          </div>
-
-          </>
+      </>
     );
   };
   

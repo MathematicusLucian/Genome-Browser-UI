@@ -1,11 +1,14 @@
-import React, { useContext } from "react";
-import styles from '../styles/Layout.module.css'; 
-import Navbar from "./Navbar";
+'use client'
+import React, { useContext } from "react"; 
+import Navbar from "./Navbar"; 
+import AuthAndThemeToggleButtons from "./AuthAndThemeToggleButtons"; 
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import NavbarPrivate from "./NavbarPrivate";
+import styles from '../styles/Layout.module.css';  
 
-const Header = () => { 
-    
+const Header = ({session}) => { 
+
     return (
         <>
             <header className="flex h-16 shrink-0 items-center gap-2 px-4 top sticky"> 
@@ -27,7 +30,15 @@ const Header = () => {
 
                     <Separator orientation="vertical" className="mr-2 h-4" />
             
-                    <Navbar />
+                    {session ? (
+                        <NavbarPrivate>
+                            <AuthAndThemeToggleButtons session={session} />
+                        </NavbarPrivate>
+                    ) : (
+                        <Navbar>
+                            <AuthAndThemeToggleButtons session={session} />
+                        </Navbar> 
+                    )} 
 
                 </Card>
             </header>

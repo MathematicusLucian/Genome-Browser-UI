@@ -12,7 +12,7 @@ const allowedOrigins = [
     'http://localhost:3000', 
   ];
 
-export function middleware() {
+export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // -------

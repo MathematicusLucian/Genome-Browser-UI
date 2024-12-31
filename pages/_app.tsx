@@ -1,12 +1,12 @@
 'use client'
-import '../styles/global.css'
-import type { AppProps } from 'next/app'
 import { useEffect, useMemo, useState } from "react"; 
+import type { AppProps } from 'next/app'
 import Head from 'next/head'; 
-import { SessionProvider } from "next-auth/react";
+import AppContentWrapper from './LayoutWrapper';
 import { ThemeProvider } from "../providers/ThemeProvider";
 import StoreProvider from "../providers/StoreProvider";
 import { DrawerContext, ModalContext } from '../context'; 
+import '../styles/global.css'
 
 function App({ 
   Component, 
@@ -78,7 +78,6 @@ function App({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <SessionProvider session={session}>
         {/* <GlobalProvider> */}
         <StoreProvider>
           <ThemeProvider
@@ -88,15 +87,16 @@ function App({
             disableTransitionOnChange
           >
             <ModalContext.Provider value={modalContextValue}>
-              <DrawerContext.Provider value={drawerContextValue}>
-                <Component {...pageProps} />
+              <DrawerContext.Provider value={drawerContextValue}> 
+                <AppContentWrapper session={session}>
+                  <Component {...pageProps} /> 
+                </AppContentWrapper>
               </DrawerContext.Provider>
             </ModalContext.Provider>
 
           </ThemeProvider>
-          </StoreProvider>
+        </StoreProvider>
         {/* </GlobalProvider> */}
-      </SessionProvider>
 
       {/* </body> */}
       {/* </html> */}
