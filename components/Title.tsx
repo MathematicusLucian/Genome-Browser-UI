@@ -10,7 +10,7 @@ interface TitleProps {
   buttonText?: string;
   icon?: any;
   href?: string;
-  onClick?: () => {};
+  onClick?: () => void;
 }
 
 const Title: React.FC<TitleProps> = ({
