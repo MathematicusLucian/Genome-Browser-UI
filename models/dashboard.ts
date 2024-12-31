@@ -1,22 +1,30 @@
 export interface IDashboard {
     title: string;
-    dashboardProps: DashboardProps;
-    dashboardNavButtons: DashboardNavButtons;
-    dashboardNavDropdowns: DashboardNavDropdowns;
-    dashboardComponents: DashboardComponents;
+    dashboardProps: IDashboardProps;
+    dashboardNavButtons: IDashboardNavButtons;
+    dashboardNavDropdowns: IDashboardNavDropdowns;
+    dashboardComponents: IDashboardComponents;
+    grid: IGrid,
+    error: any;
 }
 
-export interface DashboardComponents {
+export interface IGrid {
+    filters: any;
+    colunDefs: any;
+    rowData: any;
+} 
+
+export interface IDashboardComponents {
     component: any; 
 }
 
-export interface DashboardNavButtons {
+export interface IDashboardNavButtons {
     buttonTitle: string;
     onClickMethod: any;
     condtionVariable: any;
 }
 
-export interface DashboardNavDropdowns  {
+export interface IDashboardNavDropdowns  {
     dataAsList: any;
     selectedSelectItem: any;
     handleSelectedItemChange: any;
@@ -27,11 +35,11 @@ export interface DashboardNavDropdowns  {
     updateStatus: any;
 }
 
-export interface DashboardProps {
+export interface IDashboardProps {
     children: any,
     dashboardTitle: string;
-    dashboardComponents: DashboardComponents[];
+    dashboardComponents: IDashboardComponents[];
     error: any;
-    dashboardNavButtons: DashboardNavButtons[];
-    dashboardNavDropdowns: DashboardNavDropdowns[];
+    dashboardNavButtons: IDashboardNavButtons[];
+    dashboardNavDropdowns: IDashboardNavDropdowns[];
 }

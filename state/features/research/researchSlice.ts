@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
-import { initialState, IResearchData } from './state';
+import { initialState, IResearchData } from './state'; 
 
 const fetchResearchDatasFromState = (researchDataState) => {
     console.log('researchDataState', researchDataState);

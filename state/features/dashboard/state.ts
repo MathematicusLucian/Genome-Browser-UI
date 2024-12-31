@@ -7,5 +7,11 @@ export const initialState: IDashboard[] = [
         dashboardNavButtons: null,
         dashboardNavDropdowns: null,
         dashboardComponents: null,
+        grid: {
+            filters: [],
+            colunDefs: [],
+            rowData: [],
+        },
+        error: '',
     }, 
 ]

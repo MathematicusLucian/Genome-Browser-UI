@@ -2,93 +2,168 @@ import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
 import { initialState } from './state';
 import { IPatientProfile, IPatientGenome, IPatientGenomeVariant } from '../../../models/database';
 
-const fetchPatientsFromState = (patientState) => {
-    console.log('patientState', patientState);
-    return patientState;
-}
+// patientProfile
 
-const fetchPatientFromStateById = (patientState, patientId: string) => {
-    return patientState.find(patient => patient.id === patientId)
-}
-
-const addPatientToState = (state, action: PayloadAction<IPatientProfile>) => {
-    state.push(action.payload)
+const fetchPatientProfilesFromState = (state) => {
+    return state.patientProfile;
 };
 
-const updatePatientInState = (state, action: PayloadAction<IPatientProfile>) => {
-    state.push(action.payload)
+const fetchPatientProfileFromStateById = (state, patientId: string) => {
+    return state.patientProfile.find(patient => patient.id === patientId)
 };
 
-const fetchPatientGenomesFromState = (patientGenomeState) => {
-    console.log('patientGenomeState', patientGenomeState);
-    return patientGenomeState;
-}
+const addPatientProfileToState = (state, action: PayloadAction<IPatientProfile>) => {
+    state.patientProfile.push(action.payload)
+};
 
-const fetchPatientGenomeFromStateById = (patientGenomeState, patientgenomeId: string) => {
-    return patientGenomeState.find(patientgenome => patientgenome.id === patientgenomeId)
-}
+const updatePatientProfileInState = (state, action: PayloadAction<IPatientProfile>) => {
+    state.patientProfile.push(action.payload)
+};
+
+// selectedPatientProfile
+
+const fetchSelectedPatientProfileFromState = (state, patientId: string) => {
+    return state.selectedPatientProfile;
+};
+
+const addSelectedPatientProfileToState = (state, action: PayloadAction<IPatientProfile>) => {
+    state.selectedPatientProfile.push(action.payload)
+};
+
+const updateSelectedPatientProfileInState = (state, action: PayloadAction<IPatientProfile>) => {
+    state.selectedPatientProfile.push(action.payload)
+};
+
+// patientGenomeState
+
+const fetchPatientGenomesFromState = (state) => {
+    return state.patientGenome;
+};
+
+const fetchPatientGenomeFromStateById = (state, patientgenomeId: string) => {
+    return state.patientGenome.find(patientgenome => patientgenome.id === patientgenomeId)
+};
 
 const addPatientGenomeToState = (state, action: PayloadAction<IPatientGenome>) => {
-    state.push(action.payload)
+    state.patientGenome.push(action.payload)
 };
 
 const updatePatientGenomeInState = (state, action: PayloadAction<IPatientGenome>) => {
-    state.push(action.payload)
+    state.patientGenome.push(action.payload)
 };
 
-const fetchPatientGeneVariantsFromState = (patientGeneVariantsState) => {
-    console.log('patientGeneVariantsState', patientGeneVariantsState);
-    return patientGeneVariantsState;
-}
+// selectedPatientGenome
 
-const fetchPatientGeneVariantFromStateById = (patientGeneVariantsState, patientgenevariantId: string) => {
-    return patientGeneVariantsState.find(patientgenevariant => patientgenevariant.id === patientgenevariantId)
-}
+const fetchSelectedPatientGenomeFromState = (state) => {
+    return state.selectedPatientGenome;
+};
+
+const addSelectedPatientGenomeToState = (state, action: PayloadAction<IPatientGenome>) => {
+    state.selectedPatientGenome.push(action.payload)
+};
+
+const updateSelectedPatientGenomeInState = (state, action: PayloadAction<IPatientGenome>) => {
+    state.selectedPatientGenome.push(action.payload)
+};
+
+// patientGeneVariant
+
+const fetchPatientGeneVariantsFromState = (state) => {
+    return state.patientGeneVariant;
+};
+
+const fetchPatientGeneVariantFromStateById = (state, patientgenevariantId: string) => {
+    return state.patientGeneVariant.find(patientgenevariant => patientgenevariant.id === patientgenevariantId)
+};
 
 const addPatientGeneVariantToState = (state, action: PayloadAction<IPatientGenomeVariant>) => {
-    state.push(action.payload)
+    state.patientGeneVariant.push(action.payload)
 };
 
 const updatePatientGeneVariantInState = (state, action: PayloadAction<IPatientGenomeVariant>) => {
-    state.push(action.payload)
+    state.patientGeneVariant.push(action.payload)
+};
+
+// selectedPatientGeneVariant
+
+const fetchSelectedPatientGeneVariantFromState = (state) => {
+    return state.selectedPatientGeneVariant;
+};
+
+const addSelectedPatientGeneVariantToState = (state, action: PayloadAction<IPatientGenomeVariant>) => {
+    state.selectedPatientGeneVariant.push(action.payload)
+};
+
+const updateSelectedPatientGeneVariantInState = (state, action: PayloadAction<IPatientGenomeVariant>) => {
+    state.selectedPatientGeneVariant.push(action.payload)
 };
 
 const patientsSlice = createSlice({
     name: 'patient',
     initialState: initialState,  
     reducers: {
-        patientAdded: addPatientToState,
-        patientUpdated: updatePatientInState,
+        // Patient Patients
+        patientProfileAdded: addPatientProfileToState,
+        patientProfileUpdated: updatePatientProfileInState,
+        selectedPatientProfileAdded: addSelectedPatientProfileToState,
+        selectedPatientProfileUpdated: updateSelectedPatientProfileInState,
+        // Patient Genomes
         patientGenomeAdded: addPatientGenomeToState,
         patientGenomeUpdated: updatePatientGenomeInState,
-        patientGenevariantAdded: addPatientGeneVariantToState,
-        patientGenevariantUpdated: updatePatientGeneVariantInState,
+        selectedPatientGenomeAdded: addSelectedPatientGenomeToState,
+        selectedPatientGenomeUpdated: updateSelectedPatientGenomeInState,
+        // Patient Gene Variants
+        patientGeneVariantAdded: addPatientGeneVariantToState,
+        patientGeneVariantUpdated: updatePatientGeneVariantInState,
+        selectedPatientGeneVariantAdded: addSelectedPatientGeneVariantToState,
+        selectedPatientGeneVariantUpdated: updateSelectedPatientGeneVariantInState,
     }, 
     selectors: {
         // Selectors are given just the `PatientState` as a parameter, not the entire `RootState`
-        selectAllPatients: fetchPatientsFromState,
-        selectPatientsById: fetchPatientFromStateById,
+        // Patient Patients
+        selectAllPatientProfiles: fetchPatientProfilesFromState,
+        selectPatientProfilesById: fetchPatientProfileFromStateById,
+        selectSelectedPatientProfile: fetchSelectedPatientProfileFromState,
+        // Patient Genomes
         selectAllPatientGenomes: fetchPatientGenomesFromState,
         selectPatientGenomesById: fetchPatientGenomeFromStateById,
+        selectedPatientGenome: fetchSelectedPatientGenomeFromState,
+        // Patient Gene Variants
         selectAllPatientGeneVariants: fetchPatientGeneVariantsFromState,
-        selectPatientGeneVariantsById: fetchPatientGeneVariantFromStateById
+        selectPatientGeneVariantsById: fetchPatientGeneVariantFromStateById,
+        selectedPatientGeneVariant: fetchSelectedPatientGeneVariantFromState,
     }
 })
 
 export const { 
-    patientAdded, 
-    patientUpdated, 
+    // Patient Profiles
+    patientProfileAdded, 
+    patientProfileUpdated, 
+    selectedPatientProfileAdded,
+    selectedPatientProfileUpdated,
+    // Patient Genomes
     patientGenomeAdded, 
     patientGenomeUpdated,
-    patientGenevariantAdded, 
-    patientGenevariantUpdated
+    selectedPatientGenomeAdded,
+    selectedPatientGenomeUpdated,
+    // Patient Gene Variants
+    patientGeneVariantAdded, 
+    patientGeneVariantUpdated,
+    selectedPatientGeneVariantAdded,
+    selectedPatientGeneVariantUpdated,
  } = patientsSlice.actions;
 export const { 
-    selectAllPatients, 
-    selectPatientsById, 
+    // Patient Profiles
+    selectAllPatientProfiles, 
+    selectPatientProfilesById, 
+    selectSelectedPatientProfile,
+    // Patient Genomes
     selectAllPatientGenomes, 
     selectPatientGenomesById,
+    selectedPatientGenome,
+    // Patient Gene Variants
     selectAllPatientGeneVariants, 
-    selectPatientGeneVariantsById 
+    selectPatientGeneVariantsById,
+    selectedPatientGeneVariant,
 } = patientsSlice.selectors
 export default patientsSlice.reducer;  
