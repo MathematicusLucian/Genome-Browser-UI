@@ -46,7 +46,7 @@ const AppContentWrapper = ({
 
       <SessionProvider session={session}>  
         
-        <div className="w-full text-center border-b border-grey p-4 bg-slate-100 dark:bg-gray-950 fixed sticky top-0">
+        <div className="w-full text-center border-b border-grey p-0 m-0 bg-slate-100 dark:bg-gray-950 fixed sticky top-0">
           <Header session={session} />
         </div>
 
@@ -64,7 +64,7 @@ const AppContentWrapper = ({
           )} 
         </main>
 
-        <div className="w-full text-center border-b border-grey p-4 bg-slate-100 dark:bg-gray-950 fixed sticky top-0">
+        <div className="w-full text-center border-b border-grey p-0m-0 bg-slate-100 dark:bg-gray-950 fixed sticky top-0">
           <Footer />
         </div>
 

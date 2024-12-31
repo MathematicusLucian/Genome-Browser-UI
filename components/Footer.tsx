@@ -5,7 +5,7 @@ import { Separator } from "./ui/separator";
 const Footer = () => {
     return (
         <footer> 
-            <Card className="container rounded-2xl bg-card bg-slate-200 dark:bg-gray-900 py-3 px-4 border-0 flex items-center justify-between gap-6 mt-5">
+            <Card className="w-full container rounded-2xl bg-card bg-slate-200 dark:bg-gray-900 m-0 py-3 px-4 border-0 flex items-center justify-between gap-6">
                 <div className="flex flex-row items-center justify-between gap-4 md:h-10 md:flex-row">
                     <div className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
                         <a href="/" className="text-slate-950 dark:text-slate-100 text-xs">
