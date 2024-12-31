@@ -1,31 +1,11 @@
 import React from "react";
 import { Card } from "./ui/card";
-import { Separator } from "./ui/separator";
 
-const Footer = () => {
+const Footer = ({children}) => {
     return (
-        <footer> 
-            <Card className="w-full container rounded-2xl bg-card bg-slate-200 dark:bg-gray-900 m-0 py-3 px-4 border-0 flex items-center justify-between gap-6">
-                <div className="flex flex-row items-center justify-between gap-4 md:h-10 md:flex-row">
-                    <div className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
-                        <a href="/" className="text-slate-950 dark:text-slate-100 text-xs">
-                            Genome Browser UI, and Genome Browser API 🔬🧬
-                        </a> 
-                    </div>
-                    <Separator orientation="vertical" className="mr-2 h-4" />
-                    <div className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left"> 
-                        <strong></strong> &copy; <a
-                            href="https://github.com/MathematicusLucian"
-                            target="\_blank"
-                            rel="noreferrer"
-                            className="font-medium no-underline underline-offset-4 text-xs"
-                        >
-                            Luke Jones (github.com/MathematicusLucian)
-                        </a> {new Date().getFullYear()} 
-                    </div>
-                </div>
-            </Card>
-        </footer>
+        <Card className="w-full rounded-2xl bg-card bg-slate-200 dark:bg-gray-900 md:h-10 md:flex-row flex flex-row items-center justify-between gap-4 m-0 py-3 px-4">
+            {children}
+        </Card>
     )
 };
 

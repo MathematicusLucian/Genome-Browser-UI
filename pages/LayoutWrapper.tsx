@@ -2,15 +2,15 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/navigation';
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession, signIn, signOut } from "next-auth/react"
 import Header from '../components/Header';
 import Footer from '../components/Footer'; 
 import Modal from '../components/Modal';
 import Drawer from '../components/Drawer';
+import { Separator } from "../components/ui/separator";
 import { getUserInfo } from "../services/Auth";
 import { Loader2 } from "lucide-react";
 import { ModalContext, DrawerContext } from '../context';
-import { useSession, signIn, signOut } from "next-auth/react"
 
 const AppContentWrapper = ({ 
   session,
@@ -38,6 +38,25 @@ const AppContentWrapper = ({
     //   }
   // });
 
+  const FooterContent = ({}) => (<>
+    <div className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
+        <a href="/" className="text-slate-950 dark:text-slate-100 text-xs">
+            Genome Browser UI, and Genome Browser API 🔬🧬
+        </a> 
+    </div>
+    <Separator orientation="vertical" className="mr-2 h-4" />
+    <div className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left"> 
+        <strong></strong> &copy; <a
+            href="https://github.com/MathematicusLucian"
+            target="\_blank"
+            rel="noreferrer"
+            className="font-medium no-underline underline-offset-4 text-xs"
+        >
+            Luke Jones (github.com/MathematicusLucian)
+        </a> {new Date().getFullYear()} 
+    </div>
+  </>);
+
   return (
     <div className="flex flex-col h-screen p-0 m-0 top-0">
 
@@ -46,9 +65,9 @@ const AppContentWrapper = ({
 
       <SessionProvider session={session}>  
         
-        <div className="w-full text-center border-b border-grey p-0 m-0 bg-slate-100 dark:bg-gray-950 fixed sticky top-0">
+        <header>
           <Header session={session} />
-        </div>
+        </header>
 
         <main>
           {session ? (
@@ -64,9 +83,11 @@ const AppContentWrapper = ({
           )} 
         </main>
 
-        <div className="w-full text-center border-b border-grey p-0m-0 bg-slate-100 dark:bg-gray-950 fixed sticky top-0">
-          <Footer />
-        </div>
+        <footer>
+          <Footer>
+            <FooterContent />
+          </Footer>
+        </footer>
 
       </SessionProvider> 
 
