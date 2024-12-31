@@ -22,7 +22,7 @@ const RootLayout = ({
   const { drawerTitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(
       DrawerContext
   );   
-
+  
   const router = useRouter();
   const user: any = getUserInfo();
 

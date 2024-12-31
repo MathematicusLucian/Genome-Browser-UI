@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import type {FC} from 'react';
 import { useRouter } from 'next/router';
-import Layout from '@/pages/PrivateLayout';
+import PrivateLayout from '@/pages/PrivateLayout';
 import PatientList from "@/components/PatientList"; 
 
 interface PatientsListPageProps {
@@ -16,7 +16,7 @@ interface PatientsListPageProps {
     const { patient_id } = router.query;
 
     return (
-        <Layout isSidebar={true}>  
+        <PrivateLayout isSidebar={true}>  
             {patient_id || error ? (
                 <div>Error: {error}</div>
             ) : (
@@ -35,7 +35,7 @@ interface PatientsListPageProps {
                     `}</style>
                 </div>
             )}  
-        </Layout>
+        </PrivateLayout>
     );
 };
 

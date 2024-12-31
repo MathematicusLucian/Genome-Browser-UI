@@ -15,24 +15,28 @@ const PrivateLayout = ({ isSidebar, children }) => {
     addDemoDataIfDatabaseTablesEmpty();
   }, []);
 
-  return session ? (
-    <div className="p-0 m-0 flex flex-col flex-1 flex-grow w-full">
-      {isSidebar ? 
-        (
-          <Sidebar>
-            Sidebar content
-          </Sidebar>
-        )
-        : (<></>)
-      }
-      {children}
-    </div>
-  ):(
-    <> 
-      <h2 className="pb-5">Please login ...</h2>
-      <Button className="close-button rounded px-3 py-1 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900" onClick={() => signIn()}>Log in</Button>
-    </>
-  )
+  return children
+
+  // Session management
+  
+  // return session ? (
+  //   <div className="p-0 m-0 flex flex-col flex-1 flex-grow w-full">
+  //     {isSidebar ? 
+  //       (
+  //         <Sidebar>
+  //           Sidebar content
+  //         </Sidebar>
+  //       )
+  //       : (<></>)
+  //     }
+  //     {children}
+  //   </div>
+  // ):(
+  //   <> 
+  //     <h2 className="pb-5">Please login ...</h2>
+  //     <Button className="close-button rounded px-3 py-1 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900" onClick={() => signIn()}>Log in</Button>
+  //   </>
+  // )
 };
 
 export default PrivateLayout;

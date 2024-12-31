@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
 import { ModalContext, DrawerContext } from '../../../context';
-import Layout from '@/pages/PrivateLayout';
+import PrivateLayout from '@/pages/PrivateLayout';
 import Select from '@/components/Select'; 
 import CreatePatientForm from "@/components/CreatePatientForm";
 import UploadForm from '@/components/UploadForm'; 
@@ -142,7 +142,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     ];
     
     return (    
-        <Layout isSidebar={true}>  
+        <PrivateLayout isSidebar={true}>  
             <div className="page-header">Patient Genome (Gene Variants) Viewer</div>
 
             <div className="flex flex-row">
@@ -230,7 +230,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
                     padding: 0.5rem;
                 }
             `}</style> 
-        </Layout>
+        </PrivateLayout>
     );
 };
 

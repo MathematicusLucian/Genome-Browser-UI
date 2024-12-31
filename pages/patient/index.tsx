@@ -1,13 +1,13 @@
 import React, { useState } from 'react'; 
  import type {NextPage} from 'next'
-import Layout from '../../components/Layout';    
+import PrivateLayout from '../PrivateLayout';    
 import Intro from '@/components/Intro';
 
 const ProfilePagesHome: NextPage = () => {  
   return (
-    <Layout>  
+    <PrivateLayout isSidebar={false}>  
       <Intro />
-   </Layout>
+   </PrivateLayout>
   );
 };
 

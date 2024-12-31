@@ -1,14 +1,14 @@
 import React from 'react'; 
 import type {NextPage} from 'next'
-import Layout from './PrivateLayout';    
+import PublicLayout from './PublicLayout';    
 import Intro from '@/components/Intro';
 
 const Home: NextPage = () => {  
   
   return (
-    <Layout isSidebar={false}>  
+    <PublicLayout isSidebar={false}>  
         <Intro /> 
-   </Layout>
+   </PublicLayout>
   );
 };
 
