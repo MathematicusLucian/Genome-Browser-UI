@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'; 
+import React from 'react'; 
 import type {NextPage} from 'next'
-import Layout from './Layout';    
+import Layout from './PrivateLayout';    
 import Intro from '@/components/Intro';
 
 const Home: NextPage = () => {  
   
   return (
-    <Layout>  
+    <Layout isSidebar={false}>  
         <Intro /> 
    </Layout>
   );

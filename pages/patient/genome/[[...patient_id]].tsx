@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
 import { ModalContext, DrawerContext } from '../../../context';
-import Layout from '@/components/Layout';
+import Layout from '@/pages/PrivateLayout';
 import Select from '@/components/Select'; 
 import CreatePatientForm from "@/components/CreatePatientForm";
 import UploadForm from '@/components/UploadForm'; 
@@ -141,8 +141,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 1, maxWidth: 280},
     ];
     
-    return (
-        <Layout>
+    return (    
+        <Layout isSidebar={true}>  
             <div className="page-header">Patient Genome (Gene Variants) Viewer</div>
 
             <div className="flex flex-row">

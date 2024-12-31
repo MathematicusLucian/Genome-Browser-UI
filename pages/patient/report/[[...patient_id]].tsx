@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useRouter } from 'next/router';
-import Layout from '@/components/Layout';
+import Layout from '@/pages/PrivateLayout';
 import { Separator } from "@radix-ui/react-separator";
 import { DrawerContext, ModalContext } from "@/context";
 import ReportView from "@/components/ReportView";
@@ -94,9 +94,8 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     ]; 
 
     return (
-        <Layout>
+        <Layout isSidebar={true}>  
             <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectedPatientChange}>  
-
                 <ReportGridWrapper riskReportRowsData={enrichedDataRows} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} />
             </ReportView>
         </Layout>

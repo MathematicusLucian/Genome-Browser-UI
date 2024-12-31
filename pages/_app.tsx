@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react"; 
 import type { AppProps } from 'next/app'
 import Head from 'next/head'; 
-import AppContentWrapper from './LayoutWrapper';
+import AppContentWrapper from './AppContentWrapper';
 import { ThemeProvider } from "../providers/ThemeProvider";
 import StoreProvider from "../providers/StoreProvider";
 import { DrawerContext, ModalContext } from '../context'; 
@@ -88,7 +88,7 @@ function App({
           >
             <ModalContext.Provider value={modalContextValue}>
               <DrawerContext.Provider value={drawerContextValue}> 
-                <AppContentWrapper session={session}>
+                <AppContentWrapper sidebar="false" session={session}>
                   <Component {...pageProps} /> 
                 </AppContentWrapper>
               </DrawerContext.Provider>
