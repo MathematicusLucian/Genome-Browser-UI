@@ -1,18 +1,14 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 // import type { PreloadedState } from '@reduxjs/toolkit'
 import dashboardReducer from './features/dashboard/dashboardSlice'
-import chromosomeReducer from './features/chromosome/chromosomeSlice'
-import patientProfileReducer from './features/patientProfile/patientProfileSlice'
-import patientGenomeReducer from './features/patientGenome/patientGenomeSlice'
-import patientGeneVariantReducer from './features/patientGeneVariant/patientGeneVariantSlice'
+import geneDefinitionReducer from './features/geneDefinition/geneDefinitionSlice'
+import patientProfileReducer from './features/patient/patientSlice' 
 import { snpResearchaApi } from '@/services/ResearchData'
 
 const rootReducer = combineReducers({
   dashboard: dashboardReducer,
-  chromosomes: chromosomeReducer,
-  patient: patientProfileReducer,
-  patientGenome: patientGenomeReducer,
-  patientGeneVariant: patientGeneVariantReducer,
+  geneDefinition: geneDefinitionReducer,
+  patient: patientProfileReducer, 
   // Add the generated reducer as a specific top-level slice
   [snpResearchaApi.reducerPath]: snpResearchaApi.reducer,
 })

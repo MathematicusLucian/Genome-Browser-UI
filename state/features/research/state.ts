@@ -1,15 +1,14 @@
-import { ISnpPairsResearch, IGeneVariantMapping, IPatientProfileAndGenome, IFullReport } from '../../../models/database';
+import { ISnpPairsResearch, IPatientProfileAndGenome, IFullReport } from '../../../models/database';
 
 export interface IResearchData {
     snpPairsResearch: ISnpPairsResearch[]|ISnpPairsResearch,
-    geneVariantMapping: IGeneVariantMapping[]|IGeneVariantMapping,
     patientProfileAndGenome: IPatientProfileAndGenome[]|IPatientProfileAndGenome, 
     riskReport: IFullReport
 }
 
 export const initialState: IResearchData[] = [
     { 
-        snpPairsResearch: {
+        snpPairsResearch: [{
             rsid_genotypes: '',
             rsid: '',
             allele1: '',
@@ -17,12 +16,8 @@ export const initialState: IResearchData[] = [
             magnitude: '', 
             risk: '',
             notes: '',
-        }, 
-        geneVariantMapping: {
-            geneVariant: '',
-            geneName: '',
-        },
-        patientProfileAndGenome: {
+        }], 
+        patientProfileAndGenome: [{
             patientProfileAndGenome: '',
             rsid: '',
             genotype: '',
@@ -30,7 +25,7 @@ export const initialState: IResearchData[] = [
             position: '',
             patientId: '',
             patientName: '',
-        },
+        }],
         riskReport: {
             rsid_genotypes: '',
             rsid: '',
