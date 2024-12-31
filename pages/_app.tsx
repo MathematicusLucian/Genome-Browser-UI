@@ -3,11 +3,15 @@ import '../styles/global.css'
 import type { AppProps } from 'next/app'
 import { useEffect, useMemo, useState } from "react"; 
 import Head from 'next/head'; 
+import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "../providers/ThemeProvider";
 import StoreProvider from "../providers/StoreProvider";
 import { DrawerContext, ModalContext } from '../context'; 
 
-function App({ Component, pageProps }: AppProps) { 
+function App({ 
+  Component, 
+  pageProps: { session, ...pageProps },
+ }: AppProps) { 
 
   const [drawerTitle, setDrawerTitle] = useState(false);
   const [drawerContent, setDrawerContent] = useState(null);
@@ -66,28 +70,35 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       {/* <html lang="en" suppressHydrationWarning> */}
+      {/* <body className={"antialiased"}></body> */}
       <Head>
         <title>Genome Browser</title>
         <meta name="description" content=""/>
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      
-      <StoreProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ModalContext.Provider value={modalContextValue}>
-            <DrawerContext.Provider value={drawerContextValue}>
-              <Component {...pageProps} />
-            </DrawerContext.Provider>
-          </ModalContext.Provider>
 
-        </ThemeProvider>
-        </StoreProvider>
+      <SessionProvider session={session}>
+        {/* <GlobalProvider> */}
+        <StoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ModalContext.Provider value={modalContextValue}>
+              <DrawerContext.Provider value={drawerContextValue}>
+                <Component {...pageProps} />
+              </DrawerContext.Provider>
+            </ModalContext.Provider>
+
+          </ThemeProvider>
+          </StoreProvider>
+        {/* </GlobalProvider> */}
+      </SessionProvider>
+
+      {/* </body> */}
       {/* </html> */}
     </>
   );
