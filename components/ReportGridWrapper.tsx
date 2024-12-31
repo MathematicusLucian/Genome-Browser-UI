@@ -23,11 +23,7 @@ const ReportGridWrapper: FC<ReportGridWrapperProps> = ({
       {!riskReportRowsData ? (
           <div>Please provide risk report data. The patient profile, or genome may not exist.</div>
       ) : (
-          <div>      
-              <br />
-              <h2 className="table-header">Risk Report</h2>   
-              <TableGrid rowData={riskReportRowsData} columnDefs={columns} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
-          </div>
+          <TableGrid rowData={riskReportRowsData} columnDefs={columns} error={error} onSelectedDataRowChange={handleSelectedDataRowChange} />
       )} 
   
     </>

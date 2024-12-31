@@ -21,18 +21,8 @@ interface PatientsListPageProps {
                 <div>Error: {error}</div>
             ) : (
                 <div>
-                    <div className="page-header">List of Patient Profiles</div>
+                    <div className="text-xl">List of Patient Profiles</div>
                     <PatientList /> 
-                    <style jsx>{`
-                        p, div, li, input, label, select, button {
-                            font-size: 0.8em;
-                        }
-                        .page-header { 
-                            font-size: 1.3em;
-                            padding: 0.1rem 0 0 0;
-                            font-weight: 900;
-                        }
-                    `}</style>
                 </div>
             )}  
         </PrivateLayout>

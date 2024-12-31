@@ -143,7 +143,7 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     
     return (    
         <PrivateLayout isSidebar={true}>  
-            <div className="page-header">Patient Genome (Gene Variants) Viewer</div>
+            <div className="text-xl">Patient Genome (Gene Variants) Viewer</div> 
 
             <div className="flex flex-row">
 
@@ -207,29 +207,6 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
                 </div>
             )} 
-            <style jsx>{`
-                p, div, li, input, label, select, button {
-                    font-size: 0.8rem;
-                }
-                .page-header { 
-                    font-size: 1rem;
-                    padding: 0.1rem 0 0 0;
-                    font-weight: 900;
-                }
-                .table-header { 
-                    font-size: 1rem;
-                    padding: 0.1rem 0 0 0;
-                    font-weight: 900;
-                }
-                .table-sub-header span {
-                    font-weight: 900;
-                }
-                .profile-count {
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    padding: 0.5rem;
-                }
-            `}</style> 
         </PrivateLayout>
     );
 };
