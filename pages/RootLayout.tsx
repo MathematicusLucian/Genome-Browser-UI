@@ -67,7 +67,7 @@ const RootLayout = ({
           <Header session={session} />
         </header>
 
-        <main className="w-100 flex flex-1 flex-column justify-center items-center text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950">
+        <main className="w-100 flex flex-1 flex-column justify-top items-center text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950 top-0">
           {children}
         </main>
 
