@@ -12,16 +12,13 @@ import { IChromosome } from '@/models/database';
 
 // REDUX 
 const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null);  
-const patientId = 0;
+const patientId = '0';
 
 const patientProfiles = useLiveQuery( 
     async () => patientsIndexedDb.patientProfile.toArray()
 ); 
-// export const patientProfiles = useLiveQuery( 
-//     () => patientsIndexedDb.patientProfile.toArray()
-// ); 
-// export const patientProfiles = [{}];
 
+// REDUX -> call Actopn to update patient when app loads
 const routerReady = () => {
     const patientIdFromRouter = Array.isArray(patientId) ? patientId[0] : patientId;   
     // REDUX
@@ -35,10 +32,12 @@ const routerReady = () => {
 }
 
 const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    // if(event.target.value != patientId) {           // move db callsto database/ folder
+    if(event.target.value != patientId) {           // move db callsto database/ folder
         // REDUX
+        // This handler updates the patient state.
+        // Patient State observed from patient route which prompts redirect.
         // updateRoute(event.target.value);
-    // }
+    }
 };
 
 // --------------

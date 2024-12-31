@@ -5,7 +5,7 @@ import {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useUpdateProfilePictureMutation,
-} from "../state/features/profile/profileState";
+} from "../state/features/userProfile/userProfile";
 import { Button, Upload } from "antd";
 import { useFormik } from "formik";
 import { Loader2 } from "lucide-react";

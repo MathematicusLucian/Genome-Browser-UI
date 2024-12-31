@@ -23,7 +23,7 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 
 **This also serves to demonstrate:**
 
-- A _React_ implementation (with **NexrtJs**)
+- A _React_ implementation (with **NextJs**)
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.
 - **React Provider**/**Context**, e.g. Dark/Light mode
 - Consideration of DRY/SOLID principles, and Gang of Four design patterns

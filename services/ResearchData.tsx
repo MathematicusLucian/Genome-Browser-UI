@@ -2,12 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { IChromosome, IPatientGenomeVariant, ISnpPairsResearch } from '../models/database'; 
 import { axiosBaseQuery } from '@/state/base/baseQuery';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { patientsIndexedDb } from '@/database/database';
-
-
-// --------------------
-// Published Literature
-// -------------------- 
+import { patientsIndexedDb } from '@/database/database'; 
 
 // -----------
 // Chromosomes
