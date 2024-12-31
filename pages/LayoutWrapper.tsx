@@ -69,17 +69,17 @@ const AppContentWrapper = ({
           <Header session={session} />
         </header>
 
-        <main>
+        <main className="w-100 text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950">
           {session ? (
               <>
                   {children}
               </>
           ) : (
-              <div className="w-100 text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950">
+              <> 
                   <h2 className="pb-5">Please login ...</h2>
                   <button onClick={() => signIn()}>Log in</button>
                   {/* <Loader2 size={32} className="animate-spin text-primary" /> */}
-              </div>
+              </>
           )} 
         </main>
 
