@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import AuthAndThemeToggleButtons from "./AuthAndThemeToggleButtons"; 
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import Logo from "./Logo";
 import NavbarPrivate from "./NavbarPrivate";
 import styles from '../styles/Layout.module.css';  
 
@@ -15,17 +16,7 @@ const Header = ({session}) => {
                 <Card className="container rounded-2xl bg-card bg-slate-200 dark:bg-gray-900 py-3 px-4 border-0 flex items-center justify-between gap-6 mt-5">
                     
                     <div className="-ml-1 text-primary cursor-pointer">
-                        <h1 className={styles.title}>
-                            <a href="/" className="text-slate-950 dark:text-slate-100">
-                                Genome Browser 🔬🧬
-                            </a>
-                        </h1>
-                        <div className={styles.subtitle}>
-                            (<strong>Engineered by:</strong>&nbsp;
-                            <a href="https://github.com/MathematicusLucian" target="blank" className="dark:text-slate-100">
-                                MathematicusLucian
-                            </a>)
-                        </div>
+                        {Logo}
                     </div> 
 
                     <Separator orientation="vertical" className="mr-2 h-4" />
