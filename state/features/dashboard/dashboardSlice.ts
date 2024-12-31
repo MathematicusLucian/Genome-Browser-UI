@@ -23,19 +23,19 @@ const updateDashboardInState = (state, action: PayloadAction<IDashboard>) => {
 // Error
 
 const fetchDashboardErrorFromState = (state) => {
-    return state;
+    return state.error
 }
 
 const fetchDashboardErrorFromStateById = (state, ErrorMsgId: string) => {
-    return state.find(ErrorMsg => ErrorMsg.id === ErrorMsgId)
+    return state.error.find(ErrorMsg => ErrorMsg.id === ErrorMsgId)
 }
 
 const addDashboardErrorToState = (state, action: PayloadAction<IDashboard>) => {
-    state.push(action.payload)
+    state.error.push(action.payload)
 };
 
 const updateDashboardErrorInState = (state, action: PayloadAction<IDashboard>) => {
-    state.push(action.payload)
+    state.error.push(action.payload)
 };
 
 // GRID
@@ -43,38 +43,38 @@ const updateDashboardErrorInState = (state, action: PayloadAction<IDashboard>) =
 // Column Defs
 
 const fetchColDefsFromState = (state) => {
-    return state;
+    return state.grid.colDefs;
 }
 
 const fetchColDefsFromStateById = (state, ColDefsId: string) => {
-    return state.find(ColDefs => ColDefs.id === ColDefsId)
+    return state.grid.colDefs.find(ColDefs => ColDefs.id === ColDefsId)
 }
 
 const addColDefsToState = (state, action: PayloadAction<any>) => {
-    state.push(action.payload)
+    state.grid.colDefs.push(action.payload)
 };
 
 const updateColDefsInState = (state, action: PayloadAction<any>) => {
-    state.push(action.payload)
+    state.grid.colDefs.push(action.payload)
 };
 
 
 // Row Data
 
 const fetchRowDataFromState = (state) => {
-    return state;
+    return state.grid.rowData;
 }
 
 const fetchRowDataFromStateById = (state, RowDataId: string) => {
-    return state.find(RowData => RowData.id === RowDataId)
+    return state.grid.rowData.find(RowData => RowData.id === RowDataId)
 }
 
 const addRowDataToState = (state, action: PayloadAction<any>) => {
-    state.push(action.payload)
+    state.grid.rowData.push(action.payload)
 };
 
 const updateRowDataInState = (state, action: PayloadAction<any>) => {
-    state.push(action.payload)
+    state.grid.rowData.push(action.payload)
 };
 
 const dashboardlice = createSlice({
