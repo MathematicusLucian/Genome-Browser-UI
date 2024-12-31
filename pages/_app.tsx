@@ -1,8 +1,8 @@
 'use client'
-import { useEffect, useMemo, useState } from "react"; 
+import { useMemo, useState } from "react"; 
 import type { AppProps } from 'next/app'
 import Head from 'next/head'; 
-import AppContentWrapper from './AppContentWrapper';
+import AppContentWrapper from './RootLayout';
 import { ThemeProvider } from "../providers/ThemeProvider";
 import StoreProvider from "../providers/StoreProvider";
 import { DrawerContext, ModalContext } from '../context'; 
