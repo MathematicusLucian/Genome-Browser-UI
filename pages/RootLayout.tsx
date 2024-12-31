@@ -6,9 +6,9 @@ import Header from '../components/Header';
 import Footer from '../components/Footer'; 
 import Modal from '../components/Modal';
 import Drawer from '../components/Drawer';
+import { Button } from "@/components/ui/button";
 import { Separator } from "../components/ui/separator";
 import { getUserInfo } from "../services/Auth";
-import { Loader2 } from "lucide-react";
 import { ModalContext, DrawerContext } from '../context';
 
 const RootLayout = ({ 
@@ -70,16 +70,15 @@ const RootLayout = ({
         </header>
 
 
-        <main className="w-100 text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950">
+        <main className="w-100 flex flex-1 flex-column justify-center items-center text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950">
           {session ? (
               <>
                   {children}
               </>
           ) : (
               <> 
-                  <h2 className="pb-5">Please login ...</h2>
-                  <button onClick={() => signIn()}>Log in</button>
-                  {/* <Loader2 size={32} className="animate-spin text-primary" /> */}
+                <h2 className="pb-5">Please login ...</h2>
+                <Button className="close-button rounded px-3 py-1 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900" onClick={() => signIn()}>Log in</Button>
               </>
           )} 
         </main>
@@ -93,13 +92,8 @@ const RootLayout = ({
       </SessionProvider> 
 
       <style jsx>{`
-        main {
-          padding: 2rem;
-          flex: 1;
-          display: flex;
+        main { 
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
         } 
         code {
           background: #fafafa;
