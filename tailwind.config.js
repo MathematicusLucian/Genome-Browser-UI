@@ -5,12 +5,11 @@ module.exports = {
       "./app/**/*.{js,ts,jsx,tsx}",
       "./pages/**/*.{js,ts,jsx,tsx}",
       "./components/**/*.{js,ts,jsx,tsx}",
-  
       // Or if using `src` directory:
       "./src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
-    	extend: {
+    	extend: { 
     		borderRadius: {
     			lg: 'var(--radius)',
     			md: 'calc(var(--radius) - 2px)',
@@ -56,8 +55,20 @@ module.exports = {
     				'3': 'hsl(var(--chart-3))',
     				'4': 'hsl(var(--chart-4))',
     				'5': 'hsl(var(--chart-5))'
-    			}
-    		}
+    			},
+				info: "#007bff",
+				danger: "#e5000c",
+				light: "#F9FAFB",
+    		},
+			screens: {
+			  xs: "475px",
+			  sm: "575px",
+			  md: "768px",
+			  lg: "1024px",
+			  xl: "1280px",
+			  "2xl": "1536px",
+			  "3xl": "1920px",
+			},
     	}
     },
     plugins: [require("tailwindcss-animate")],

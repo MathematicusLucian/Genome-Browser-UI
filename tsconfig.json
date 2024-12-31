@@ -19,6 +19,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api", "../SecretaryApp/index2.tsx", "../SecretaryApp/models/TodoItem.ts", "../SecretaryApp/models/TodoList.ts", "../SecretaryApp/database/todoDb.ts", "../SecretaryApp/database/usersDb.ts", "../SecretaryApp/database/populate.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api", "../SecretaryApp/index2.tsx", "../SecretaryApp/models/TodoItem.ts", "../SecretaryApp/models/TodoList.ts", "../SecretaryApp/database/todoDb.ts", "../SecretaryApp/database/usersDb.ts", "../SecretaryApp/database/populate.ts", "pages/middleware.js"],
   "exclude": ["node_modules"]
 }
