@@ -20,8 +20,8 @@ const rootReducer = combineReducers({
 export const makeStore = () => {
 // export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
   return configureStore({
-      reducer: rootReducer,
-     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(snpResearchaApi.middleware),
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(snpResearchaApi.middleware),
   })
 }
 // Infer the type of makeStore

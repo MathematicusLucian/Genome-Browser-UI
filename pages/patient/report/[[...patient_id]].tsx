@@ -23,8 +23,13 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
 
     
     const [patientId, setPatientId] = useState<string>('');
+    
     const rsids: string[] = ["rs1000113","rs10156191", "rs10306114"];
     let selectedPatientGenomeVariants: any =  demoMultipleGeneVariants;
+
+    
+    
+    
     const enrichedDataRows: any = enrichedData(rsids, selectedPatientGenomeVariants); 
     const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null);  
 

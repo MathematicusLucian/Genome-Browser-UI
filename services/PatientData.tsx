@@ -1,30 +1,98 @@
 import reducer, { selectAllPatients } from '@/state/features/patientProfile/patientProfileSlice'
-import type { IPatientProfile } from "@/database/database";
+import type { IPatientGenome, IPatientProfile, ISnpPairsResearch } from "@/database/database";
 import { useLiveQuery } from "dexie-react-hooks"; 
 import { patientsIndexedDb } from "@/database/database"; 
 import { usePostSnpDataByRsidQuery } from "@/services/ResearchData";
 import { demoMultipleGeneVariants } from "@/state/demoState";
+import { IChromosome } from '@/models/database';
 
-// Data
+// -------
+// Patient
+// -------
+
+// REDUX 
+const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null);  
+const patientId = 0;
+
+const patientProfiles = useLiveQuery( 
+    async () => patientsIndexedDb.patientProfile.toArray()
+); 
 // export const patientProfiles = useLiveQuery( 
 //     () => patientsIndexedDb.patientProfile.toArray()
 // ); 
-export const patientProfiles = [{}];
+// export const patientProfiles = [{}];
 
-// useLiveQuery(
-//   async () => {
-//     if(isIndexedDatabase) {
-//       const patientProfilesCount = await patientsIndexedDb.patientGenome.toCollection().count(function (count) {
-//         setPatientProfilesCount(String(count));
-//       });
-//       let result = await patientsIndexedDb.patientGenome.toArray(); 
-//       if (result.length > 0) {   
-//         setRowData(result); 
-//         return result;
-//       }
-//     }
-//   }, 
-// );
+const routerReady = () => {
+    const patientIdFromRouter = Array.isArray(patientId) ? patientId[0] : patientId;   
+    // REDUX
+    // setPatientId(patientIdFromRouter);
+    if(patientProfiles) { 
+        const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
+        if(patientProfileMatch) {
+            setSelectedPatientProfile(patientProfileMatch);
+        }
+    } 
+}
+
+const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    // if(event.target.value != patientId) {           // move db callsto database/ folder
+        // REDUX
+        // updateRoute(event.target.value);
+    // }
+};
+
+// --------------
+// Patient Genome
+// --------------
+
+// REDUX 
+const [selectedPatientGenome, setSelectedPatientGenome] = useState<IPatientGenome | null>(null);  
+const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
+
+const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const targetPatientGenomeId = event.target.value;
+    setSelectedPatientGenomeId(targetPatientGenomeId); 
+    const targetPatientGenome = selectedPatientGenomes.find((x) => x.patientGenomeId = targetPatientGenomeId);
+    setSelectedPatientGenome(targetPatientGenome); 
+}; 
+
+const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
+    async () => { 
+        const dexieResponse = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(patientId)).toArray();  
+        return dexieResponse;
+    },
+    [patientId] 
+); 
+
+// --------------------
+// Patient Gene Variant
+// --------------------
+
+// REDUX
+const searchTermEntered = "";
+const selectedChromosome: any = [];
+
+const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
+    async () => {
+        let dexieResponse: any = [];
+        // searchTermEntered("cancer");
+        if(selectedPatientGenomeId && searchTermEntered) {
+            dexieResponse = [];
+            // dexieResponse = await patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
+        } else if(selectedPatientGenomeId && !selectedChromosome) {
+            // REDUX
+            // setDataStatus('Please select a chromosome, or input a search term');
+            console.log('Please select a chromosome, or input a SNP ID to search for');
+            dexieResponse = [];
+        } else if(selectedPatientGenomeId && selectedChromosome) {
+            const chromosomeToQueryBy = selectedChromosome['chromosomeName'].replace('Chromosome','').replace(' ','');
+            dexieResponse = await patientsIndexedDb.patientGenomeVariant.where({'patientGenomeId': String(selectedPatientGenomeId), 'chromosome': chromosomeToQueryBy}).toArray();  
+            // dexieResponse = await patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();   
+        } 
+        return dexieResponse;
+    },
+    [selectedPatientGenomeId, selectedChromosome]
+);  
 
 export const fetchData = async () => {
     try {
@@ -62,31 +130,3 @@ export const fetchData = async () => {
 
     }
 }; 
-
-export const enrichedData = (rsids: string[], patientGeneVariants: any) => {
-    const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsids); 
-
-    const enrichmentResult = patientGeneVariants && patientGeneVariants.map((patientVariant) => {
-
-        data && data.map((clinVar) => { 
-
-            if(clinVar.rsid == patientVariant.rsid) {
-                
-                 const clinVarGenotype = String(clinVar.allele1 + clinVar.allele2); 
-                const clinVarGenotypeReversed = String(clinVar.allele2 + clinVar.allele1);
-                const isAlleleMatch = clinVarGenotype == String(patientVariant.genotype);
-                const isAlleleMatchReversed = clinVarGenotypeReversed == String(patientVariant.genotype);
-                const alleleMatchBidirectional = isAlleleMatch || isAlleleMatchReversed;
-
-                if(alleleMatchBidirectional) {
-                    patientVariant.notes = clinVar.notes;  
-                }
-
-            }
-
-        })
- 
-        return patientVariant;
-    });
-    return enrichmentResult;
-}
