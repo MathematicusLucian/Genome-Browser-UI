@@ -4,24 +4,25 @@ import { Button } from "./ui/button";
 import { cn } from "../cn";
 
 interface TitleProps {
-  className?: string,
-  title: string,
-  button?: any,
-  buttonText?: string,
-  icon?: any,
-  href?: string,
-  onClick?: any,
+  className?: string;
+  title: string;
+  button?: any;
+  buttonText?: string;
+  icon?: any;
+  href?: string;
+  onClick?: () => {};
 }
 
-export default function Title({
+const Title: React.FC<TitleProps> = ({
   className,
   title,
   button,
   buttonText,
-  href = "",
-  onClick = () => {},
-  icon = true,
-}): TitleProps {
+  icon,
+  href,
+  onClick,
+}) => {
+  
   return (
     <>
       <h2
@@ -32,11 +33,13 @@ export default function Title({
       >
         {title}
       </h2>  
-      {button && buttonText ? (
+      {button 
+        && buttonText ? (
           href ? (
             <Link href={href}>
               <Button>
                 {buttonText}
+                {icon}
               </Button>
             </Link>
           ) : (
@@ -44,9 +47,14 @@ export default function Title({
               onClick={onClick}
             >
               {buttonText}
+              {icon}
             </Button>
           )
-        ) : null} 
+        ) 
+        : (<></>)
+      } 
     </>
   );
 }
+
+export default Title;
