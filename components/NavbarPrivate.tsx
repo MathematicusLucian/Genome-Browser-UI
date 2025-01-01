@@ -50,7 +50,7 @@ import { nanoid } from "nanoid";
             <div className="flex md:hidden mr-2 items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild> 
-                  <span className="py-2 px-2 bg-gray-950 dark:bg-slate-100 text-slate-100 dark:text-zinc-950 xs:text-sm rounded-md">DNA Analysis</span>
+                  <span className="py-2 px-2 bg-gray-950 dark:bg-slate-100 text-slate-100 dark:text-zinc-950 xs:text-sm md:text-lg lg:text-2xl rounded-md">DNA Analysis</span>
                 </DropdownMenuTrigger>
     
                 <DropdownMenuContent align="start">
