@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import styles from '../styles/Layout.module.css';  
 
 const Logo = (<>
-    <h1 className={styles.title}>
+    <h1  className="text-2xl xs:text-sm xs:font-bold font-bold text-slate-950 dark:text-slate-100">
         <a href="/" className="text-slate-950 dark:text-slate-100">
             Genome Browser 🔬🧬
         </a>

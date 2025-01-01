@@ -17,7 +17,7 @@ import { nanoid } from "nanoid";
   
           {/* Mobile */}
   
-          <ul className="hidden md:flex items-center gap-10 text-card-foreground">
+          <ul className="hidden xs:text-sm md:flex items-center gap-10 text-card-foreground">
             <li className="text-primary font-medium">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -46,11 +46,11 @@ import { nanoid } from "nanoid";
   
           {/* Desktop */}
     
-          <div className="flex items-center">
+          <div className="flex items-center xs:text-sm">
             <div className="flex md:hidden mr-2 items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild> 
-                  <span className="py-2 px-2 bg-gray-950 dark:bg-slate-100 text-slate-100 dark:text-zinc-950 rounded-md">DNA Analysis</span>
+                  <span className="py-2 px-2 bg-gray-950 dark:bg-slate-100 text-slate-100 dark:text-zinc-950 xs:text-sm rounded-md">DNA Analysis</span>
                 </DropdownMenuTrigger>
     
                 <DropdownMenuContent align="start">
