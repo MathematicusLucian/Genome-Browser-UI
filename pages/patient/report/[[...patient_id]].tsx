@@ -144,19 +144,15 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // ----------------------------------
 
     // Fetch selected patient's genome variants from IndexedDB
-    const selectedPatientGeneVariants = useLiveQuery(
-        () => {
-            // patientsIndexedDb.patientGenomeVariant.toArray(),
-            console.log(selectedPatientSelectedGenome?.patientGenomeId, selectedPatientSelectedChromosome?.chromosomeName);
-            if(selectedPatientSelectedGenome?.patientGenomeId && selectedPatientSelectedChromosome?.chromosomeName) {
-                const res = patientsIndexedDb.patientGenomeVariant
-                    .where({
-                        // 'patientGenomeId': String(selectedPatientSelectedGenome.patientGenomeId), 
-                        'chromosome': selectedPatientSelectedChromosome.chromosomeName
-                    })
-                    .toArray();
-                    // console.log('res', res);
-            }
+    const selectedPatientGeneVariants: any[] = useLiveQuery(
+        () => { 
+            console.log('String(selectedPatientSelectedChromosome?.chromosomeName)', String(selectedPatientSelectedChromosome?.chromosomeName));
+            return patientsIndexedDb.patientGenomeVariant
+                .where({
+                    'patientGenomeId': String(selectedPatientSelectedGenome?.patientGenomeId), 
+                    'chromosome': String(selectedPatientSelectedChromosome?.chromosomeName).replace('Chromosome', '').replace(' ', '')
+                })
+                .toArray(); 
         },
         [selectedPatientSelectedGenome?.patientGenomeId, selectedPatientSelectedChromosome?.chromosomeName]
     );  
