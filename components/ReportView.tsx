@@ -74,43 +74,43 @@ const ReportView: React.FC<ReportViewProps> = ({children, dashboardTitle, update
         }
     ]; 
 
-    const dashboardNavDropdowns = [ 
-        {
-            dataAsList: patientProfiles,
-            error: error,
-            selectedSelectItem: selectedPatientProfile,
-            handleSelectedItemChange: handleSelectedPatientChange,
-            selectDataKey: 'patientId',
-            displayField: 'patientName',
-            selectTitle: "Patient Profile:",
-            placeholder: "Please choose a patient",
-            updateStatus: updateDataStatus,
-        },{
-            dataAsList: selectedPatientGenomes,
-            error: error,
-            selectedSelectItem: selectedPatientGenome,
-            handleSelectedItemChange: handleSelectedPatientGenomeChange,
-            selectDataKey: 'patientGenomeId', 
-            displayField: 'datetimestamp', 
-            selectTitle: "Genome:",
-            placeholder: "Please choose a DNA file",
-            updateStatus: updateDataStatus,
-        },{
-            dataAsList: chromosomesList,
-            error: error,
-            selectedSelectItem: selectedPatientGenome,
-            handleSelectedItemChange: handleSelectedChromosomeChange,
-            selectDataKey: 'chromosomeName',
-            displayField: 'chromosomeName',
-            selectTitle: "Chromosome:",
-            placeholder: "Please choose a chromosome",
-            updateStatus: updateDataStatus,
-        }
-    ];
+    // const dashboardNavDropdowns = [ 
+    //     {
+    //         dataAsList: patientProfiles,
+    //         error: error,
+    //         selectedSelectItem: selectedPatientProfile,
+    //         handleSelectedItemChange: handleSelectedPatientChange,
+    //         selectDataKey: 'patientId',
+    //         displayField: 'patientName',
+    //         selectTitle: "Patient Profile:",
+    //         placeholder: "Please choose a patient",
+    //         updateStatus: updateDataStatus,
+    //     },{
+    //         dataAsList: selectedPatientGenomes,
+    //         error: error,
+    //         selectedSelectItem: selectedPatientGenome,
+    //         handleSelectedItemChange: handleSelectedPatientGenomeChange,
+    //         selectDataKey: 'patientGenomeId', 
+    //         displayField: 'datetimestamp', 
+    //         selectTitle: "Genome:",
+    //         placeholder: "Please choose a DNA file",
+    //         updateStatus: updateDataStatus,
+    //     },{
+    //         dataAsList: chromosomesList,
+    //         error: error,
+    //         selectedSelectItem: selectedPatientGenome,
+    //         handleSelectedItemChange: handleSelectedChromosomeChange,
+    //         selectDataKey: 'chromosomeName',
+    //         displayField: 'chromosomeName',
+    //         selectTitle: "Chromosome:",
+    //         placeholder: "Please choose a chromosome",
+    //         updateStatus: updateDataStatus,
+    //     }
+    // ];
 
     return (
         <div>
-            <Dashboard 
+            {/* <Dashboard 
                 dashboardTitle={dashboardTitle}
                 dashboardComponents={dashboardComponents([])}
                 error={null}
@@ -118,7 +118,7 @@ const ReportView: React.FC<ReportViewProps> = ({children, dashboardTitle, update
                 dashboardNavDropdowns={dashboardNavDropdowns}
             >
                 {children}
-            </Dashboard>
+            </Dashboard> */}
         </div>
     )
 };

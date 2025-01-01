@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
 import { initialState, IResearchData } from './state'; 
 
+// ClinVar
+
 const fetchResearchDatasFromState = (researchDataState) => {
-    console.log('researchDataState', researchDataState);
     return researchDataState;
 }
 
@@ -22,11 +23,13 @@ const researchDatasSlice = createSlice({
     name: 'researchData',
     initialState: initialState,  
     reducers: {
+        // ClinVar
         researchDataAdded: addResearchDataToState,
         researchDataUpdated: updateResearchDataInState,
     }, 
     selectors: {
         // Selectors are given just the `ResearchDataState` as a parameter, not the entire `RootState`
+        // ClinVar
         selectAllResearchDatas: fetchResearchDatasFromState,
         selectResearchDatasById: fetchResearchDataFromStateById
     }

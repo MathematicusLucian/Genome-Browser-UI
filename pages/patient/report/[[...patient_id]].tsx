@@ -5,10 +5,14 @@ import PrivateLayout from '@/pages/PrivateLayout';
 import { Separator } from "@radix-ui/react-separator";
 import { DrawerContext, ModalContext } from "@/context";
 import ReportView from "@/components/ReportView";
-import { IFullReport } from "@/models/database";
+import { IFullReport, IPatientProfile } from "@/models/database";
 import ReportGridWrapper from "@/components/ReportGridWrapper";
-import { enrichedData } from "@/services/PatientData";
-import { demoMultipleGeneVariants } from "@/state/demoState";
+import { demoMultipleGeneVariants } from "@/state/demoState"; 
+import { useLiveQuery } from "dexie-react-hooks";
+import { patientsIndexedDb } from "@/database/database";
+import { selectedPatientProfileAdded, selectSelectedPatientProfile, selectedPatientProfileUpdated, selectPatientGeneVariantsById } from "@/state/features/patient/patientSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/state-hooks";
+import { date } from "yup";
 
 interface GenomePageProps {
 }
@@ -17,43 +21,88 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
     const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
 
+    // -------
+    // Patient
+    // -------     
 
-    // REDUX
-    // Pull actual data in via Redux / patient data service
-
-    
-    const [patientId, setPatientId] = useState<string>('');
-    
-    const rsids: string[] = ["rs1000113","rs10156191", "rs10306114"];
-    let selectedPatientGenomeVariants: any =  demoMultipleGeneVariants;
-
-    
-    
-    
-    const enrichedDataRows: any = enrichedData(rsids, selectedPatientGenomeVariants); 
-    const [selectedPatientGeneVariantId, setSelectedPatientGeneVariantId] = useState<string| null>(null);  
-
+    const patientProfiles = useLiveQuery(
+        () => patientsIndexedDb.patientProfile.toArray()
+    );
+    // console.log('patientProfiles', patientProfiles);
+    // const selectedPatient: IPatientProfile = selectSelectedPatientProfile[0];
+    // const selectedPatientId: IPatientProfile = selectSelectedPatientProfile[0]; //.patientId;
+    // // REDUX
+    // // This handler updates the patient state.
+    // // selectAllPatientProfiles()
+    // // const eventTarget = selectPatientProfilesById(event.target.value)[0];
+    // // selectedPatientProfileUpdated(eventTarget);
+    // // Patient State observed from patient route which prompts redirect.
+    // // updateRoute(event.target.value);
+    // const updatePatientProfile = (patientProfileId) => patientProfileUpdated(patientProfileId);
+    // const updatePatientProfileId = (patientProfileId) => patientProfileUpdated(patientProfileId);
 
     // ------
     // Router
     // ------
-    
+
     const router = useRouter();  
+    const dispatch = useAppDispatch(); 
 
-    useEffect(() => {
-        if (router.isReady) {
+    // const yy = {patientId: 'abc123', patientName: 'ABC', datetimestamp: 1735436607882};
+    // selectedPatientProfileAdded(yy);
+    // // selectedPatientProfileAdded3(yy);
+                    
+    // const x = useAppSelector((state) => state.patient[0].selectedPatientProfile);
+    // console.log(JSON.stringify(x));
 
-            // REDUX
+    // console.log(selectSelectedPatientProfile);
+    const y = useAppSelector((state) => selectSelectedPatientProfile(state));
+    console.log('1. page -> state', JSON.stringify(y));
+    
+    // const examplePatientProfile = {patientId: '0', patientName: 'Desdfsgfault patient profile', datetimestamp: 1735690558006}; // : IPatientProfile
+    // dispatch((state) => selectedPatientProfileAdded(examplePatientProfile)) 
+    // console.log(dispatch((state) => selectedPatientProfileUpdated(examplePatientProfile)).payload.patientName)
+    dispatch((state) => selectedPatientProfileUpdated({patientId: 1, patientName: 'ABC', datetimestamp: Date.now()}))
 
-            setPatientId(String(router.query.patient_id));
+    // const y = useAppSelector((state) => state.patient);
+    // const y = useAppSelector((state) => state.patient.selectedPatientProfile);
+    // console.log('y', JSON.stringify(y));
+    const yy = useAppSelector((state) => selectSelectedPatientProfile(state));
+    console.log('2. page -> state', JSON.stringify(yy));
+    
+    // useEffect(() => {
+    //     if (router.isReady) {
+    //         // console.log('router');
+    //         if(patientProfiles) { 
+    //             // console.log(JSON.stringify(router.query));
+    //             // console.log(JSON.stringify(router.query.patient_id));
+    //             const patientIdFromRouter = String(router.query.patient_id);
+    //             // console.log('patientIdFromRouter', patientIdFromRouter);
+    //             // console.log('p', p);
+    //             const patientProfileMatch = patientProfiles.find((x) => {
+    //                 // console.log('x', JSON.stringify(x)); 
+    //                 return x.patientId == patientIdFromRouter;
+    //             });
+    //             if(patientProfileMatch) {
+    //                 // console.log('patientProfileMatch', patientProfileMatch); 
 
-        }
-    }, [router.isReady, router.asPath]);
+    //                 // selectedPatientProfileUpdated(patientProfileMatch);
+    //                 // const x = selectSelectedPatientProfile;
+    //                 // selectSelectedPatientProfile.find((x) => x.patientId != '1');
+    //                 // console.log('selectSelectedPatientProfile', x);
+    //             }
+    //         }   
+    //     }
+    // }, [router.isReady, router.asPath, patientProfiles]);
 
-    const handleSelectedPatientChange = (id) => {
-        // http://127.0.0.1:3000/patient/genome?patientId=[x]
-        router.push(`/patient/report/${id}`);
-    };
+    // useEffect(() => {
+    //     console.log('selectedPatient', selectedPatient);
+        // if(selectedPatientId != String(router.query.patient_id))
+        // if(selectedPatient.patientId != String(router.query.patient_id)) {
+        //     // http://127.0.0.1:3000/patient/genome?patientId=[x]
+        //     router.push(`/patient/report/${selectedPatientId}`);
+        // }
+    // }, [router.isReady, router.asPath, selectedPatientId]); 
 
     // --------------
     // Drawer Content
@@ -98,11 +147,21 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
         {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 2, maxWidth: 120},
     ]; 
 
+    // const rsids: string[] = ["rs1000113","rs10156191", "rs10306114"];
+    // let selectedPatientGenomeVariants: any =  demoMultipleGeneVariants;
+    
+    // // const enrichedDataRows: any = enrichedData(rsids, selectedPatientGenomeVariants); 
+
+    const handleSelectedPatientChange: any = (e) => {
+
+    }
+
     return (
-        <PrivateLayout isSidebar={true}>  
-            <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectedPatientChange}>  
+        <PrivateLayout isSidebar={true}>
+            Grid  
+            {/* <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectedPatientChange}>  
                 <ReportGridWrapper riskReportRowsData={enrichedDataRows} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} />
-            </ReportView>
+            </ReportView> */}
         </PrivateLayout>
     );
 };

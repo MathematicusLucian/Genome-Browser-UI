@@ -8,8 +8,8 @@ const fetchPatientProfilesFromState = (state) => {
     return state.patientProfile;
 };
 
-const fetchPatientProfileFromStateById = (state, patientId: string) => {
-    return state.patientProfile.find(patient => patient.id === patientId)
+const fetchPatientProfileFromStateById = (state, patientProfileId: string) => {
+    return state.patientProfile.find(patientProfile => patientProfile.patientProfileId === patientProfileId)
 };
 
 const addPatientProfileToState = (state, action: PayloadAction<IPatientProfile>) => {
@@ -22,16 +22,20 @@ const updatePatientProfileInState = (state, action: PayloadAction<IPatientProfil
 
 // selectedPatientProfile
 
-const fetchSelectedPatientProfileFromState = (state, patientId: string) => {
+const fetchSelectedPatientProfileFromState = (state) => { 
+    console.log("FETCH esdfadsgdsfg", state);
     return state.selectedPatientProfile;
 };
 
+// const addSelectedPatientProfileToState = (state, action: PayloadAction<IPatientProfile>) => {
 const addSelectedPatientProfileToState = (state, action: PayloadAction<IPatientProfile>) => {
-    state.selectedPatientProfile.push(action.payload)
+    console.log("ADD esdfadsgdsfg");
+    return state.selectedPatientProfile.push(action.payload)
 };
 
-const updateSelectedPatientProfileInState = (state, action: PayloadAction<IPatientProfile>) => {
-    state.selectedPatientProfile.push(action.payload)
+const updateSelectedPatientProfileInState = (state, action: PayloadAction<any>) => {
+    console.log("UPDATE esdfadsgdsfg");
+    return state.push(action.payload)
 };
 
 // patientGenomeState
@@ -40,8 +44,8 @@ const fetchPatientGenomesFromState = (state) => {
     return state.patientGenome;
 };
 
-const fetchPatientGenomeFromStateById = (state, patientgenomeId: string) => {
-    return state.patientGenome.find(patientgenome => patientgenome.id === patientgenomeId)
+const fetchPatientGenomeFromStateById = (state, patientGenome: string) => {
+    return state.patientGenome.find(patientGenome => patientGenome.patientGenomeId === patientGenome)
 };
 
 const addPatientGenomeToState = (state, action: PayloadAction<IPatientGenome>) => {
@@ -72,8 +76,8 @@ const fetchPatientGeneVariantsFromState = (state) => {
     return state.patientGeneVariant;
 };
 
-const fetchPatientGeneVariantFromStateById = (state, patientgenevariantId: string) => {
-    return state.patientGeneVariant.find(patientgenevariant => patientgenevariant.id === patientgenevariantId)
+const fetchPatientGeneVariantFromStateById = (state, patientGeneVariantId: string) => {
+    return state.patientGeneVariant.find(patientGeneVariant => patientGeneVariant.patientGeneVariantId === patientGeneVariantId)
 };
 
 const addPatientGeneVariantToState = (state, action: PayloadAction<IPatientGenomeVariant>) => {
@@ -105,7 +109,7 @@ const patientsSlice = createSlice({
         // Patient Patients
         patientProfileAdded: addPatientProfileToState,
         patientProfileUpdated: updatePatientProfileInState,
-        selectedPatientProfileAdded: addSelectedPatientProfileToState,
+        selectedPatientProfileAdded: addSelectedPatientProfileToState, 
         selectedPatientProfileUpdated: updateSelectedPatientProfileInState,
         // Patient Genomes
         patientGenomeAdded: addPatientGenomeToState,

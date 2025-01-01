@@ -4,7 +4,7 @@ import type {FC} from 'react';
 import TableGrid from './TableGrid';
 import { enrichedData, fetchData, patientProfiles } from '../services/PatientData';
 import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks';
-import { selectAllPatients } from "@/state/features/patientProfile/patientProfileSlice";
+import { selectAllPatients } from "@/state/features/patient/patientSlice";
 import error from "next/error";
 
 const PatientList: FC = () => {  
