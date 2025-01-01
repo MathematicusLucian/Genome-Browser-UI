@@ -5,7 +5,7 @@ import { IPatientProfile, IPatientGenome, IPatientGenomeVariant, IChromosome } f
 export interface IPatientState {
     patientProfile: IPatientProfile[];
     selectedPatientProfile: IPatientProfile | null;
-    // selectedChromosome: IChromosome | null;
+    selectedChromosome: IChromosome | null;
     patientGenome: IPatientGenome[];
     selectedPatientGenome: IPatientGenome | null;
     patientGeneVariant: IPatientGenomeVariant[];
@@ -21,7 +21,7 @@ export const initialState: IPatientState = {
         },
     ],
     selectedPatientProfile: null,
-    // selectedChromosome: null,
+    selectedChromosome: null,
     patientGenome: [
         {
             patientGenomeId: '0',
@@ -62,13 +62,12 @@ const patientsSlice = createSlice({
             }
         },
         setSelectedPatientProfile: (state, action: PayloadAction<IPatientProfile>) => {
-            state.selectedPatientProfile = { ...action.payload }; // Ensure a new object is created
-            // state.selectedPatientProfile = action.payload;
+            state.selectedPatientProfile = { ...action.payload }; // Ensure a new object is created 
         },
-        // // Chromosome
-        // setSelectedChromosome: (state, action: PayloadAction<IChromosome>) => {
-        //     state.selectedChromosome = action.payload;
-        // }, 
+        // Chromosome
+        setSelectedChromosome: (state, action: PayloadAction<IChromosome>) => {
+            state.selectedChromosome = { ...action.payload }; // Ensure a new object is created
+        }, 
         // Patient Genomes
         addPatientGenome: (state, action: PayloadAction<IPatientGenome>) => {
             state.patientGenome.push(action.payload);
@@ -82,7 +81,7 @@ const patientsSlice = createSlice({
             }
         },
         setSelectedPatientGenome: (state, action: PayloadAction<IPatientGenome>) => {
-            state.selectedPatientGenome = action.payload;
+            state.selectedPatientGenome = { ...action.payload }; // Ensure a new object is created
         },
         // Patient Gene Variants
         addPatientGeneVariant: (state, action: PayloadAction<IPatientGenomeVariant>) => {
@@ -97,7 +96,7 @@ const patientsSlice = createSlice({
             }
         },
         setSelectedPatientGeneVariant: (state, action: PayloadAction<IPatientGenomeVariant>) => {
-            state.selectedPatientGeneVariant = action.payload;
+            state.selectedPatientGeneVariant = { ...action.payload }; // Ensure a new object is created
         },
     },
 });
@@ -107,7 +106,7 @@ export const {
     addPatientProfile,
     updatePatientProfile,
     setSelectedPatientProfile,
-    // setSelectedChromosome,
+    setSelectedChromosome,
     addPatientGenome,
     updatePatientGenome,
     setSelectedPatientGenome,

@@ -11,7 +11,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { patientsIndexedDb } from "@/database/database";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../state/store';
-import { setSelectedPatientProfile, addPatientProfile, setSelectedPatientGenome, setSelectedPatientGeneVariant } from "@/state/features/patient/patientSlice"; // setSelectedChromosome
+import { setSelectedPatientProfile, addPatientProfile, setSelectedPatientGenome, setSelectedPatientGeneVariant, setSelectedChromosome } from "@/state/features/patient/patientSlice"; // setSelectedChromosome
 import { useAppDispatch, useAppSelector } from "@/hooks/state-hooks";
 import { date } from "yup";
 import { selectSelectedChromosome, selectedChromosomeUpdated } from "@/state/features/geneDefinition/geneDefinitionSlice";
@@ -41,8 +41,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // -----
 
     const dispatch = useAppDispatch(); 
-    const state = useSelector((state: RootState) => state);
-    console.log('Entire State:', state);
 
     // ----------------------
     // Data: Patient Profiles
@@ -55,29 +53,19 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         () => patientsIndexedDb.patientProfile
             .toArray()
     ); 
-    // const patientProfilesX = useSelector((state: RootState) => state.patient.patientProfile); 
 
     // Fetch selected patient profile from Redux store
-    const selectedPatientSelectedProfile = useSelector((state: RootState) => state.patient.selectedPatientProfile);
-    const key = selectedPatientSelectedProfile ? selectedPatientSelectedProfile.patientId : 'default';
-
+    const selectedPatientSelectedProfile = useSelector((state: RootState) => state.patient.selectedPatientProfile); // dashboard attribute 
+    const key1 = selectedPatientSelectedProfile ? selectedPatientSelectedProfile.patientId : 'default1';
     useEffect(() => {
         console.log('Selected Patient Profile updated:', selectedPatientSelectedProfile);
-    }, [selectedPatientSelectedProfile]);
+    }, [selectedPatientSelectedProfile?.patientId]);
 
     // Dispatch actions for patient profiles
-    const handleSelectPatient = (patientProfile) => { //  (event: React.ChangeEvent<HTMLSelectElement>) => {
-        // console.log('click', JSON.stringify(patientProfile));
-        // patientProfile = patientProfile || {patientId:"7ddc6c55-c520-4917-870c-111adefb1a14",patientName:"Eric Mombasa (demo profile)",datetimestamp:1735696526200};
-        dispatch(setSelectedPatientProfile(patientProfile));   
-        // dispatch(setSelectedPatientProfile({
-        //     patientId: '123',
-        //     patientName: 'John Doe',
-        //     datetimestamp: Date.now(),
-        // }));
+    const handleSelectPatient = (patientProfile) => {  
+        dispatch(setSelectedPatientProfile(patientProfile));
     };
-    const handleAddPatient = async (patientProfile) => {  //  (event: React.ChangeEvent<HTMLSelectElement>) => {
-        // patientProfile = patientProfile || {"patientId":"7ddc6c55-c520-4917-870c-111adefb1a14","patientName":"Eric Mombasa (demo profile)","datetimestamp":1735696526200};
+    const handleAddPatient = async (patientProfile) => {   
         await patientsIndexedDb.patientProfile.add(patientProfile);
     };
     // End: Filter #1
@@ -89,7 +77,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             if(patientProfiles) {
                 const patientProfileMatchingPatientIdFromRouter = patientProfiles?.find((x) => x.patientId == router.query.patient_id);
                 if(patientProfileMatchingPatientIdFromRouter) {
-                    console.log('patientProfileMatchingPatientIdFromRouter', patientProfileMatchingPatientIdFromRouter);
                     selectedPatientSelectedProfile?.patientId && router.push(`/patient/report/${selectedPatientSelectedProfile?.patientId}`); 
                 }
             }
@@ -99,7 +86,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                 router.push(`/patient/report/${selectedPatientSelectedProfile?.patientId}`); 
             }  
         }
-    }, [router.isReady, router.asPath, patientProfiles, selectedPatientSelectedProfile]); 
+    }, [router.isReady, router.asPath, patientProfiles, selectedPatientSelectedProfile?.patientId]); 
 
     // --------------------
     // Data: Patient Genome
@@ -108,207 +95,239 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // Filter #2
 
     // Fetch selected patient's genome from IndexedDB
-    const patientGenome = useLiveQuery(
+    const selectedPatientGenomes = useLiveQuery(
         () => selectedPatientSelectedProfile?.patientId && 
             patientsIndexedDb.patientGenome
-            .where('patientId').equalsIgnoreCase(String(selectedPatientSelectedProfile.patientId)).toArray()[0],
-        [selectedPatientSelectedProfile]
-    ); 
+            .where('patientId').equalsIgnoreCase(String(selectedPatientSelectedProfile.patientId)).toArray(),
+        [selectedPatientSelectedProfile, selectedPatientSelectedProfile?.patientName]
+    );
 
+    // Fetch selected patient's selected genome from Redux store
     const selectedPatientSelectedGenome = useSelector((state: RootState) => state.patient.selectedPatientGenome); // dashboard attribute 
+    const key2 = selectedPatientSelectedGenome ? selectedPatientSelectedGenome.patientId : 'default2';
+    useEffect(() => {
+        console.log('Selected Patient Genome updated:', selectedPatientSelectedGenome);
+    }, [selectedPatientSelectedGenome?.patientGenomeId]);
 
-    // Dispatch actions for patient profiles
-    const handleSelectedPatientGenomeChange = (patientGenome: any) => { // (event: React.ChangeEvent<HTMLSelectElement>) => {
-        patientGenome = patientGenome || {patientGenomeId: "1"};
-        dispatch(setSelectedPatientGenome(patientGenome));  
+    // Dispatch actions for patient genome
+    const handleSelectedPatientGenomeChange = (patientGenome: any) => {  
+        dispatch(setSelectedPatientGenome(patientGenome));   
     };
     // End Filter #2
     
-    // // -----------
-    // // Chromosomes
-    // // ----------- 
+    // -----------
+    // Chromosomes
+    // ----------- 
 
-    // // Filter #3
+    // Filter #3
 
-    // const chromosomesList: IChromosome[] = useLiveQuery(// IChromosome[]
-    //     async () => patientsIndexedDb.chromosome.toArray()
-    // ); 
+    // Fetch chromosomes from IndexedDB
+    const chromosomesList = useLiveQuery(// IChromosome[]
+        async () => patientsIndexedDb.chromosome.toArray()
+    ); 
 
-    // const selectedPatientSelectedChromosome: IChromosome = useSelector((state: RootState) => state.patient.selectedChromosome); // dashboard attribute 
+    // Fetch selected patient's selected chromosome from Redux store
+    const selectedPatientSelectedChromosome: IChromosome = useSelector((state: RootState) => state.patient.selectedChromosome); // dashboard attribute 
+    const key3 = selectedPatientSelectedChromosome ? selectedPatientSelectedChromosome.chromosomeName : 'default3';
+    useEffect(() => {
+        console.log('Selected Chromosome updated:', selectedPatientSelectedChromosome);
+    }, [selectedPatientSelectedChromosome?.chromosomeName]);
 
-    // const handleSelectedChromosomeChange =  (chromosome: any) => { // (event: React.ChangeEvent<HTMLSelectElement>) => {
-    //     // const targetChromosome = chromosomesList.find((x) => x['chromosomeName'] == chromosome); 
-    //     chromosome = chromosome || {"chromosomeName":"Chromosome 1","species":"homo-sapiens"};
-    //     console.log('chromosome', chromosome);
-    //     dispatch(setSelectedChromosome(chromosome));   
-    // };
-    // // End Filter #3
+    // Dispatch actions for chromosomes
+    const handleSelectedChromosomeChange = (chromosome: any) => {  
+        dispatch(setSelectedChromosome(chromosome));   
+    };
+    // End Filter #3
 
-    // // -----------------------------
-    // // Data: Patient Genome Variants
-    // // -----------------------------
+    // ----------------------------------
+    // Data: Patient Gene Variants (SNPs)
+    // ----------------------------------
 
-    // // Fetch selected patient's genome variants from IndexedDB
-    // const selectedPatientGeneVariants = useLiveQuery(
-    //     () => selectedPatientSelectedGenome?.patientGenomeId && selectedPatientSelectedChromosome?.chromsomeName &&
-    //         patientsIndexedDb.patientGenomeVariant
-    //         .where({
-    //             'patientGenomeId': String(selectedPatientSelectedGenome.patientGenomeId), 
-    //             'chromosome': selectedPatientSelectedChromosome.chromsomeName
-    //         }).toArray(),
-    //     [selectedPatientSelectedGenome, selectedPatientSelectedChromosome]
-    // );  
+    // Fetch selected patient's genome variants from IndexedDB
+    const selectedPatientGeneVariants = useLiveQuery(
+        () => {
+            // patientsIndexedDb.patientGenomeVariant.toArray(),
+            console.log(selectedPatientSelectedGenome?.patientGenomeId, selectedPatientSelectedChromosome?.chromosomeName);
+            if(selectedPatientSelectedGenome?.patientGenomeId && selectedPatientSelectedChromosome?.chromosomeName) {
+                const res = patientsIndexedDb.patientGenomeVariant
+                    .where({
+                        // 'patientGenomeId': String(selectedPatientSelectedGenome.patientGenomeId), 
+                        'chromosome': selectedPatientSelectedChromosome.chromosomeName
+                    })
+                    .toArray();
+                    // console.log('res', res);
+            }
+        },
+        [selectedPatientSelectedGenome?.patientGenomeId, selectedPatientSelectedChromosome?.chromosomeName]
+    );  
 
-    // const selectedPatientSelectedGeneVariant: IPatientGenomeVariant = useSelector((state: RootState) => state.patient.selectedPatientGeneVariant); // dashboard attribute 
+    const selectedPatientSelectedGeneVariant: IPatientGenomeVariant = useSelector((state: RootState) => state.patient.selectedPatientGeneVariant); // dashboard attribute 
+    const key4 = selectedPatientSelectedGeneVariant ? selectedPatientSelectedGeneVariant.patientGeneVariantId : 'default4';
+    useEffect(() => {
+        console.log('Selected Gene Variant updated:', selectedPatientSelectedGeneVariant);
+    }, [selectedPatientSelectedGeneVariant]);
 
-    // const handleSelectedPatientGeneVariantChange =  (geneVariant: any) => { // (event: React.ChangeEvent<HTMLSelectElement>) => {
-    //     dispatch(setSelectedPatientGeneVariant(geneVariant));   
-    // };  
+    const handleSelectedPatientGeneVariantChange =  (geneVariant: any) => {  
+        dispatch(setSelectedPatientGeneVariant(geneVariant));   
+    };  
 
-    // // // -----------------------------------------
-    // // // ClinVar Data: SNP Pairs (Genotype/Allele)
-    // // // -----------------------------------------
+    // -----------------------------------------
+    // ClinVar Data: SNP Pairs (Genotype/Allele)
+    // -----------------------------------------
 
-    // // Returns all genotypes/allele pairs for a given SNP :. API has no data (privacy) as to which genotype the patient has
+    // Returns all genotypes/allele pairs for a given SNP :. API has no data (privacy) as to which genotype the patient has
     // // const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(["rs429358", "rs1805007"]); 
     // // console.log(data);
 
-    // // // ------------------------------------------
-    // // // Data Enrichment: SNP Pairs (ClinVar, etc.)
-    // // // ------------------------------------------
+    // ------------------------------------------
+    // Data Enrichment: SNP Pairs (ClinVar, etc.)
+    // ------------------------------------------
 
-    // function merge_object_arrays (arr1, arr2, match) {
-    //     return _.union(
-    //     _.map(arr1, function (obj1) {
-    //         var same = _.find(arr2, function (obj2) {
-    //         return obj1[match] === obj2[match];
-    //         });
-    //         return same ? _.extend(obj1, same) : obj1;
-    //     }),
-    //     _.reject(arr2, function (obj2) {
-    //         return _.find(arr1, function(obj1) {
-    //         return obj2[match] === obj1[match];
-    //         });
-    //     })
-    //     );
-    // }
+    function merge_object_arrays (arr1, arr2, match) {
+        return _.union(
+        _.map(arr1, function (obj1) {
+            var same = _.find(arr2, function (obj2) {
+            return obj1[match] === obj2[match];
+            });
+            return same ? _.extend(obj1, same) : obj1;
+        }),
+        _.reject(arr2, function (obj2) {
+            return _.find(arr1, function(obj1) {
+            return obj2[match] === obj1[match];
+            });
+        })
+        );
+    }
 
-    // // Effect: Retrieve enrichedData
-    // // useEffect(() => {
+    // Effect: Retrieve enrichedData
+    useEffect(() => {
+        console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
     //     // console.log(
     //     //     'enrichedData',
     //     //     merge_object_arrays(data, selectedPatientGeneVariants, 'rsid')
     //     //         .find((x) => x.rsid == 'rs429358')
     //     // ); 
     // // }, [data, selectedPatientGeneVariants]); 
-    // // }, [selectedPatientGeneVariants]);
+    }, [selectedPatientGeneVariants]);
 
-
-    // handleSelectPatient({});
-
-    // // --------------
-    // // Drawer Content
-    // // --------------
+    // --------------
+    // Drawer Content
+    // --------------
     
-    // const handleSelectedDataRowChange = (e) => {
-    //     updateDrawerTitle("Risk/SNP (Gene Variant) Details");
-    //     updateDrawerContent(genomeDetailsDrawerContent(e)); 
-    //     toggleDrawerVisible(true);
-    // }
+    const handleSelectedDataRowChange = (e) => {
+        updateDrawerTitle("Risk/SNP (Gene Variant) Details");
+        updateDrawerContent(genomeDetailsDrawerContent(e)); 
+        toggleDrawerVisible(true);
+    }
     
-    // const genomeDetailsDrawerContent = (contentSlot) => {
-    //     return (
-    //         <>
-    //             <Separator className="my-4" /> 
-    //             {contentSlot && ( 
-    //                 <div>
-    //                     {Object.entries(contentSlot).map(([key, value]: any): any => (
-    //                         <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
-    //                     ))}
-    //                 </div>
-    //             )} 
-    //         </>
-    //     );
-    // };
+    const genomeDetailsDrawerContent = (contentSlot) => {
+        return (
+            <>
+                <Separator className="my-4" /> 
+                {contentSlot && ( 
+                    <div>
+                        {Object.entries(contentSlot).map(([key, value]: any): any => (
+                            <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
+                        ))}
+                    </div>
+                )} 
+            </>
+        );
+    };
 
-    // // ---------------
-    // // Dashboard Setup
-    // // ---------------
+    // ---------------
+    // Dashboard Setup
+    // ---------------
     
-    // const dashboardTitle = 'Patient Risk Report';
+    const dashboardTitle = 'Patient Risk Report';
 
-    // // Grid Setup
+    // Grid Setup
         
-    // const riskReportColumns = [
-    //     {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
-    //     {"headerName":"genotype","field":"genotype", flex: 1, maxWidth: 80},
-    //     {"headerName":"notes","field":"notes", flex: 4, maxWidth: 500},
-    //     {"headerName":"magnitude","field":"magnitude", flex: 1, maxWidth: 100},
-    //     {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 140},
-    //     {"headerName":"position","field":"position", flex: 1, maxWidth: 120},
-    //     {"headerName":"datetimestamp","field":"datetimestamp", flex: 2, maxWidth: 120}, 
-    //     {"headerName":"patientId","field":"patientId", flex: 2, maxWidth: 120}, 
-    //     {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 2, maxWidth: 120},
-    // ]; 
+    const riskReportColumns = [
+        {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
+        {"headerName":"genotype","field":"genotype", flex: 1, maxWidth: 80},
+        {"headerName":"notes","field":"notes", flex: 4, maxWidth: 500},
+        {"headerName":"magnitude","field":"magnitude", flex: 1, maxWidth: 100},
+        {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 140},
+        {"headerName":"position","field":"position", flex: 1, maxWidth: 120},
+        {"headerName":"datetimestamp","field":"datetimestamp", flex: 2, maxWidth: 120}, 
+        {"headerName":"patientId","field":"patientId", flex: 2, maxWidth: 120}, 
+        {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 2, maxWidth: 120},
+    ]; 
 
     return (
         <PrivateLayout isSidebar={true}>
-            Patients:  <hr />
+            <h1 className="text-xl">Patients</h1>
             <ul>
-                {patientProfiles && patientProfiles.map((profile) => (
-                    <li key={profile.patientId} onClick={() => handleSelectPatient(profile)}>
-                        {/* {JSON.stringify(profile)} */}
+                {patientProfiles?.map((profile) => (
+                    <li className="text-xs" key={profile.patientId} onClick={() => handleSelectPatient(profile)}>
                         {profile.patientName}
                     </li>
                 ))}
             </ul> 
-            {/* <button className="bg-slate-500 px-3 py-1" onClick={handleAddPatient}>Add Pfl</button> */}
-            {/* <button className="bg-slate-500 px-3 py-1" onClick={handleSelectPatient}>Pfl</button> */}
-            <div key={key}>
+            <div key={key1}>
                 {selectedPatientSelectedProfile ? (
                     <p>Selected: {selectedPatientSelectedProfile.patientName}</p>
                 ) : (
                     <p>No Patient Selected</p>
                 )}
             </div>
-            {console.log('Rendering:', selectedPatientSelectedProfile)}
-            {JSON.stringify(selectedPatientSelectedProfile)} <br />
-            {selectedPatientSelectedProfile && <p>Selected: {selectedPatientSelectedProfile.patientName} | {selectedPatientSelectedProfile.patientId}</p>} <br /><hr />
 
-            {/* Chromosomes:  <hr />
-            <ul>
-                {chromosomesList && chromosomesList.map((c) => (
-                    <li onClick={() => handleSelectedChromosomeChange(c)}>{JSON.stringify(c)}</li>
-                ))}
-            </ul>  */}
-            {/* {JSON.stringify(chromosomesList)} <br /> */}
-            {/* <button className="bg-slate-500 px-3 py-1" onClick={handleSelectedChromosomeChange}>Chr</button>
-            {selectSelectedChromosome && <p>Selected: {JSON.stringify(selectSelectedChromosome)}</p>} <br /><hr />
+            <hr />
 
-            Genome: <hr />
+            <h1 className="text-xl">Genome</h1>
             <ul>
-                {patientGenome && patientGenome.map((c) => (
-                    <li onClick={() => handleSelectedPatientGenomeChange(c)}>{JSON.stringify(c)}</li> 
+                {selectedPatientGenomes?.map((c) => (
+                    <li className="text-xs" onClick={() => handleSelectedPatientGenomeChange(c)}>
+                        {c.patientGenomeId}
+                    </li>
                 ))}
-            </ul>  */}
-            {/* {JSON.stringify(patientGenome)} <br /> */}
-            {/* <button className="bg-slate-500 px-3 py-1" onClick={handleSelectedPatientGenomeChange}>Genome</button> 
-            {selectedPatientSelectedGenome && <p>Selected: {selectedPatientSelectedGenome.patientGenomeId}</p>} <br /><hr /> */}
-{/* 
-            GeneVariants:  <hr />
-            <ul>
-                {patientGenome && patientGenome.map((c) => (
-                    <li onClick={() => handleSelectedPatientGeneVariantChange(c)}>{JSON.stringify(c)}</li> 
-                ))}
-            </ul>  */}
-            {/* {JSON.stringify(selectedPatientGeneVariants)} <br /> */}
-            {/* <button className="bg-slate-500 px-3 py-1" onClick={handleSelectedPatientGeneVariantChange}>GeneVariants</button> 
-            {selectedPatientSelectedGeneVariant && <p>Selected: {selectedPatientSelectedGeneVariant.rsid}</p>} <br /><hr /> */}
-            
-            {/*  <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectPatient}>   */}
-                {/* <ReportGridWrapper riskReportRowsData={enrichedDataRows} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} /> */}
-            {/* </ReportView> */}
+            </ul> 
+            <div key={key2}>
+                {selectedPatientSelectedGenome ? (
+                    <p>Selected: {selectedPatientSelectedGenome.patientGenomeId}</p>
+                ) : (
+                    <p>No Patient Genome Selected</p>
+                )}
+            </div>
 
+            <hr />
+
+            <h1 className="text-xl">Chromosomes</h1>
+            <ul>
+            {
+                chromosomesList?.map(chromosome =>
+                    <li key={chromosome.chromosomeName} className="text-xs" onClick={() => handleSelectedChromosomeChange(chromosome)}>
+                        {String(chromosome.chromosomeName)}, {chromosome.species}
+                    </li>
+                )
+            }
+            </ul> 
+            <div key={key3}>
+                {selectedPatientSelectedChromosome ? (
+                    <p>Selected: {selectedPatientSelectedChromosome.chromosomeName}</p>
+                ) : (
+                    <p>No Chromosome Selected</p>
+                )}
+            </div>
+
+            <hr />
+
+            <h1 className="text-xl">Gene Variants</h1> 
+            <ul>
+                {selectedPatientGeneVariants?.map((geneVariant) => (
+                    <li className="text-xs" onClick={() => handleSelectedPatientGeneVariantChange(geneVariant)}>
+                        {geneVariant.rsid} | {geneVariant.chromosome}
+                    </li> 
+                ))}
+            </ul> 
+            <div key={key4}>
+                {selectedPatientSelectedGeneVariant ? (
+                    <p>Selected: {selectedPatientSelectedGeneVariant.patientGeneVariantId}</p>
+                ) : (
+                    <p>No Patient Gene Variant Selected</p>
+                )}
+            </div> 
         </PrivateLayout>
     );
 };

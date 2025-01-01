@@ -11,7 +11,7 @@ const patientsIndexedDb = new Dexie('PatientDatabase') as Dexie & {
   // ensuring that if a record with the same chromosomeName already exists, it won't be inserted again
   chromosome: EntityTable<
     IChromosome,
-    'chromsomeName' // primary key "chromsomeName" (for the typings only)
+    'chromosomeName' // primary key "chromosomeName" (for the typings only)
   >;
 } & {
   humanGene: EntityTable<

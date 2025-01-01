@@ -1,5 +1,5 @@
 export interface IChromosome {
-    chromsomeName: string;
+    chromosomeName: string;
     species: string;
 }
 

@@ -10,11 +10,11 @@ export interface IGenomeDefinitionState {
 export const initialState: IGenomeDefinitionState[] = [
     {  
         chromosomes: [{
-            chromsomeName: 'Default chromosome',
+            chromosomeName: 'Default chromosome',
             species: 'Homo sapiens',
         }],
         selectedChromosome: {
-            chromsomeName: 'Default chromosome',
+            chromosomeName: 'Default chromosome',
             species: 'Homo sapiens',
         },
         geneVariantMapping: [{
