@@ -9,10 +9,10 @@ const Logo = (<>
         </a>
     </h1>
     <div className="text-xs text-slate-950 dark:text-slate-100">
-        (<strong>Engineered by:</strong>&nbsp;
-        <a href="https://github.com/MathematicusLucian" target="blank" className="dark:text-slate-100">
+        Engineered by
+        <a href="https://github.com/MathematicusLucian" target="blank" className="ml-1 font-semibold text-slate-800 dark:text-slate-100">
             MathematicusLucian
-        </a>)
+        </a>
     </div>
 </>);
 
