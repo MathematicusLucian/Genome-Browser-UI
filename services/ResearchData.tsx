@@ -1,89 +1,9 @@
-// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react' 
 // import { selectSelectedChromosome, selectedChromosomeUpdated } from '@/state/features/geneDefinition/geneDefinitionSlice';
 // import { selectAllResearchDatas } from '@/state/features/research/researchSlice';
 // import { IChromosome, IPatientGenome, IPatientGenomeVariant, ISnpPairsResearch } from '../models/database'; 
-// import { axiosBaseQuery } from '@/state/base/baseQuery';
 // import { useLiveQuery } from 'dexie-react-hooks';
 // import { patientsIndexedDb } from '@/database/database'; 
 // import { selectSelectedPatientProfile } from '@/state/features/patient/patientSlice';
-
-// // -----------
-// // Chromosomes
-// // ----------- 
-
-// export const chromosomesList: IChromosome[] = useLiveQuery(// IChromosome[]
-//     async () => patientsIndexedDb.chromosome.toArray()
-// ); 
-
-// export const selectedChromosome: IChromosome = selectSelectedChromosome[0];
-
-// export const handleSelectedChromosomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-//     const targeChromosomeId = event.target.value;
-//     const targetChromosome = chromosomesList.find((x) => x['chromosomeName'] == targeChromosomeId);
-//     selectedChromosomeUpdated(targetChromosome);
-// };
-
-// // --------------------------------------------------------------------------------------------
-// // Risk Report 
-// // (Comparing Patient Gene Variants with Published Literature, e.g. SNP data, such as ClinVar.)
-// // --------------------------------------------------------------------------------------------
-
-// // MOVE TO REDUX FEATURE FILE
-// export const snpResearchApi = createApi({
-//     reducerPath: 'snpResearchApi',
-//     baseQuery: axiosBaseQuery({
-//         baseUrl: 'http://127.0.0.1:8000/',
-//     }),
-//     // baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:8000/' }),
-//     endpoints: (builder: any) => ({
-//     //   getSnpDataByRsid: builder.query({
-//     //     query: (rsids: any) => `snp_research/${rsids}`,
-//     //   }),
-//         postSnpDataByRsid: builder.query({ // mutation
-//             query: (rsids: string[]) =>  ({
-//                 url: "snp_research",
-//                 method: "post",
-//                 data: rsids,
-//                 headers: {
-//                     "Content-type": "application/json; charset=UTF-8",
-//                 },
-//             }),
-//         }),
-//     }),
-// }) 
-// export const {usePostSnpDataByRsidQuery} = snpResearchApi;
-
-// // ------------------------------------------
-// // Data Enrichment: SNP Pairs (ClinVar, etc.)
-// // ------------------------------------------
-
-// export const enrichedData = (rsids: string[], patientGeneVariants: any) => {
-//     const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsids); 
-
-//     const enrichmentResult = patientGeneVariants && patientGeneVariants.map((patientVariant) => {
-
-//         data && data.map((clinVar) => { 
-
-//             if(clinVar.rsid == patientVariant.rsid) {
-                
-//                 const clinVarGenotype = String(clinVar.allele1 + clinVar.allele2); 
-//                 const clinVarGenotypeReversed = String(clinVar.allele2 + clinVar.allele1);
-//                 const isAlleleMatch = clinVarGenotype == String(patientVariant.genotype);
-//                 const isAlleleMatchReversed = clinVarGenotypeReversed == String(patientVariant.genotype);
-//                 const alleleMatchBidirectional = isAlleleMatch || isAlleleMatchReversed;
-
-//                 if(alleleMatchBidirectional) {
-//                     patientVariant.notes = clinVar.notes;  
-//                 }
-
-//             }
-
-//         })
- 
-//         return patientVariant;
-//     });
-//     return enrichmentResult;
-// }
 
 // // MOOCK DATA
 // export const searchTermEntered = ""; 

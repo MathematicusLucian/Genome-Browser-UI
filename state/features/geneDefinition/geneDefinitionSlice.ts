@@ -54,7 +54,7 @@ const updateGeneMappingInState = (state, action: PayloadAction<IGeneVariantMappi
 };
 
 const chromosomeSlice = createSlice({
-    name: 'geneDefition',
+    name: 'geneDefinition',
     initialState: initialState,  
     reducers: {
         // chromosome

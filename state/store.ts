@@ -4,11 +4,11 @@ import dashboardReducer from './features/dashboard/dashboardSlice'
 import geneDefinitionReducer from './features/geneDefinition/geneDefinitionSlice'
 import patientProfileReducer from './features/patient/patientSlice' 
 import todosReducer from './features/todos/todoSlice' 
-// import { snpResearchApi } from '@/services/ResearchData'
-import { createWrapper } from 'next-redux-wrapper'
+ import { createWrapper } from 'next-redux-wrapper'
 import createSagaMiddleware from 'redux-saga'
 // import { config } from 'utils/config'
 import rootSaga from './features/todos/sagas'
+import { snpResearchApi } from './features/research/researchApi'
 
 const saga = createSagaMiddleware()
 
@@ -20,16 +20,16 @@ const rootReducer = combineReducers({
   // research: researchDataReducer,
   // user
   // userProfile
-  // [snpResearchApi.reducerPath]: snpResearchApi.reducer,
+  [snpResearchApi.reducerPath]: snpResearchApi.reducer,
 })
 
 export const makeStore = () => {
 // export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
   return configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saga),
+    // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saga),
     // middleware: [saga],
-    // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(snpResearchApi.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(snpResearchApi.middleware),
     // devTools: config.isDevEnv,
   })
 }

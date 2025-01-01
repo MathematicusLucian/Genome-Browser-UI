@@ -5,17 +5,22 @@ import PrivateLayout from '@/pages/PrivateLayout';
 import { Separator } from "@radix-ui/react-separator";
 import { DrawerContext, ModalContext } from "@/context";
 import ReportView from "@/components/ReportView";
-import { IFullReport, IPatientProfile } from "@/models/database";
 import ReportGridWrapper from "@/components/ReportGridWrapper";
-import { demoMultipleGeneVariants } from "@/state/demoState"; 
+import { IPatientProfile, IPatientGenome, IPatientGenomeVariant, IFullReport, IChromosome } from "@/models/database";
 import { useLiveQuery } from "dexie-react-hooks";
 import { patientsIndexedDb } from "@/database/database";
-// import { selectedPatientProfileAdded, selectSelectedPatientProfile, selectedPatientProfileUpdated, selectPatientGeneVariantsById } from "@/state/features/patient/patientSlice";
-import { setSelectedPatientProfile, addPatientProfile } from "@/state/features/patient/patientSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/state-hooks";
-import { date } from "yup";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../state/store';
+import { setSelectedPatientProfile, addPatientProfile, setSelectedPatientGenome, setSelectedPatientGeneVariant } from "@/state/features/patient/patientSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/state-hooks";
+import { date } from "yup";
+import { selectSelectedChromosome, selectedChromosomeUpdated } from "@/state/features/geneDefinition/geneDefinitionSlice";
+import { usePostSnpDataByRsidQuery } from "@/state/features/research/researchApi";
+
+// --------------------------------------------------------------------------------------------
+// Risk Report 
+// (Comparing Patient Gene Variants with Published Literature, e.g. SNP data, such as ClinVar.)
+// ---------------------------------------------------------------------------------------------
 
 interface RiskReportPageProps {
 }
@@ -30,47 +35,39 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     const router = useRouter();  
 
-    // -------
-    // Patient
-    // -------     
-
-    const patientProfiles = useLiveQuery(
-        () => patientsIndexedDb.patientProfile.toArray()
-    );
-
     // -----
     // Redux
     // -----
 
-    const newPatientProfile1: IPatientProfile = {
-        patientId: '1',
-        patientName: 'ABC',
-        datetimestamp: Date.now()
-    };
-    const newPatientProfile2: IPatientProfile = {
-        patientId: '2',
-        patientName: 'DEF',
-        datetimestamp: Date.now()
-    };
-
     const dispatch = useAppDispatch(); 
 
-    // Read state
-    const patientProfilesX = useSelector((state: RootState) => state.patient.patientProfile);
-    const selectedPatientProfile = useSelector((state: RootState) => state.patient.selectedPatientProfile);
+    // ----------------------
+    // Data: Patient Profiles
+    // ----------------------
+
+    // Filter #1
+
+    // Fetch patient profiles from IndexedDB
+    const patientProfiles = useLiveQuery(
+        () => patientsIndexedDb.patientProfile
+            .toArray()
+    ); 
+    // const patientProfilesX = useSelector((state: RootState) => state.patient.patientProfile); 
+
+    // Fetch selected patient profile from Redux store
+    const selectedPatientSelectedProfile = useSelector((state: RootState) => state.patient.selectedPatientProfile);
     // const yy = useAppSelector((state) => selectSelectedPatientProfile(state));
 
-    // Dispatch actions
-    const handleSelectPatient = (patientProfile) => {
+    // Dispatch actions for patient profiles
+    const handleSelectPatient = (patientProfile) => { //  (event: React.ChangeEvent<HTMLSelectElement>) => {
         dispatch(setSelectedPatientProfile(patientProfile));  
     };
-    const handleAddPatient = (patientProfile) => { 
-        // Handle with Dexie
-
-        // dispatch(addPatientProfile(newPatientProfile2));
-        // dispatch(addPatientProfile(patientProfile)); 
+    const handleAddPatient = async (patientProfile) => {  //  (event: React.ChangeEvent<HTMLSelectElement>) => {
+        await patientsIndexedDb.patientProfile.add(patientProfile);
     };
+    // End: Filter #1
     
+    // Effect: Retrieve patient profile ID from URL
     useEffect(() => {
         if (router.isReady) {
             if(patientProfiles) { 
@@ -82,11 +79,120 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                 if(patientProfileMatchingPatientIdFromRouter) {
                     dispatch(setSelectedPatientProfile(patientProfileMatchingPatientIdFromRouter));  
                     // http://127.0.0.1:3000/patient/genome?patientId=[x]
-                    selectedPatientProfile && router.push(`/patient/report/${selectedPatientProfile.patientId}`); 
+                    selectedPatientSelectedProfile && router.push(`/patient/report/${selectedPatientSelectedProfile.patientId}`); 
                 }
             }   
         }
-    }, [router.isReady, router.asPath, patientProfiles, selectedPatientProfile]); 
+    }, [router.isReady, router.asPath, patientProfiles, selectedPatientSelectedProfile]); 
+
+    // --------------------
+    // Data: Patient Genome
+    // --------------------
+
+    // Filter #2
+
+    // Fetch selected patient's genome from IndexedDB
+    const patientGenome = useLiveQuery(
+        () => selectedPatientSelectedProfile?.patientId && 
+            patientsIndexedDb.patientGenome
+            .where('patientId').equalsIgnoreCase(String(selectedPatientSelectedProfile.patientId)).toArray()[0]
+    );
+
+    const selectedPatientSelectedGenome = useSelector((state: RootState) => state.patient.selectedPatientGenome); // dashboard attribute 
+
+    // Dispatch actions for patient profiles
+    const handleSelectedPatientGenomeChange = (patientGenome: any) => { // (event: React.ChangeEvent<HTMLSelectElement>) => {
+        dispatch(setSelectedPatientGenome(patientGenome));  
+    };
+    // End Filter #2
+    
+    // -----------
+    // Chromosomes
+    // ----------- 
+
+    // Filter #3
+
+    const chromosomesList: IChromosome[] = useLiveQuery(// IChromosome[]
+        async () => patientsIndexedDb.chromosome.toArray()
+    ); 
+
+    const selectedPatientSelectedChromosome: IChromosome = useSelector((state: RootState) => state.geneDefinition[0].selectedChromosome); // dashboard attribute 
+
+    const handleSelectedChromosomeChange =  (chromosome: any) => { // (event: React.ChangeEvent<HTMLSelectElement>) => {
+        // const targetChromosome = chromosomesList.find((x) => x['chromosomeName'] == chromosome); 
+        dispatch(selectedChromosomeUpdated(chromosome));   
+    };
+    // End Filter #3
+
+    // -----------------------------
+    // Data: Patient Genome Variants
+    // -----------------------------
+
+    // Fetch selected patient's genome variants from IndexedDB
+    const selectedPatientGeneVariants = useLiveQuery(
+        () => selectedPatientSelectedGenome?.patientGenomeId && selectedPatientSelectedChromosome?.chromsomeName &&
+            patientsIndexedDb.patientGenomeVariant
+            .where({
+            'patientGenomeId': String(selectedPatientSelectedGenome.patientGenomeId), 
+            'chromosome': selectedPatientSelectedChromosome.chromsomeName
+        }).toArray()
+    ); 
+    const selectedPatientSelectedGeneVariant: IPatientGenomeVariant = useSelector((state: RootState) => state.patient.selectedPatientGeneVariant); // dashboard attribute 
+
+    const handleSelectedPatientGeneVariantChange =  (chromosome: any) => { // (event: React.ChangeEvent<HTMLSelectElement>) => {
+        dispatch(setSelectedPatientGeneVariant(chromosome));   
+    };
+
+    // // ------------------------------------------
+    // // Data Enrichment: SNP Pairs (ClinVar, etc.)
+    // // ------------------------------------------
+
+    const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(['rs429358']);
+
+    // const enrichedData = (rsids: string[], patientGeneVariants: any) => {
+    //     const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsids); // ClinVar data
+
+    //     const enrichmentResult = patientGeneVariants && patientGeneVariants.map((patientVariant) => {
+
+    //         data && data.map((clinVar) => { 
+
+    //             if(clinVar.rsid == patientVariant.rsid) {
+                    
+    //                 const clinVarGenotype = String(clinVar.allele1 + clinVar.allele2); 
+    //                 const clinVarGenotypeReversed = String(clinVar.allele2 + clinVar.allele1);
+    //                 const isAlleleMatch = clinVarGenotype == String(patientVariant.genotype);
+    //                 const isAlleleMatchReversed = clinVarGenotypeReversed == String(patientVariant.genotype);
+    //                 const alleleMatchBidirectional = isAlleleMatch || isAlleleMatchReversed;
+
+    //                 if(alleleMatchBidirectional) {
+    //                     patientVariant.notes = clinVar.notes;  
+    //                 }
+
+    //             }
+
+    //         })
+    
+    //         return patientVariant;
+    //     });
+    //     return enrichmentResult;
+    // }
+
+    // // const enrichPatientVariantsDataWithClinVarNotes = async (dexieResponse) => {
+    // //     const mockClinVarNotesData = fetchClinVarNotes();
+
+    // //     const enrichmentResult = await dexieResponse.map((patientVariant) => {
+    // //         for(let snp in clinVarData) {
+    // //             if(mockClinVarNotesData[snp]['rsid'] == patientVariant.rsid) {
+    // //                 patientVariant['notes'] = mockClinVarNotesData[snp]['notes'];
+    // //             }
+    // //         }
+    // //         return patientVariant;
+    // //     })
+
+    // //     return enrichmentResult;
+    // // };
+
+    // const enrichedDataRows: any = [];
 
     // --------------
     // Drawer Content
@@ -118,6 +224,8 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // ---------------
     
     const dashboardTitle = 'Patient Risk Report';
+
+    // Grid Setup
         
     const riskReportColumns = [
         {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
@@ -131,27 +239,22 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 2, maxWidth: 120},
     ]; 
 
-    // const rsids: string[] = ["rs1000113","rs10156191", "rs10306114"];
-    // let selectedPatientGenomeVariants: any =  demoMultipleGeneVariants;
-    
-    const enrichedDataRows: any = []; // enrichedData(rsids, selectedPatientGenomeVariants); 
-
     return (
         <PrivateLayout isSidebar={true}>
 
-            <h1>Patients</h1>
-            <ul>
+            {/* <ul>
                 {patientProfiles && patientProfiles.map((profile) => (
                     <li key={profile.patientId} onClick={() => handleSelectPatient(profile)}>
                         {profile.patientName}
                     </li>
                 ))}
-            </ul>
-            <button className="my-5" onClick={handleAddPatient}>Add Patient</button>
-            {selectedPatientProfile && <p>Selected: {selectedPatientProfile.patientName} | {selectedPatientProfile.patientId}</p>}
+            </ul> */}
+            {/* <button className="my-5" onClick={handleAddPatient}>Add Patient</button> */}
+            
+            {selectedPatientSelectedProfile && <p>Selected: {selectedPatientSelectedProfile.patientName} | {selectedPatientSelectedProfile.patientId}</p>}
 
-            <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectPatient}>  
-                <ReportGridWrapper riskReportRowsData={enrichedDataRows} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} />
+            <ReportView dashboardTitle={dashboardTitle} updateRoute={handleSelectPatient}>  a
+                {/* <ReportGridWrapper riskReportRowsData={enrichedDataRows} columns={riskReportColumns} handleSelectedDataRowChange={handleSelectedDataRowChange} /> */}
             </ReportView>
 
         </PrivateLayout>
@@ -159,3 +262,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 };
 
 export default RiskReportPage;
+
+function fetchClinVarNotes() {
+    throw new Error("Function not implemented.");
+}

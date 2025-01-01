@@ -38,3 +38,6 @@ const researchDatasSlice = createSlice({
 export const { researchDataAdded, researchDataUpdated } = researchDatasSlice.actions;
 export const { selectAllResearchDatas, selectResearchDatasById } = researchDatasSlice.selectors
 export default researchDatasSlice.reducer;
+
+
+
