@@ -8,7 +8,7 @@ import todosReducer from './features/todos/todoSlice'
  import { createWrapper } from 'next-redux-wrapper'
 // import createSagaMiddleware from 'redux-saga'
 // import rootSaga from './features/todos/sagas'
-// import { snpResearchApi } from './features/research/researchApi'
+import { snpResearchApi } from './features/research/researchApi'
 // import { config } from 'utils/config'
 
 // const saga = createSagaMiddleware()
@@ -21,14 +21,14 @@ const rootReducer = combineReducers({
   // research: researchDataReducer,
   // user
   // userProfile
-  // [snpResearchApi.reducerPath]: snpResearchApi.reducer,
+  [snpResearchApi.reducerPath]: snpResearchApi.reducer,
 })
 
 export const makeStore = () => {
 // export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
   const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger).concat(snpResearchApi.middleware),
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saga),
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(snpResearchApi.middleware),
     // devTools: config.isDevEnv,

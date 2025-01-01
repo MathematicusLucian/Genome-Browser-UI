@@ -156,6 +156,9 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         },
         [selectedPatientSelectedGenome?.patientGenomeId, selectedPatientSelectedChromosome?.chromosomeName]
     );  
+    useEffect(() => {
+        console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
+    }, [selectedPatientGeneVariants]);
 
     const selectedPatientSelectedGeneVariant: IPatientGenomeVariant = useSelector((state: RootState) => state.patient.selectedPatientGeneVariant); // dashboard attribute 
     const key4 = selectedPatientSelectedGeneVariant ? selectedPatientSelectedGeneVariant.patientGeneVariantId : 'default4';
@@ -172,8 +175,10 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // -----------------------------------------
 
     // Returns all genotypes/allele pairs for a given SNP :. API has no data (privacy) as to which genotype the patient has
-    // // const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(["rs429358", "rs1805007"]); 
-    // // console.log(data);
+    const rsidsList = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid);
+    console.log(rsidsList);
+    const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsidsList); 
+    console.log(data);
 
     // ------------------------------------------
     // Data Enrichment: SNP Pairs (ClinVar, etc.)
@@ -198,13 +203,12 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // Effect: Retrieve enrichedData
     useEffect(() => {
         console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
-    //     // console.log(
-    //     //     'enrichedData',
-    //     //     merge_object_arrays(data, selectedPatientGeneVariants, 'rsid')
-    //     //         .find((x) => x.rsid == 'rs429358')
-    //     // ); 
-    // // }, [data, selectedPatientGeneVariants]); 
-    }, [selectedPatientGeneVariants]);
+        // console.log(
+        //     'enrichedData',
+        //     merge_object_arrays(data, selectedPatientGeneVariants, 'rsid')
+        //         .find((x) => x.rsid == 'rs429358')
+        // );  
+    }, [selectedPatientGeneVariants]); // data
 
     // --------------
     // Drawer Content
