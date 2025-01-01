@@ -23,18 +23,17 @@ const updatePatientProfileInState = (state, action: PayloadAction<IPatientProfil
 // selectedPatientProfile
 
 const fetchSelectedPatientProfileFromState = (state) => { 
-    console.log("FETCH esdfadsgdsfg", state);
+    console.log("FETCH esdfadsgdsfg", state.selectedPatientProfile);
     return state.selectedPatientProfile;
 };
 
-// const addSelectedPatientProfileToState = (state, action: PayloadAction<IPatientProfile>) => {
 const addSelectedPatientProfileToState = (state, action: PayloadAction<IPatientProfile>) => {
-    console.log("ADD esdfadsgdsfg");
+    console.log("ADD esdfadsgdsfg", state.selectedPatientProfile);
     return state.selectedPatientProfile.push(action.payload)
 };
 
 const updateSelectedPatientProfileInState = (state, action: PayloadAction<any>) => {
-    console.log("UPDATE esdfadsgdsfg");
+    console.log("UPDATE esdfadsgdsfg", state.selectedPatientProfile);
     return state.push(action.payload)
 };
 

@@ -46,54 +46,42 @@ const GenomePage: React.FC<GenomePageProps> = (props) => {
     // ------
 
     const router = useRouter();  
+
+    // -----
+    // Redux
+    // -----
+
     const dispatch = useAppDispatch(); 
-
-    // const yy = {patientId: 'abc123', patientName: 'ABC', datetimestamp: 1735436607882};
-    // selectedPatientProfileAdded(yy);
-    // // selectedPatientProfileAdded3(yy);
-                    
-    // const x = useAppSelector((state) => state.patient[0].selectedPatientProfile);
-    // console.log(JSON.stringify(x));
-
-    // console.log(selectSelectedPatientProfile);
     const y = useAppSelector((state) => selectSelectedPatientProfile(state));
-    console.log('1. page -> state', JSON.stringify(y));
-    
-    // const examplePatientProfile = {patientId: '0', patientName: 'Desdfsgfault patient profile', datetimestamp: 1735690558006}; // : IPatientProfile
-    // dispatch((state) => selectedPatientProfileAdded(examplePatientProfile)) 
-    // console.log(dispatch((state) => selectedPatientProfileUpdated(examplePatientProfile)).payload.patientName)
+    // console.log('1. page -> state', JSON.stringify(y));
     dispatch((state) => selectedPatientProfileUpdated({patientId: 1, patientName: 'ABC', datetimestamp: Date.now()}))
-
-    // const y = useAppSelector((state) => state.patient);
-    // const y = useAppSelector((state) => state.patient.selectedPatientProfile);
-    // console.log('y', JSON.stringify(y));
     const yy = useAppSelector((state) => selectSelectedPatientProfile(state));
     console.log('2. page -> state', JSON.stringify(yy));
     
-    // useEffect(() => {
-    //     if (router.isReady) {
-    //         // console.log('router');
-    //         if(patientProfiles) { 
-    //             // console.log(JSON.stringify(router.query));
-    //             // console.log(JSON.stringify(router.query.patient_id));
-    //             const patientIdFromRouter = String(router.query.patient_id);
-    //             // console.log('patientIdFromRouter', patientIdFromRouter);
-    //             // console.log('p', p);
-    //             const patientProfileMatch = patientProfiles.find((x) => {
-    //                 // console.log('x', JSON.stringify(x)); 
-    //                 return x.patientId == patientIdFromRouter;
-    //             });
-    //             if(patientProfileMatch) {
-    //                 // console.log('patientProfileMatch', patientProfileMatch); 
+    useEffect(() => {
+        // if (router.isReady) {
+        //     // console.log('router');
+        //     if(patientProfiles) { 
+        //         // console.log(JSON.stringify(router.query));
+        //         // console.log(JSON.stringify(router.query.patient_id));
+        //         const patientIdFromRouter = String(router.query.patient_id);
+        //         // console.log('patientIdFromRouter', patientIdFromRouter);
+        //         // console.log('p', p);
+        //         const patientProfileMatch = patientProfiles.find((x) => {
+        //             // console.log('x', JSON.stringify(x)); 
+        //             return x.patientId == patientIdFromRouter;
+        //         });
+        //         if(patientProfileMatch) {
+        //             // console.log('patientProfileMatch', patientProfileMatch); 
 
-    //                 // selectedPatientProfileUpdated(patientProfileMatch);
-    //                 // const x = selectSelectedPatientProfile;
-    //                 // selectSelectedPatientProfile.find((x) => x.patientId != '1');
-    //                 // console.log('selectSelectedPatientProfile', x);
-    //             }
-    //         }   
-    //     }
-    // }, [router.isReady, router.asPath, patientProfiles]);
+        //             // selectedPatientProfileUpdated(patientProfileMatch);
+        //             // const x = selectSelectedPatientProfile;
+        //             // selectSelectedPatientProfile.find((x) => x.patientId != '1');
+        //             // console.log('selectSelectedPatientProfile', x);
+        //         }
+        //     }   
+        // }
+    }, [router.isReady, router.asPath, patientProfiles]);
 
     // useEffect(() => {
     //     console.log('selectedPatient', selectedPatient);
