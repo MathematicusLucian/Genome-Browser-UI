@@ -99,7 +99,12 @@ The Genome Browser UI leverages the powerful features of Next.js to build a robu
 
 7. **API Integration**: The application integrates with the Genome Browser API to fetch genome data. API calls are made using the `fetch` API within `getStaticProps`, `getServerSideProps`, or `useEffect` depending on the rendering strategy.
 
-8. **State Management**: React's `useState` and `useEffect` hooks are used for managing local component state and side effects. For more complex state management, libraries like Redux or Context API can be integrated.
+8. **State Management**: React's `useState` and `useEffect` hooks are used for managing local component state and side effects. For more complex state management, libraries like **Redux** (or, alternatively, **Context API**) can be integrated.
+
+- `Immutability in Reducers`: **Redux Toolkit(RTK)** uses **Immer** under the hood, allowing "mutations" directly on state, which is internally handled immutably.
+- `useDispatch`: dispatch is used to trigger actions, which in turn update the Redux state based on reducers.
+- `useSelector`: Used to select and read values from the Redux state. The state is typically structured in a way where each slice of state is keyed by the name of the reducer (e.g., state.patients).
+- `RootState`: This is the TypeScript type for the root state of your Redux store. It helps TypeScript infer the structure of your state. Define it in your store setup:
 
 ### Directory Structure
 
