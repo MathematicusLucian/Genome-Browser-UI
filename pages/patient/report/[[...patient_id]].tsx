@@ -203,7 +203,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     // Function to merge notes from ListB into ListA based on rsid
     function mergeNotes(listA: any[], listB: any[]): any[] {
-        
+ 
         // Create a Map for fast lookup of rsid-to-notes
         const rsidToNotes = new Map<string, string>();
         listB.forEach(item => {
@@ -222,8 +222,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     // Effect: Retrieve enrichedData
     useEffect(() => {
-        console.log('Update');
-        if(data?.length > 0 || selectedPatientGeneVariants?.length > 0) {
+        if(selectedPatientGeneVariants?.length > 0 && data?.length > 0) {
             setEnrichedData(mergeNotes(selectedPatientGeneVariants, data));
         }
     }, [data, selectedPatientGeneVariants]);
