@@ -52,8 +52,7 @@ const Dashboard: React.FC<any> = ({ // DashboardProps
                             selectTitle={navDropdowns.selectTitle} 
                             placeholder={navDropdowns.placeholder}
                             updateStatus={navDropdowns.updateStatus} 
-                        />
-                        a
+                        /> 
                     </div>
                 ))}
             </div>
