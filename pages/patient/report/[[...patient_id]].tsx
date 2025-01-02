@@ -78,30 +78,21 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     
     // Effect: Retrieve patient profile ID from URL
     useEffect(() => {
-        if (router?.isReady) {
-
-            console.log('/// router ready', router?.query?.patient_id)
-
-            if(patientProfiles) {
-                const patientProfileMatchingPatientIdFromRouter = patientProfiles?.find((x) => x?.patientId == router?.query?.patient_id);
-
-                console.log('/// patientProfileMatchingPatientIdFromRouter', patientProfileMatchingPatientIdFromRouter)
-
-                if(patientProfileMatchingPatientIdFromRouter) {
-
-                    if(!selectedPatientSelectedProfile?.id) {
-                        // Load :. update selectedPatientSelectedProfile to match router param
-                        console.log('/// >>> patientProfileMatchingPatientIdFromRouter', patientProfileMatchingPatientIdFromRouter)
-                        handleSelectedPatient(patientProfileMatchingPatientIdFromRouter);
-                    } else if(router.query.patient_id != selectedPatientSelectedProfile?.id) {
-                        // Updated selectedPatientSelectedProfile :. update the route
-                        console.log('/// router.query.patient_id != selectedPatientSelectedProfile?.id', router.query.patient_id != selectedPatientSelectedProfile?.id)
-                    //     selectedPatientSelectedProfile && router.push(`/patient/report/${selectedPatientSelectedProfile?.id}`); 
-                    }
-
-                } else {
-                    // Load nothing
-                }
+        if (router?.isReady && patientProfiles) {
+            // No patient IdD in route path
+            if(router.query.patient_id == null) {
+                router.push(`/patient/report/${patientProfiles[0]?.patientId}`); 
+            }
+            // Updated selectedPatientSelectedProfile :. update the route
+            if(router.query.patient_id != selectedPatientSelectedProfile?.id) {
+                selectedPatientSelectedProfile && router.push(`/patient/report/${selectedPatientSelectedProfile?.id}`); 
+            }
+            // Load :. update selectedPatientSelectedProfile to match route param
+            const patientProfileMatchingPatientIdFromRouter = patientProfiles?.find((x) => x?.patientId == router?.query?.patient_id);
+            if(patientProfileMatchingPatientIdFromRouter && !selectedPatientSelectedProfile?.id) {
+                handleSelectedPatient(patientProfileMatchingPatientIdFromRouter);
+            } else {
+                // Load nothing
             }
         }
     }, [router?.isReady, router?.asPath, patientProfiles, selectedPatientSelectedProfile]); 
