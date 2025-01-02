@@ -364,13 +364,8 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                     </li>
                 ))}
             </ul> 
-            <div> 
-                 {/* key={key1}> */}
-                {selectedPatientSelectedProfile ? (
-                    <p>Selected: {selectedPatientSelectedProfile?.id}</p>
-                ) : (
-                    <p>No Patient Selected</p>
-                )}
+            <div>  
+                {selectedPatientSelectedProfile?.id} 
             </div>
 
             <hr />
@@ -384,13 +379,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                 ))}
             </ul> 
             <div>
-                 {/* key={key2}> */}
-                 {selectedPatientSelectedGenome?.id}
-                {/* {selectedPatientSelectedGenome ? (
-                    <p>Selected: {selectedPatientSelectedGenome?.id}</p>
-                ) : (
-                    <p>No Patient Genome Selected</p>
-                )} */}
+                 {selectedPatientSelectedGenome?.id} 
             </div>
 
             <hr />
@@ -406,13 +395,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             }
             </ul> 
             <div>
-                 {/* key={key3}> */} 
                  {selectedPatientSelectedChromosome?.id}
-                {/* {selectedPatientSelectedChromosome ? (
-                    <p>Selected: {selectedPatientSelectedChromosome?.id}</p>
-                ) : (
-                    <p>No Chromosome Selected</p>
-                )} */}
             </div>
 
             <hr />
@@ -426,13 +409,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                 ))}
             </ul> 
             <div>
-                 {/* key={key4}> */}
-                 {/* {JSON.stringify(selectedPatientSelectedGeneVariant)} */}
-                {/* {selectedPatientSelectedGeneVariant ? (
-                    <p>Selected: {selectedPatientSelectedGeneVariant?.id}</p>
-                ) : (
-                    <p>No Patient Gene Variant Selected</p>
-                )} */}
+                {selectedPatientSelectedGeneVariant?.id} 
             </div> 
 
         </PrivateLayout>
