@@ -339,19 +339,62 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     return (
         <PrivateLayout isSidebar={true}>
-            <button className="text-xs" onClick={() => handleSelectedChromosomeChange({"chromosomeName":"Chromosome 8","species":"homo-sapiens"})}>
-                Refresh C
-            </button>
 
-            <ReportGridWrapper
-                dashboardTitle={dashboardTitle} 
-                dashboardComponents={dashboardComponents}
-                dashboardNavButtons={dashboardNavButtons}
-                dashboardNavDropdowns={dashboardNavDropdowns}
-                columns={riskReportColumns}
-                riskReportRowsData={enrichedData}
-                handleSelectedDataRowChange={handleSelectedDataRowChange}
-            />
+            <h1 className="text-xl">Patients</h1>
+            <ul>
+                {patientProfiles?.map((profile) => (
+                    <li className="text-xs" key={profile.patientId} onClick={() => handleSelectedPatient(profile)}>
+                        {profile.patientName}
+                    </li>
+                ))}
+            </ul> 
+            <div>  
+                {selectedPatientSelectedProfile?.id} 
+            </div>
+
+            <hr />
+
+            <h1 className="text-xl">Genome</h1>
+            <ul>
+                {selectedPatientGenomes?.map((genome) => (
+                    <li className="text-xs" onClick={() => handleSelectedPatientGenomeChange(genome)}>
+                        {genome.patientGenomeId}
+                    </li>
+                ))}
+            </ul> 
+            <div>
+                 {selectedPatientSelectedGenome?.id} 
+            </div>
+
+            <hr />
+
+            <h1 className="text-xl">Chromosomes</h1>
+            <ul>
+            {
+                chromosomesList?.map(chromosome =>
+                    <li key={chromosome.chromosomeName} className="text-xs" onClick={() => handleSelectedChromosomeChange(chromosome)}>
+                        {String(chromosome.chromosomeName)}, {chromosome.species}
+                    </li>
+                )
+            }
+            </ul> 
+            <div>
+                 {selectedPatientSelectedChromosome?.id}
+            </div>
+
+            <hr />
+
+            <h1 className="text-xl">Gene Variants</h1> 
+            <ul>
+                {selectedPatientGeneVariants?.map((geneVariant) => (
+                    <li className="text-xs" onClick={() => handleSelectedPatientGeneVariantChange(geneVariant)}>
+                        {geneVariant.rsid} | {geneVariant.chromosome}
+                    </li> 
+                ))}
+            </ul> 
+            <div>
+                {selectedPatientSelectedGeneVariant?.id} 
+            </div> 
 
         </PrivateLayout>
     );

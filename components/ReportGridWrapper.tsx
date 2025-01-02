@@ -6,7 +6,7 @@ import { IFullReport } from "@/models/database";
 import Dashboard from "./Dashboard";
 
 interface ReportGridWrapperProps {
-  children: ReactNode,
+  children?: ReactNode,
   dashboardTitle: string,
   dashboardComponents: any,
   dashboardNavDropdowns: any
