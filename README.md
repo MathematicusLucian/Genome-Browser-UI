@@ -23,13 +23,51 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 
 **This also serves to demonstrate:**
 
-- A _React_ implementation (with **NextJs**)
+- **React** UI app
+  - **React Provider**/**Context**, e.g. Dark/Light mode
+  - Custom Hooks
+- **NextJs** App Router
+  - Advanced routing for seamless navigation and performance
+  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
+- **shadncn/ui**:w
+  - Styling with **Tailwind CSS**
+  - Component primitives from **Radix UI** for accessibility and flexibility
+- **Redux** with **RTK** patterns, and **Axios**. (Zustand, Jotai, or Recoil could also be utilised.)
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.
-- **React Provider**/**Context**, e.g. Dark/Light mode
+- Data Persistence:
+  - **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser `IndexedDB`.) (See section below on `Dexie.js`, etc..)
+  - **Sqlite3**, and a Sqlite worker (server-side for storage of uploaded clinVar data, etc.; alternatively, Postgres may be employed.)
+  - Vercel **Postgres** powered by **Neon** for saving chat history and user data
+  - **Vercel Blob** for efficient file storage
+- **NextAuth.js**: Simple and secure authentication
 - Consideration of DRY/SOLID principles, and Gang of Four design patterns
-- **Redux** with **RTK** patterns, and **Axios**.
-- **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser `IndexedDB`.) (See section below on `Dexie.js`, etc..)
-- **shadncn/ui**
+
+**Long-term**
+
+May potentially add:
+
+- Storybook, Mermaids UML, etc. documentation
+- Consider CSS-in-TS libraries such as Stitches and Vanilla Extract (instead of Tailwind CSS), or move to CVA for a consistent, reusable, and atomic design system
+- Components coupling and cohesion graph (Madge library)
+- T3 Env to manage env vars (checks type validation and transforming at build time)
+- Code dependencies management: Patch-package, Renovate BOT, etc.; absolute imports
+- Testing:
+  - Expand unit and integration tests (Jest, React-Testing-Library, etc.)
+  - e2e (Playwright - UI, and headless modes)
+  - Smoke testing to verify UI renders correctly (Storybook; where stories written in TSX, not MDX)
+  - Acceptance tests, e.g. that validation for form inputs works as expected (Storybook's play function)
+- Observability: Open Telemetry integration for seamless monitoring
+- Save search history to IndexedDB
+- Option to upload genome data to server (Postgres); and therefore, injection of database manager (Postgres, or IndexedDB)
+- Deployment pipeline/GitHub Actions, etc.; semantic release
+- Local Docker instance/Dockerfile
+- Husky, Prettier, ESLint, ts-reset, conventional commits git hook, etc. checks before commit/push
+- Bundle analyzer plugin, Lighthouse score, etc..
+- Expand Pydantic utilisation in the FastAPI
+- User accounts/membership management
+- Multi-tenancy
+- Custom domains
+- LLM model integration
 
 ## Pages/Views
 
@@ -143,14 +181,19 @@ The project follows a structured directory layout to organise the codebase effic
 ### Environment Variables
 
 **Locally**:
-Set up the environment variables:
+Set up the environment variables (defined in `.env.example`.)
+
+_Note: You should not commit your .env file or it will expose secrets that will allow others to control access._
 
 ```bash
 cp .env.example .env
 ```
 
 **Environment Variables on Vercel**:
-`vercel env pull`
+
+- Install Vercel CLI: `npm i -g vercel`
+- Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
+- Download environment variables: `vercel env pull`, then `pnpm install`, and `pnpm dev`
 
 ## IndexedDB
 
