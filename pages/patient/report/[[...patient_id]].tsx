@@ -17,6 +17,9 @@ import { date } from "yup";
 import { selectSelectedChromosome, selectedChromosomeUpdated } from "@/state/features/geneDefinition/geneDefinitionSlice";
 import { usePostSnpDataByRsidQuery } from "@/state/features/research/researchApi";
 import _ from "lodash";
+import Grid from "antd/es/card/Grid";
+import CreatePatientForm from "@/components/CreatePatientForm";
+import UploadForm from "@/components/UploadForm";
 
 // --------------------------------------------------------------------------------------------
 // Risk Report 
@@ -28,7 +31,12 @@ interface RiskReportPageProps {
 // React.memo(() => {
 const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {  
     const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
-    const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
+    const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext); 
+    const [patientId, setPatientId] = useState<string>('');
+    const [searchTermEntered, setSearchTermEntered] = useState(null);  
+    const [enrichedData, setEnrichedData] = useState<any[]>([]);
+    const [dataStatus, setDataStatus] = useState<string>('');
+    // const [error, setError] = useState(null); 
 
     // ------
     // Router
@@ -62,7 +70,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     }, [selectedPatientSelectedProfile?.patientId]);
 
     // Dispatch actions for patient profiles
-    const handleSelectPatient = (patientProfile) => {  
+    const handleSelectedPatient = (patientProfile) => {  
         dispatch(setSelectedPatientProfile(patientProfile));
     };
     const handleAddPatient = async (patientProfile) => {   
@@ -200,14 +208,37 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         );
     }
 
+    // Function to merge notes from ListB into ListA based on rsid
+    function mergeNotes(listA: any[], listB: any[]): any[] {
+        // Create a Map for fast lookup of rsid-to-notes
+        const rsidToNotes = new Map<string, string>();
+        listB.forEach(item => {
+        rsidToNotes.set(item.rsid, item.notes);
+        });
+    
+        // Add notes to ListA where rsid matches
+        listA.forEach(item => {
+        if (rsidToNotes.has(item.rsid)) {
+            item.notes = rsidToNotes.get(item.rsid) || "";
+        }
+        });
+
+        return listA;
+    }
+
     // Effect: Retrieve enrichedData
     useEffect(() => {
-        console.log('clinVar', data);
-        // console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
-        // console.log(
-        //     'enrichedData',
-        //     merge_object_arrays(data, selectedPatientGeneVariants, 'rsid') 
-        // );  
+        if(data?.length > 0 || selectedPatientGeneVariants?.length > 0) {
+            console.log('clinVar', data);
+            console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
+            console.log(
+                'enrichedData',
+                // merge_object_arrays(data, selectedPatientGeneVariants, 'rsid') 
+                mergeNotes(selectedPatientGeneVariants, data)
+            );  
+            // setEnrichedData(merge_object_arrays(data, selectedPatientGeneVariants, 'rsid'));
+            setEnrichedData(mergeNotes(selectedPatientGeneVariants, data));
+        }
     }, [data, selectedPatientGeneVariants]);
 
     // --------------
@@ -215,6 +246,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // --------------
     
     const handleSelectedDataRowChange = (e) => {
+        handleSelectedPatientGeneVariantChange(e);
         updateDrawerTitle("Risk/SNP (Gene Variant) Details");
         updateDrawerContent(genomeDetailsDrawerContent(e)); 
         toggleDrawerVisible(true);
@@ -235,13 +267,80 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         );
     };
 
+    // -------------
+    // Modal Content
+    // -------------
+
+    const modalContent = (contentSlot: any) => (
+        <div className="mt-2 px-7 py-3">{contentSlot}</div>
+    );
+
     // ---------------
     // Dashboard Setup
     // ---------------
     
     const dashboardTitle = 'Patient Risk Report';
+ 
+    const dashboardNavButtons = [
+        {
+            buttonTitle: "Create New Patient",
+            onClickMethod: () => {
+                updateModalTitle("Create New Patient");
+                updateModalContent(modalContent(<CreatePatientForm />));
+                toggleModalVisible(true);
+            },
+            condtionVariable: true
+        },
+        {
+            buttonTitle: "Upload DNA File",
+            onClickMethod: () => {
+                updateModalTitle("Upload Patient File");
+                updateModalContent(modalContent(<UploadForm patientIdFromParentComponent={patientId} />));  
+                toggleModalVisible(true);
+            },
+            condtionVariable: patientId
+        }
+    ]; 
 
+    const dashboardNavDropdowns = [ 
+        {
+            dataAsList: patientProfiles,
+            error: error,
+            selectedSelectItem: selectedPatientSelectedProfile,
+            handleSelectedItemChange: handleSelectedPatient,
+            selectDataKey: 'patientId',
+            displayField: 'patientName',
+            selectTitle: "Patient Profile:",
+            placeholder: "Please choose a patient",
+            updateStatus: setDataStatus,
+        },{
+            dataAsList: selectedPatientGenomes,
+            error: error,
+            selectedSelectItem: selectedPatientSelectedGenome,
+            handleSelectedItemChange: handleSelectedPatientGenomeChange,
+            selectDataKey: 'patientGenomeId', 
+            displayField: 'datetimestamp', 
+            selectTitle: "Genome:",
+            placeholder: "Please choose a DNA file",
+            updateStatus: setDataStatus,
+        },{
+            dataAsList: chromosomesList,
+            error: error,
+            selectedSelectItem: selectedPatientSelectedGenome,
+            handleSelectedItemChange: handleSelectedChromosomeChange,
+            selectDataKey: 'chromosomeName',
+            displayField: 'chromosomeName',
+            selectTitle: "Chromosome:",
+            placeholder: "Please choose a chromosome",
+            updateStatus: setDataStatus,
+        }
+    ];
+
+    const dashboardComponents = [];
+
+    // ----------
     // Grid Setup
+    // ----------
         
     const riskReportColumns = [
         {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
@@ -253,14 +352,26 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         {"headerName":"datetimestamp","field":"datetimestamp", flex: 2, maxWidth: 120}, 
         {"headerName":"patientId","field":"patientId", flex: 2, maxWidth: 120}, 
         {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 2, maxWidth: 120},
-    ]; 
+    ];      
 
     return (
         <PrivateLayout isSidebar={true}>
-            <h1 className="text-xl">Patients</h1>
+
+            <ReportGridWrapper
+                dashboardTitle={dashboardTitle} 
+                dashboardComponents={dashboardComponents}
+                dashboardNavButtons={dashboardNavButtons}
+                dashboardNavDropdowns={dashboardNavDropdowns}
+                columns={riskReportColumns}
+                riskReportRowsData={enrichedData}
+                handleSelectedDataRowChange={handleSelectedDataRowChange}
+            >
+                Dashboard
+            </ReportGridWrapper>
+
             <ul>
                 {patientProfiles?.map((profile) => (
-                    <li className="text-xs" key={profile.patientId} onClick={() => handleSelectPatient(profile)}>
+                    <li className="text-xs" key={profile.patientId} onClick={() => handleSelectedPatient(profile)}>
                         {profile.patientName}
                     </li>
                 ))}
@@ -328,45 +439,9 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                     <p>No Patient Gene Variant Selected</p>
                 )}
             </div> 
+
         </PrivateLayout>
     );
 };
 
 export default RiskReportPage; 
-
-    //     const enrichmentResult = patientGeneVariants && patientGeneVariants.map((patientVariant) => {
-
-    //         data && data.map((clinVar) => { 
-
-    //             if(clinVar.rsid == patientVariant.rsid) {
-                    
-    //                 const clinVarGenotype = String(clinVar.allele1 + clinVar.allele2); 
-    //                 const clinVarGenotypeReversed = String(clinVar.allele2 + clinVar.allele1);
-    //                 const isAlleleMatch = clinVarGenotype == String(patientVariant.genotype);
-    //                 const isAlleleMatchReversed = clinVarGenotypeReversed == String(patientVariant.genotype);
-    //                 const alleleMatchBidirectional = isAlleleMatch || isAlleleMatchReversed;
-
-    //                 if(alleleMatchBidirectional) {
-    //                     patientVariant.notes = clinVar.notes;  
-    //                 }
-
-    //             }
-
-    //         })
-    
-    //         return patientVariant;
-    //     });
-    //     return enrichmentResult;
-    // }
-
-    // // const enrichPatientVariantsDataWithClinVarNotes = async (dexieResponse) => {
-    // //     const mockClinVarNotesData = fetchClinVarNotes();
-
-    // //     const enrichmentResult = await dexieResponse.map((patientVariant) => {
-    // //         for(let snp in clinVarData) {
-    // //             if(mockClinVarNotesData[snp]['rsid'] == patientVariant.rsid) {
-    // //                 patientVariant['notes'] = mockClinVarNotesData[snp]['notes'];
-    // //             }
-    // //         }
-    // //         return patientVariant;
-    // //     })

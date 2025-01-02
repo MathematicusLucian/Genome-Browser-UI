@@ -3,16 +3,15 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import { Button } from "./ui/button";
 import { Separator } from "@radix-ui/react-separator";
 import DataGridFilter from "./DataGridFllter";
-import { DashboardProps } from "@/models/dashboard";
+// import DashboardProps from "@/models/dashboard";
 
-const Dashboard: React.FC<DashboardProps> = ({
+const Dashboard: React.FC<any> = ({ // DashboardProps
     children,
     dashboardTitle,
     dashboardComponents,
     error,
     dashboardNavButtons,
     dashboardNavDropdowns
-
 }) => {  
     const [dataStatus, setDataSatus] = useState();
 

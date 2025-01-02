@@ -103,7 +103,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
   }, [windowWidth, containerWidth, gridApi]);
 
   return (
-    <div className="grid-container" data-ag-theme-mode="mode">
+    <div className="grid-container flex flex-col w-full" data-ag-theme-mode="mode">
       <div className="flex justify-between align-middle m-1 mt-3 text-xs text-[#4b5563]">
           <Button
             className="rounded px-3 py-1 text-xs border-zinc-950 dark:border-zinc-200"
@@ -128,10 +128,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
         ensureDomOrder={true}
         theme={agGridTheme}
       ></AgGridReact>
-      <style jsx global>{`
-      //  .ag-body, .ag-layout-normal, .ag-chart, .ag-dnd-ghost, .ag-popup, .ag-root-wrapper, .ag-body-viewport, &.ag-layout-normal, .ag-layout-normal, .ag-ltr {
-      //     background-color: transparent !important;
-      //   }
+      <style jsx global>{` 
         .grid-container {
           height: 55vh;
           width: 100%;
@@ -159,14 +156,12 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           line-height: 1.0;
         }
         .ag-grid .ag-header-cell {
-          // background-color: #f9fafb;
           background-color: transparent !important;
           border-color: #e5e7eb;
           margin: 0 auto;
           padding: 0.7rem;
           font-weight: 600;
-          font-size: 0.7rem;
-          // color: #374151;
+          font-size: 0.7rem; 
         }
       `}</style>
     </div>
