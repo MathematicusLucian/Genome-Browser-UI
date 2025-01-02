@@ -4,12 +4,12 @@ import { IPatientProfile, IPatientGenome, IPatientGenomeVariant, IChromosome } f
 
 export interface IPatientState {
     patientProfile: IPatientProfile[];
-    selectedPatientProfile: IPatientProfile | null;
-    selectedChromosome: IChromosome | null;
+    selectedPatientProfile:  any; // string | null;
+    selectedChromosome: string | null;
     patientGenome: IPatientGenome[];
-    selectedPatientGenome: IPatientGenome | null;
+    selectedPatientGenome: string | null;
     patientGeneVariant: IPatientGenomeVariant[];
-    selectedPatientGeneVariant: IPatientGenomeVariant | null;
+    selectedPatientGeneVariant: string | null;
 }
 
 export const initialState: IPatientState = {
@@ -61,7 +61,7 @@ const patientsSlice = createSlice({
                 state.patientProfile[index] = action.payload;
             }
         },
-        setSelectedPatientProfile: (state, action: PayloadAction<IPatientProfile>) => {
+        setSelectedPatientProfile: (state, action: PayloadAction<any>) => { // IPatientProfile
             state.selectedPatientProfile = { ...action.payload }; // Ensure a new object is created 
         },
         // Chromosome
