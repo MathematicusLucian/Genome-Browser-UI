@@ -12,14 +12,18 @@ export const snpResearchApi = createApi({
     //   query: (rsids = [1]) => `snp_research?_rsids=${rsids}&_limit=10`,
     // }),
     postSnpDataByRsid: builder.query({ // mutation
-        query: (rsids: string[]) =>  ({
-            url: "snp_research",
+        query: (rsids: string[]) => {
+          const q = ({
+            url: "snp_research/",
             method: "post",
-            data: rsids,
+            data: JSON.stringify(rsids),
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
             },
-        }),
+          });
+          console.log('q', q);
+          return q;
+        }
     }),
   }),
 });

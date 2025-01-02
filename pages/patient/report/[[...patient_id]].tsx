@@ -174,7 +174,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // ClinVar Data: SNP Pairs (Genotype/Allele)
     // -----------------------------------------
 
-    // Returns all genotypes/allele pairs for a given SNP :. API has no data (privacy) as to which genotype the patient has
+    // Returns all genotypes/allele pairs for a list of SNPs, e.g. ["rs10033464"] :. API has no data (privacy) as to which genotype the patient has
     const rsidsList = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid);
     console.log(rsidsList);
     const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsidsList); 
@@ -205,8 +205,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
         // console.log(
         //     'enrichedData',
-        //     merge_object_arrays(data, selectedPatientGeneVariants, 'rsid')
-        //         .find((x) => x.rsid == 'rs429358')
+        //     merge_object_arrays(data, selectedPatientGeneVariants, 'rsid') 
         // );  
     }, [selectedPatientGeneVariants]); // data
 
