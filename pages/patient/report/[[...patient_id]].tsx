@@ -192,35 +192,20 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // Data Enrichment: SNP Pairs (ClinVar, etc.)
     // ------------------------------------------
 
-    function merge_object_arrays (arr1, arr2, match) {
-        return _.union(
-        _.map(arr1, function (obj1) {
-            var same = _.find(arr2, function (obj2) {
-            return obj1[match] === obj2[match];
-            });
-            return same ? _.extend(obj1, same) : obj1;
-        }),
-        _.reject(arr2, function (obj2) {
-            return _.find(arr1, function(obj1) {
-            return obj2[match] === obj1[match];
-            });
-        })
-        );
-    }
-
     // Function to merge notes from ListB into ListA based on rsid
     function mergeNotes(listA: any[], listB: any[]): any[] {
+        
         // Create a Map for fast lookup of rsid-to-notes
         const rsidToNotes = new Map<string, string>();
         listB.forEach(item => {
-        rsidToNotes.set(item.rsid, item.notes);
+            rsidToNotes.set(item.rsid, item.notes);
         });
     
         // Add notes to ListA where rsid matches
         listA.forEach(item => {
-        if (rsidToNotes.has(item.rsid)) {
-            item.notes = rsidToNotes.get(item.rsid) || "";
-        }
+            if (rsidToNotes.has(item.rsid)) {
+                item.notes = rsidToNotes.get(item.rsid) || "";
+            }
         });
 
         return listA;
