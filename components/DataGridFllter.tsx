@@ -10,9 +10,30 @@ const DataGridFilter: React.FC<any> = ({dataAsList, error, selectedSelectItem, h
 
     updateStatus(selectStatus);
 
-    return (!dataAsList || error)
-        ? <></>
-        : <Select selectData={dataAsList} selectDataKey={selectDataKey} displayField={displayField} selectTitle={selectTitle} placeholder={placeholder} error={error} selectedOption={selectedSelectItem} handleSelectChange={handleSelectedItemChange} />;
+    return (
+        <div>
+
+            <Select 
+                selectData={dataAsList} 
+                selectDataKey={selectDataKey} 
+                displayField={displayField} 
+                selectTitle={selectTitle} 
+                placeholder={placeholder} 
+                error={error} 
+                selectedOption={selectedSelectItem} 
+                handleSelectChange={handleSelectedItemChange} 
+            />
+
+        </div>
+        // <>
+        //     D: {dataAsList}
+
+        // {/* {dataAsList || error
+        //      ? (<></>)
+        //      : (<Select selectData={dataAsList} selectDataKey={selectDataKey} displayField={displayField} selectTitle={selectTitle} placeholder={placeholder} error={error} selectedOption={selectedSelectItem} handleSelectChange={handleSelectedItemChange} />)} */}
+
+        // </>    
+    )
 }
 
 export default DataGridFilter;

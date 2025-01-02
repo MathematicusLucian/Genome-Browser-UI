@@ -289,7 +289,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     const dashboardNavDropdowns = [ 
         {
-            dataAsList: patientProfiles,
+            dataAsList: patientProfiles || [],
             error: error,
             selectedSelectItem: selectedPatientSelectedProfile,
             handleSelectedItemChange: handleSelectedPatient,
@@ -299,7 +299,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             placeholder: "Please choose a patient",
             updateStatus: setDataStatus,
         },{
-            dataAsList: selectedPatientGenomes,
+            dataAsList: selectedPatientGenomes || [],
             error: error,
             selectedSelectItem: selectedPatientSelectedGenome,
             handleSelectedItemChange: handleSelectedPatientGenomeChange,
@@ -309,7 +309,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             placeholder: "Please choose a DNA file",
             updateStatus: setDataStatus,
         },{
-            dataAsList: chromosomesList,
+            dataAsList: chromosomesList || [],
             error: error,
             selectedSelectItem: selectedPatientSelectedGenome,
             handleSelectedItemChange: handleSelectedChromosomeChange,

@@ -36,18 +36,25 @@ const Dashboard: React.FC<any> = ({ // DashboardProps
             <div className="text-xs">{dataStatus}</div>
 
             <div className="flex flex-row">
-                {dashboardNavDropdowns.map((navDropdowns) => (
-                    <DataGridFilter 
-                        dataAsList={navDropdowns.dataAsList} 
-                        error={error}
-                        selectedSelectItem={navDropdowns.selectedSelectItem} 
-                        handleSelectedItemChange={navDropdowns.handleSelectedItemChange} 
-                        selectDataKey={navDropdowns.selectDataKey} 
-                        displayField={navDropdowns.displayField} 
-                        selectTitle={navDropdowns.selectTitle} 
-                        placeholder={navDropdowns.placeholder}
-                        updateStatus={navDropdowns.updateStatus} 
-                    />
+
+                {/* {JSON.stringify(dashboardNavDropdowns[0])}  */}
+
+                {dashboardNavDropdowns.map((navDropdowns: any) => 
+                    (  
+                    <div>
+                        <DataGridFilter 
+                            dataAsList={navDropdowns.dataAsList} 
+                            error={error}
+                            selectedSelectItem={navDropdowns.selectedSelectItem} 
+                            handleSelectedItemChange={navDropdowns.handleSelectedItemChange} 
+                            selectDataKey={navDropdowns.selectDataKey} 
+                            displayField={navDropdowns.displayField} 
+                            selectTitle={navDropdowns.selectTitle} 
+                            placeholder={navDropdowns.placeholder}
+                            updateStatus={navDropdowns.updateStatus} 
+                        />
+                        a
+                    </div>
                 ))}
             </div>
 
