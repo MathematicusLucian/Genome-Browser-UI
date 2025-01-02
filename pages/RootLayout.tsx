@@ -62,20 +62,27 @@ const RootLayout = ({
       <Drawer isOpen={drawerVisible} onClose={toggleDrawerVisible} title={drawerTitle} content={drawerContent} />
 
       <SessionProvider session={session}>  
-        
-        <header>
-          <Header session={session} />
-        </header>
 
-        <main className="w-100 flex flex-1 flex-column justify-top items-center text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950 top-0">
-          {children}
-        </main>
+        <div className="flex flex-col h-screen overflow-hidden">
+          
+          <header className="w-full text-center border-b border-grey"> 
+            <Header session={session} />
+          </header>
 
-        <footer>
-          <Footer>
-            <FooterContent />
-          </Footer>
-        </footer>
+          <main className="flex-1 overflow-y-scroll w-100 justify-top items-center text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950 top-0">
+          {/* flex flex-1 flex-column */}
+            <div className="min-h-screen">
+              {children}
+            </div> 
+          </main>
+
+          <footer className="w-full text-center border-t border-grey"> 
+            <Footer>
+              <FooterContent />
+            </Footer>
+          </footer>
+
+        </div>
 
       </SessionProvider> 
 

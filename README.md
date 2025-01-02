@@ -217,30 +217,6 @@ The project follows a structured directory layout to organise the codebase effic
 - `/types`
 - `/utils`: [Utility functions and helpers]
 
-## Getting Started
-
-- `npm run dev`: Starts the development server. Browse to `http://127.0.0.1:3000/`.
-- Force shutdown Node/Python app running locally: Find `psid` with the command `lsof -i :3000` (or `8000` for the FastAPI backe-end), then `kill -9 [psid]`.
-- `npm run build`: Builds the app for production.
-- `npm start`: Runs the built app in production mode.
-
-### Environment Variables
-
-**Locally**:
-Set up the environment variables (defined in `.env.example`.)
-
-_Note: You should not commit your .env file or it will expose secrets that will allow others to control access._
-
-```bash
-cp .env.example .env
-```
-
-**Environment Variables on Vercel**:
-
-- Install Vercel CLI: `npm i -g vercel`
-- Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-- Download environment variables: `vercel env pull`, then `pnpm install`, and `pnpm dev`
-
 ## IndexedDB
 
 ![IndexedDB diagram](./assets/indexeddb.png)
@@ -300,3 +276,27 @@ navigator.webkitPersistentStorage.requestQuota (
     }, function(e) { console.log('Error', e); }
 );
 ```
+
+## Getting Started
+
+- `npm run dev`: Starts the development server. Browse to `http://127.0.0.1:3000/`.
+- Force shutdown Node/Python app running locally: Find `psid` with the command `lsof -i :3000` (or `8000` for the FastAPI backe-end), then `kill -9 [psid]`.
+- `npm run build`: Builds the app for production.
+- `npm start`: Runs the built app in production mode.
+
+### Environment Variables
+
+**Locally**:
+Set up the environment variables (defined in `.env.example`.)
+
+_Note: You should not commit your .env file or it will expose secrets that will allow others to control access._
+
+```bash
+cp .env.example .env
+```
+
+**Environment Variables on Vercel**:
+
+- Install Vercel CLI: `npm i -g vercel`
+- Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
+- Download environment variables: `vercel env pull`, then `pnpm install`, and `pnpm dev`
