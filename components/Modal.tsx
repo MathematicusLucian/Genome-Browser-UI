@@ -24,17 +24,23 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButt
     };
 
     return ( 
+        // Backdrop
         <div className={`modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center text-center ${isOpen ? 'open' : ''}`}
             onClick={handleCancel} 
         >
-                <div className="p-8 border w-50 shadow-lg rounded-md bg-white dark:bg-gray-900">
-            
-                    <div className="flex flex-row text-center">
-                        <div className="flex-1 h-4">
-                            <h2 className="p-0 mt-4 px-4 mt-0 text-xl font-bold text-gray-900 dark:text-white leading-relaxed">{title ? title : ('404')}</h2>
+                {/* Modal itself */}
+                <div className=" border w-full shadow-lg rounded-md bg-white dark:bg-gray-900 items-center justify-center text-center">
+
+                    {/* Modal toolbar */}
+                    <div className="flex flex-row w-full items-center justify-center text-center px-20">
+
+                        <div className="flex-1 py-5">
+                            <h2 className="mt-0 text-xl font-bold text-gray-900 dark:text-white leading-relaxed">{title || ('404')}</h2>
                         </div>
-                        <Separator orientation="vertical" className="mx-2 h-4" /> 
-                        <div className="flex-1 h-4">
+
+                        <Separator orientation="vertical" className="flex mx-2 h-4" /> 
+
+                        <div className="flex-1 leading-relaxed">
                             {isOkButtonVisible &&  (
                                 <Button className="close-button rounded px-3 py-1 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900"
                                 onClick={handleOk}>
@@ -48,16 +54,21 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButt
                                 </Button>
                             )} 
                         </div>
+
                     </div>
                     
-                    <div className="drawer-content pl-10 p-25">    
+                    {/* Modal content */}
+                    <div className="flex flex-row w-full items-center justify-center text-center px-20 pt-4 pb-16">    
+
                         {content && (
                             <div className="text-sm text-gray-900 dark:text-white">
                                 {content} 
                             </div>
                         )}
+
                     </div> 
 
+                {/* End: Modal itself */}
                 </div>
 
             <style jsx>{`
@@ -71,30 +82,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, content, isOkButt
                     transform: translateY(100%);
                     transition: transform 0.5s ease;
                     z-index: 2000;
+                    text-align: center;
+                    margin: 0 auto;
                 } 
-                div {
-                    width: 80%;
-                    padding: 1em;
-                }
-                h1 {
-                    font-size: 1rem;
-                }
-                p, label, li {
-                    font-size: 0.8rem;
-                }
                 .modal.open {
                     transform: translateX(0);
                 }
                 .modal-content {
                     padding: 20px;
-                }
-                .close-button {
-                    background: red;
-                    color: white;
-                    border: none;
-                    padding: 10px;
-                    cursor: pointer;
-                }
+                } 
             `}</style> 
         </div> 
     ) 
