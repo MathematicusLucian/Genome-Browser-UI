@@ -16,7 +16,7 @@ const Dashboard: React.FC<any> = ({ // DashboardProps
     const [dataStatus, setDataSatus] = useState();
 
     return (
-        <>
+        <> 
             <div className="text-xl">{dashboardTitle}</div>
 
             <div className="flex flex-row"> 

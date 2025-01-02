@@ -78,21 +78,33 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     
     // Effect: Retrieve patient profile ID from URL
     useEffect(() => {
-        if (router.isReady) {
+        if (router?.isReady) {
+
+            console.log('/// router ready', router?.query?.patient_id)
 
             if(patientProfiles) {
-                const patientProfileMatchingPatientIdFromRouter = patientProfiles?.find((x) => x.patientId == router.query.patient_id);
+                const patientProfileMatchingPatientIdFromRouter = patientProfiles?.find((x) => x?.patientId == router?.query?.patient_id);
+
+                console.log('/// patientProfileMatchingPatientIdFromRouter', patientProfileMatchingPatientIdFromRouter)
+
                 if(patientProfileMatchingPatientIdFromRouter) {
-                    selectedPatientSelectedProfile && router.push(`/patient/report/${selectedPatientSelectedProfile.id}`); 
+
+                    if(!selectedPatientSelectedProfile?.id) {
+                        // Load :. update selectedPatientSelectedProfile to match router param
+                        console.log('/// >>> patientProfileMatchingPatientIdFromRouter', patientProfileMatchingPatientIdFromRouter)
+                        handleSelectedPatient(patientProfileMatchingPatientIdFromRouter);
+                    } else if(router.query.patient_id != selectedPatientSelectedProfile?.id) {
+                        // Updated selectedPatientSelectedProfile :. update the route
+                        console.log('/// router.query.patient_id != selectedPatientSelectedProfile?.id', router.query.patient_id != selectedPatientSelectedProfile?.id)
+                    //     selectedPatientSelectedProfile && router.push(`/patient/report/${selectedPatientSelectedProfile?.id}`); 
+                    }
+
+                } else {
+                    // Load nothing
                 }
             }
-
-            if(selectedPatientSelectedProfile != null && router.query.patient_id != selectedPatientSelectedProfile.id) {
-                // http://127.0.0.1:3000/patient/genome?patientId=[x]
-                router.push(`/patient/report/${selectedPatientSelectedProfile}`); 
-            }  
         }
-    }, [router.isReady, router.asPath, patientProfiles, selectedPatientSelectedProfile]); 
+    }, [router?.isReady, router?.asPath, patientProfiles, selectedPatientSelectedProfile]); 
 
     // --------------------
     // Data: Patient Genome
@@ -289,7 +301,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         {
             dataAsList: patientProfiles || [],
             error: error,
-            selectedSelectItem: selectedPatientSelectedProfile,
+            selectedSelectItem: selectedPatientSelectedProfile?.id,
             handleSelectedItemChange: handleSelectedPatient,
             selectDataKey: 'patientId',
             displayField: 'patientName',
@@ -299,7 +311,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         },{
             dataAsList: selectedPatientGenomes || [],
             error: error,
-            selectedSelectItem: selectedPatientSelectedGenome,
+            selectedSelectItem: selectedPatientSelectedGenome?.id,
             handleSelectedItemChange: handleSelectedPatientGenomeChange,
             selectDataKey: 'patientGenomeId', 
             displayField: 'datetimestamp', 
@@ -309,7 +321,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         },{
             dataAsList: chromosomesList || [],
             error: error,
-            selectedSelectItem: selectedPatientSelectedGenome,
+            selectedSelectItem: selectedPatientSelectedGenome?.id,
             handleSelectedItemChange: handleSelectedChromosomeChange,
             selectDataKey: 'chromosomeName',
             displayField: 'chromosomeName',

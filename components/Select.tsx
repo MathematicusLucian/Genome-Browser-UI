@@ -13,25 +13,22 @@ interface SelectProps {
 }
 
 const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField, selectTitle, placeholder, selectedOption, error, handleSelectChange }) => {
-    const [selectedOptionId, setSelectedOptionId] = useState<any>(null); 
 
-    // useEffect(() => {  
-    //     if(selectData) {
-    //         if(!selectDataKey) selectDataKey = Object.keys(selectData[0])[0]; 
-    //         if(!selectedOption) selectedOption = selectData[0][selectDataKey]; 
-    //         if(selectedOption) setSelectedOptionId(selectedOption);
-    //     }
-    // }, [selectData, selectDataKey]);  
+    const fallbackSelectedOption = 
+        (selectData[0] && selectDataKey in selectData[0])
+        ? selectedOption || selectData[0][selectDataKey]
+        : selectedOption;
 
     return (
         <div>
+            {/* {fallbackSelectedOption} */}
             {selectData && selectDataKey && error.length==0 ? (
                 <div className="dropdown">
                     <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> 
                     <select id={`${selectDataKey}-select`} onChange={handleSelectChange}
                         className='bg-gray-950 dark:bg-slate-100 text-xs text-white dark:text-zinc-900'
+                        value={fallbackSelectedOption}
                     >
-                        {/* value={selectedOptionId}>  */}
                         <option value="">--{placeholder}--</option>
                         {selectData.map((profile: any) => (
                             <option key={profile[selectDataKey]} value={profile[selectDataKey]} 
