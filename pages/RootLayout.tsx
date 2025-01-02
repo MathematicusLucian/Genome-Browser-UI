@@ -9,12 +9,14 @@ import Drawer from '../components/Drawer';
 import { Separator } from "../components/ui/separator";
 import { getUserInfo } from "../services/Auth";
 import { ModalContext, DrawerContext } from '../context';
+import { Button } from "@/components/ui/button";
 
 const RootLayout = ({ 
   sidebar, 
   session,
   children,
  }: any) => { 
+  // const { data: session } = useSession();
 
   const { modalTitle, modalContent, modalVisible, updatModalTitle, updateModalContent, toggleModalVisible } = useContext(
     ModalContext
@@ -75,6 +77,19 @@ const RootLayout = ({
           <main className="flex-1 overflow-y-scroll w-100 justify-top items-center text-center border-b border-grey px-14 py-8 bg-slate-100 dark:bg-gray-950 top-0">
           {/* flex flex-1 flex-column */}
             <div className="min-h-screen">
+
+              {/* Session management */}
+              {/* {session ? (
+                <div className="p-0 m-0 flex flex-col flex-1 flex-grow w-full"> 
+                  {children}
+                </div>
+              ):(
+                <> 
+                  <h2 className="pb-5">Please login ...</h2>
+                  <Button className="close-button rounded px-3 py-1 bg-gray-900 dark:bg-white text-xs text-white dark:text-zinc-900" onClick={() => signIn()}>Log in</Button>
+                </>
+              )} */}
+
               {children}
             </div> 
           </main>
