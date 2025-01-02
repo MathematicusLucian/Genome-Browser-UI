@@ -178,7 +178,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     const rsidsList = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid);
     console.log(rsidsList);
     const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsidsList); 
-    console.log(data);
+    console.log(rsidsList,'clinVar fetched', data);
 
     // ------------------------------------------
     // Data Enrichment: SNP Pairs (ClinVar, etc.)
@@ -202,12 +202,13 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     // Effect: Retrieve enrichedData
     useEffect(() => {
-        console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
+        console.log('clinVar', data);
+        // console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
         // console.log(
         //     'enrichedData',
         //     merge_object_arrays(data, selectedPatientGeneVariants, 'rsid') 
         // );  
-    }, [selectedPatientGeneVariants]); // data
+    }, [data, selectedPatientGeneVariants]);
 
     // --------------
     // Drawer Content
