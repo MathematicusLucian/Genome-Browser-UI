@@ -37,21 +37,24 @@ const RootLayout = ({
   });
 
   const FooterContent = ({}) => (<>
-    <div className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
+    <div className="text-balance text-center sm:text-sm leading-loose text-muted-foreground md:text-left leading-none"> 
         <a href="/" className="text-slate-950 dark:text-slate-100 text-xs">
-            Genome Browser UI, and Genome Browser API 🔬🧬
+            Genome Browser: UI, and API 🔬🧬
         </a> 
     </div>
     <Separator orientation="vertical" className="mr-2 h-4" />
-    <div className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left"> 
+    <div className="text-balance text-center xs:text-sm leading-loose text-muted-foreground md:text-left leading-none"> 
         <strong></strong> &copy; <a
             href="https://github.com/MathematicusLucian"
             target="\_blank"
             rel="noreferrer"
             className="font-medium no-underline underline-offset-4 text-xs"
         >
-            Luke Jones (github.com/MathematicusLucian)
-        </a> {new Date().getFullYear()} 
+            Luke Jones <span className="xs:hidden md:inline">(github.com/MathematicusLucian)</span>
+        </a>
+        <span className="text-balance text-center xs:text-xs leading-loose text-muted-foreground md:text-left leading-none">
+          {new Date().getFullYear()}
+        </span>
     </div>
   </>);
 
