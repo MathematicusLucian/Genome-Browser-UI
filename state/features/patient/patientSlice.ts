@@ -2,14 +2,18 @@ import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
 // import { initialState } from './state';
 import { IPatientProfile, IPatientGenome, IPatientGenomeVariant, IChromosome } from '../../../models/database';
 
+export interface ISelectedItem {
+    id: string | null;
+}
+
 export interface IPatientState {
     patientProfile: IPatientProfile[];
-    selectedPatientProfile:  any; // string | null;
-    selectedChromosome: string | null;
+    selectedPatientProfile: ISelectedItem | null;
+    selectedChromosome: ISelectedItem | null;
     patientGenome: IPatientGenome[];
-    selectedPatientGenome: string | null;
+    selectedPatientGenome: ISelectedItem | null;
     patientGeneVariant: IPatientGenomeVariant[];
-    selectedPatientGeneVariant: string | null;
+    selectedPatientGeneVariant: ISelectedItem | null;
 }
 
 export const initialState: IPatientState = {
@@ -65,7 +69,7 @@ const patientsSlice = createSlice({
             state.selectedPatientProfile = { ...action.payload }; // Ensure a new object is created 
         },
         // Chromosome
-        setSelectedChromosome: (state, action: PayloadAction<IChromosome>) => {
+        setSelectedChromosome: (state, action: PayloadAction<any>) => { // IChromosome
             state.selectedChromosome = { ...action.payload }; // Ensure a new object is created
         }, 
         // Patient Genomes
@@ -80,7 +84,7 @@ const patientsSlice = createSlice({
                 state.patientGenome[index] = action.payload;
             }
         },
-        setSelectedPatientGenome: (state, action: PayloadAction<IPatientGenome>) => {
+        setSelectedPatientGenome: (state, action: PayloadAction<any>) => { // IPatientGenome
             state.selectedPatientGenome = { ...action.payload }; // Ensure a new object is created
         },
         // Patient Gene Variants
@@ -95,7 +99,7 @@ const patientsSlice = createSlice({
                 state.patientGeneVariant[index] = action.payload;
             }
         },
-        setSelectedPatientGeneVariant: (state, action: PayloadAction<IPatientGenomeVariant>) => {
+        setSelectedPatientGeneVariant: (state, action: PayloadAction<any>) => { // IPatientGenomeVariant
             state.selectedPatientGeneVariant = { ...action.payload }; // Ensure a new object is created
         },
     },

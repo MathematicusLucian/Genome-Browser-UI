@@ -104,10 +104,7 @@ const RootLayout = ({
 
       </SessionProvider> 
 
-      <style jsx>{`
-        main { 
-          flex-direction: column;
-        } 
+      <style jsx>{` 
         code {
           background: #fafafa;
           border-radius: 5px;

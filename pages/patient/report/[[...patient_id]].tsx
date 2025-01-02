@@ -10,7 +10,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { patientsIndexedDb } from "@/database/database";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../state/store';
-import { setSelectedPatientProfile, addPatientProfile, setSelectedPatientGenome, setSelectedPatientGeneVariant, setSelectedChromosome } from "@/state/features/patient/patientSlice"; // setSelectedChromosome
+import { setSelectedPatientProfile, addPatientProfile, setSelectedPatientGenome, setSelectedPatientGeneVariant, setSelectedChromosome, ISelectedItem } from "@/state/features/patient/patientSlice"; // setSelectedChromosome
 import { useAppDispatch, useAppSelector } from "@/hooks/state-hooks";
 import { date } from "yup";
 import { selectSelectedChromosome, selectedChromosomeUpdated } from "@/state/features/geneDefinition/geneDefinitionSlice";
@@ -62,17 +62,19 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     ); 
 
     // Fetch selected patient profile from Redux store
-    const selectedPatientSelectedProfile = useSelector((state: RootState) => state.patient.selectedPatientProfile); // dashboard attribute 
+    const selectedPatientSelectedProfile: ISelectedItem|null = useSelector((state: RootState) => state.patient.selectedPatientProfile); // dashboard attribute 
     const key1 = selectedPatientSelectedProfile || 'default1';
     useEffect(() => {
-        console.log('Selected Patient Profile updated:', selectedPatientSelectedProfile);
     }, [selectedPatientSelectedProfile]);
 
     // Dispatch actions for patient profiles
-    const handleSelectedPatient = (patientProfile) => {
-        const id = { id: patientProfile?.target?.value || patientProfile?.patientId };
-        console.log('//////////// handleSelectedPatient', id);
-        dispatch(setSelectedPatientProfile(id)); // patientProfile
+    const handleSelectedPatient = (patientProfile: any) => { 
+        const id = ('target' in patientProfile)
+            ? patientProfile?.target?.value
+            : 'patientId' in patientProfile
+                ? patientProfile?.patientId
+                : null;
+        id &&  dispatch(setSelectedPatientProfile({id:id})); // patientProfile
     };
     const handleAddPatient = async (patientProfile) => {   
         await patientsIndexedDb.patientProfile.add(patientProfile);
@@ -86,11 +88,11 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             if(patientProfiles) {
                 const patientProfileMatchingPatientIdFromRouter = patientProfiles?.find((x) => x.patientId == router.query.patient_id);
                 if(patientProfileMatchingPatientIdFromRouter) {
-                    selectedPatientSelectedProfile && router.push(`/patient/report/${selectedPatientSelectedProfile}`); 
+                    selectedPatientSelectedProfile && router.push(`/patient/report/${selectedPatientSelectedProfile.id}`); 
                 }
             }
 
-            if(selectedPatientSelectedProfile != null && router.query.patient_id != selectedPatientSelectedProfile) {
+            if(selectedPatientSelectedProfile != null && router.query.patient_id != selectedPatientSelectedProfile.id) {
                 // http://127.0.0.1:3000/patient/genome?patientId=[x]
                 router.push(`/patient/report/${selectedPatientSelectedProfile}`); 
             }  
@@ -107,20 +109,24 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     const selectedPatientGenomes = useLiveQuery(
         () => selectedPatientSelectedProfile && 
             patientsIndexedDb.patientGenome
-            .where('patientId').equalsIgnoreCase(String(selectedPatientSelectedProfile)).toArray(),
+                .where('patientId').equalsIgnoreCase(String(selectedPatientSelectedProfile?.id)).toArray(),
         [selectedPatientSelectedProfile, selectedPatientSelectedProfile]
     );
 
     // Fetch selected patient's selected genome from Redux store
-    const selectedPatientSelectedGenome = useSelector((state: RootState) => state.patient.selectedPatientGenome); // dashboard attribute 
+    const selectedPatientSelectedGenome: ISelectedItem|null = useSelector((state: RootState) => state.patient.selectedPatientGenome); // dashboard attribute 
     const key2 = selectedPatientSelectedGenome || 'default2';
     useEffect(() => {
-        console.log('Selected Patient Genome updated:', selectedPatientSelectedGenome);
     }, [selectedPatientSelectedGenome]);
 
     // Dispatch actions for patient genome
     const handleSelectedPatientGenomeChange = (patientGenome: any) => {  
-        dispatch(setSelectedPatientGenome(patientGenome));   
+        const id = ('target' in patientGenome)
+            ? patientGenome?.target?.value
+            : 'patientGenomeId' in patientGenome
+                ? patientGenome?.patientGenomeId
+                : null;
+        id && dispatch(setSelectedPatientGenome({id: id}));   
     };
     // End Filter #2
     
@@ -136,15 +142,19 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     ); 
 
     // Fetch selected patient's selected chromosome from Redux store
-    const selectedPatientSelectedChromosome: IChromosome|string = useSelector((state: RootState) => state.patient.selectedChromosome); // dashboard attribute 
+    const selectedPatientSelectedChromosome: ISelectedItem|null = useSelector((state: RootState) => state.patient.selectedChromosome); // dashboard attribute 
     const key3 = selectedPatientSelectedChromosome || 'default3';
     useEffect(() => {
-        console.log('Selected Chromosome updated:', selectedPatientSelectedChromosome);
     }, [selectedPatientSelectedChromosome]);
 
     // Dispatch actions for chromosomes
     const handleSelectedChromosomeChange = (chromosome: any) => {  
-        dispatch(setSelectedChromosome(chromosome));   
+        const id = ('target' in chromosome)
+            ? chromosome?.target?.value
+            : 'chromosomeName' in chromosome
+                ? chromosome?.chromosomeName
+                : null;
+        id && dispatch(setSelectedChromosome({id:id}));   
     };
     // End Filter #3
 
@@ -155,28 +165,30 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // Fetch selected patient's genome variants from IndexedDB
     const selectedPatientGeneVariants: any[] = useLiveQuery(
         () => { 
-            console.log('String(selectedPatientSelectedChromosome?.chromosomeName)', String(selectedPatientSelectedChromosome));
             return patientsIndexedDb.patientGenomeVariant
                 .where({
-                    'patientGenomeId': String(selectedPatientSelectedGenome), 
-                    'chromosome': String(selectedPatientSelectedChromosome).replace('Chromosome', '').replace(' ', '')
+                    'patientGenomeId': String(selectedPatientSelectedGenome?.id), 
+                    'chromosome': String(selectedPatientSelectedChromosome?.id).replace('Chromosome', '').replace(' ', '')
                 })
                 .toArray(); 
         },
         [selectedPatientSelectedGenome, selectedPatientSelectedChromosome]
     );  
     useEffect(() => {
-        console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
     }, [selectedPatientGeneVariants]);
 
-    const selectedPatientSelectedGeneVariant: IPatientGenomeVariant|string = useSelector((state: RootState) => state.patient.selectedPatientGeneVariant); // dashboard attribute 
+    const selectedPatientSelectedGeneVariant: ISelectedItem|string = useSelector((state: RootState) => state.patient.selectedPatientGeneVariant); // dashboard attribute 
     const key4 = selectedPatientSelectedGeneVariant || 'default4';
     useEffect(() => {
-        console.log('Selected Gene Variant updated:', selectedPatientSelectedGeneVariant);
     }, [selectedPatientSelectedGeneVariant]);
 
-    const handleSelectedPatientGeneVariantChange =  (geneVariant: any) => {  
-        dispatch(setSelectedPatientGeneVariant(geneVariant));   
+    const handleSelectedPatientGeneVariantChange = (geneVariant: any) => {  
+        const id = ('target' in geneVariant)
+            ? geneVariant?.target?.value
+            : 'patientGeneVariantId' in geneVariant
+                ? geneVariant?.patientGeneVariantId
+                : null;
+        id && dispatch(setSelectedPatientGeneVariant({id:id}));
     };  
 
     // -----------------------------------------
@@ -185,9 +197,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     // Returns all genotypes/allele pairs for a list of SNPs, e.g. ["rs10033464"] :. API has no data (privacy) as to which genotype the patient has
     const rsidsList = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid);
-    console.log(rsidsList);
     const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsidsList); 
-    console.log(rsidsList,'clinVar fetched', data);
 
     // ------------------------------------------
     // Data Enrichment: SNP Pairs (ClinVar, etc.)
@@ -215,14 +225,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // Effect: Retrieve enrichedData
     useEffect(() => {
         if(data?.length > 0 || selectedPatientGeneVariants?.length > 0) {
-            console.log('clinVar', data);
-            console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
-            console.log(
-                'enrichedData',
-                // merge_object_arrays(data, selectedPatientGeneVariants, 'rsid') 
-                mergeNotes(selectedPatientGeneVariants, data)
-            );  
-            // setEnrichedData(merge_object_arrays(data, selectedPatientGeneVariants, 'rsid'));
             setEnrichedData(mergeNotes(selectedPatientGeneVariants, data));
         }
     }, [data, selectedPatientGeneVariants]);
@@ -375,19 +377,20 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
             <h1 className="text-xl">Genome</h1>
             <ul>
-                {selectedPatientGenomes?.map((c) => (
-                    <li className="text-xs" onClick={() => handleSelectedPatientGenomeChange(c)}>
-                        {c.patientGenomeId}
+                {selectedPatientGenomes?.map((genome) => (
+                    <li className="text-xs" onClick={() => handleSelectedPatientGenomeChange(genome)}>
+                        {genome.patientGenomeId}
                     </li>
                 ))}
             </ul> 
             <div>
                  {/* key={key2}> */}
-                {selectedPatientSelectedGenome ? (
-                    <p>Selected: {selectedPatientSelectedGenome}</p>
+                 {selectedPatientSelectedGenome?.id}
+                {/* {selectedPatientSelectedGenome ? (
+                    <p>Selected: {selectedPatientSelectedGenome?.id}</p>
                 ) : (
                     <p>No Patient Genome Selected</p>
-                )}
+                )} */}
             </div>
 
             <hr />
@@ -403,12 +406,13 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             }
             </ul> 
             <div>
-                 {/* key={key3}> */}
-                {selectedPatientSelectedChromosome ? (
-                    <p>Selected: {selectedPatientSelectedChromosome}</p>
+                 {/* key={key3}> */} 
+                 {selectedPatientSelectedChromosome?.id}
+                {/* {selectedPatientSelectedChromosome ? (
+                    <p>Selected: {selectedPatientSelectedChromosome?.id}</p>
                 ) : (
                     <p>No Chromosome Selected</p>
-                )}
+                )} */}
             </div>
 
             <hr />
@@ -423,11 +427,12 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             </ul> 
             <div>
                  {/* key={key4}> */}
-                {selectedPatientSelectedGeneVariant ? (
-                    <p>Selected: {selectedPatientSelectedGeneVariant}</p>
+                 {/* {JSON.stringify(selectedPatientSelectedGeneVariant)} */}
+                {/* {selectedPatientSelectedGeneVariant ? (
+                    <p>Selected: {selectedPatientSelectedGeneVariant?.id}</p>
                 ) : (
                     <p>No Patient Gene Variant Selected</p>
-                )}
+                )} */}
             </div> 
 
         </PrivateLayout>
