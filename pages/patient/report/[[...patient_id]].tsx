@@ -222,6 +222,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     // Effect: Retrieve enrichedData
     useEffect(() => {
+        console.log('Update');
         if(data?.length > 0 || selectedPatientGeneVariants?.length > 0) {
             setEnrichedData(mergeNotes(selectedPatientGeneVariants, data));
         }
@@ -312,7 +313,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         },{
             dataAsList: chromosomesList || [],
             error: error,
-            selectedSelectItem: selectedPatientSelectedGenome?.id,
+            selectedSelectItem: selectedPatientSelectedChromosome?.id,
             handleSelectedItemChange: handleSelectedChromosomeChange,
             selectDataKey: 'chromosomeName',
             displayField: 'chromosomeName',
