@@ -28,46 +28,92 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
   - Custom Hooks
 - **NextJs** App Router
   - Advanced routing for seamless navigation and performance
-  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
-- **shadncn/ui**:w
+  - **React Server Components (RSCs)** and **Server Actions** for server-side rendering and increased performance
+  - Middleware to handle API calls
+- UI Library: **shadncn/ui**
   - Styling with **Tailwind CSS**
   - Component primitives from **Radix UI** for accessibility and flexibility
-- **Redux** with **RTK** patterns, and **Axios**. (Zustand, Jotai, or Recoil could also be utilised.)
+- State Management;
+  - **Redux** with **RTK** patterns, and **Axios**. (Alternatives: Zustand, Jotai, or Recoil.)
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.
+- Dashboard:
+  - Dynmically-composed, lazy-loaded dashboard pages (routes)
+    - `patient ID` retrieved from the router path
+    - Data retrived at route/page level
+    - Render high-level components (templates/organisms, etc.)
+    - On render of these, inject into them low-level component (molecules, atoms, etc.) featuring the data. (Employed **shadncn/ui** for the atoms.)
+  - `ag-grid` to present list of patients, and to present list of gene variants
+    - Select (dropdowns) to filter the table
+    - Integrate the column filters
+    - Pagination (and that handles data enrichment of local DNA file in IndexedDB with ClinVar notes from server)
+  - Drawer (e.g. details for a gene variant)
+  - Graphical charts, e.g. bar chart, or some form of gene/genome/chromosome represetation
+  - Modal (e.g. file uploader implementation)
+  - File uploader
+  - CRUD operations on patients, and genomes (DNA files), e.g. add a patient. (DNA file upload features gene variants; the user cannot add the variants individually; nor can they edit the ClinVar notes, which are from published literature.)
 - Data Persistence:
   - **IndexedDB**: For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser `IndexedDB`.) (See section below on `Dexie.js`, etc..)
   - **Sqlite3**, and a Sqlite worker (server-side for storage of uploaded clinVar data, etc.; alternatively, Postgres may be employed.)
   - Vercel **Postgres** powered by **Neon** for saving chat history and user data
-  - **Vercel Blob** for efficient file storage
-- **NextAuth.js**: Simple and secure authentication
-- Consideration of DRY/SOLID principles, and Gang of Four design patterns
+    - ORM: **Drizzle** (Alternatives: Prisma)
+- User Management:
+  - Login / Sign-out pages (routes)
+  - Authenticiation:
+    - **NextAuth.js**: Simple and secure authentication
+    - Email/password authentication with JWTs stored to cookies
+    - SSO: **Github** integration
+- Consideration of `DRY/SOLID principles`, and `Gang of Four design patterns`
 
 **Long-term**
 
 May potentially add:
 
-- Storybook, Mermaids UML, etc. documentation
-- Consider CSS-in-TS libraries such as Stitches and Vanilla Extract (instead of Tailwind CSS), or move to CVA for a consistent, reusable, and atomic design system
-- Components coupling and cohesion graph (Madge library)
-- T3 Env to manage env vars (checks type validation and transforming at build time)
-- Code dependencies management: Patch-package, Renovate BOT, etc.; absolute imports
-- Testing:
-  - Expand unit and integration tests (Jest, React-Testing-Library, etc.)
-  - e2e (Playwright - UI, and headless modes)
-  - Smoke testing to verify UI renders correctly (Storybook; where stories written in TSX, not MDX)
-  - Acceptance tests, e.g. that validation for form inputs works as expected (Storybook's play function)
-- Observability: Open Telemetry integration for seamless monitoring
-- Save search history to IndexedDB
-- Option to upload genome data to server (Postgres); and therefore, injection of database manager (Postgres, or IndexedDB)
-- Deployment pipeline/GitHub Actions, etc.; semantic release
-- Local Docker instance/Dockerfile
-- Husky, Prettier, ESLint, ts-reset, conventional commits git hook, etc. checks before commit/push
-- Bundle analyzer plugin, Lighthouse score, etc..
-- Expand Pydantic utilisation in the FastAPI
-- User accounts/membership management
-- Multi-tenancy
-- Custom domains
+- UI Views
+  - Marketing landing page (/) with animated Terminal element
+  - Perhaps a demo Payments page to demosntrate **Stripe** integration
+  - Admin dashboards:
+    - List of users / user view + payment status
+    - Subscription management with **Stripe Customer Portal**
+    - Multi-tenancy: List of tenants / tenant view (and respective domain details)
+- UI Components:
+  - **Storybook**, **Mermaids UML**, etc. documentation
+  - Consider **CSS-in-TS** libraries such as **Stitches** and **Vanilla Extract** (instead of Tailwind CSS), or move to **CVA** for a consistent, reusable, and atomic design system
+  - Components coupling and cohesion graph (Madge library)
+- UI Middlewware:
+  - Global middleware to protect logged-in routes
+  - Local middleware to protect **Server Actions** or validate **Zod** schemas
+- User accounts/membership management (basic `RBAC` with Owner and Member roles)
+  - Dashboard pages with `CRUD` operations on users/teams
+  - Payments integraton, e.g. **Stripe**, inc. set up a production Stripe webhook
+  - Multi-tenancy
+  - Custom domains
+- ETL Pipelines
+  - **Apache Spark** (Python), etc. to update **Postgres** as per ClinVar weekly updates
 - LLM model integration
+  - **OLlama**, **HuggingFace API**, etc.
+- Data Persistence
+  - Save search history to **IndexedDB**
+  - Option to upload genome data to server (Postgres); and therefore, injection of database manager (**Postgres**, or **IndexedDB**)
+  - **Vercel Blob** for efficient file storage (if user opts for the DNA file to be stored/processed on the server, could save it here on load; and add to a queue for conversion)
+- Observability/Logging:
+  - Open **Telemetry** integration for seamless UI monitoring
+  - Activity logging system for any user events
+- Env var management:
+  - **T3 Env** (checks type validation and transforming at build time)
+- Code dependencies management:
+  - **Patch-package**, **Renovate BOT**, etc.; absolute imports
+- Code Quality
+  - **Husky**, **Prettier**, **ESLint**, **ts-reset**, conventional commits git hook, etc. checks before commit/push
+  - Bundle analyzer plugin, **Lighthouse** score, etc..
+  - Expand **Pydantic** utilisation in the **FastAPI**
+- Testing:
+  - Expand unit and integration tests (**Jest**, **React-Testing-Library**, etc.)
+  - e2e (**Playwright** - UI, and headless modes)
+  - Smoke testing to verify UI renders correctly (**Storybook**; where stories written in `TSX`, not `MDX`)
+  - Acceptance tests, e.g. that validation for form inputs works as expected (**Storybook**'s play function)
+- Deployment
+  - Deployment pipeline/**GitHub Actions**, etc.; semantic release
+  - Local **Docker** instance/`Dockerfile`
 
 ## Pages/Views
 
