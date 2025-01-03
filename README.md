@@ -129,7 +129,15 @@ The report compares the gene variants of the patient with published literature t
 
 _(Note, the image below features mock data; this is not actual SNP data.)_
 
-![risk-report](./assets/risk-report.png)
+![risk_report_dark_mode.png](./assets/risk_report_dark_mode.png)
+
+Light mode:
+
+![risk_report_light_mode.png](./assets/risk_report_light_mode.png)
+
+Theme toggle:
+
+![theme_toggle.png](./assets/theme_toggle.png)
 
 ### Browse gene variants (SNPs) present in the patient genome (`patient/genome/`)
 
@@ -141,19 +149,23 @@ From the dropdown, the user can select which profile to view:
 
 A drag-and-drop file uploader feature:
 
-![select_patient](./assets/uploader_view.png)
+![uploader_view](./assets/uploader_view.png)
 
 If a patient file does not exist, the user is prompted to create one (the default name is `Default Profile`.)
 
 The patient software allows for the upload of several DNA files per patient, as they potentially could have several such as files, as there are many popular family tree providers (23andMe, Ancestry.com, etc..)
 
-![select_patient](./assets/select_dna_file.png)
+![select_dna_file](./assets/select_dna_file.png)
 
 **The rows represent the gene variants associated with the patient.**
 
 (The `rsid` columns is the identifier for the SNP pairs; and a crucial factor in many cases, with respect to risk, is the `genotype` that the user has inherited from their parents - hence, generaly, this consists of two letters, i.e. one from each parent.)
 
 ![genome_viewer_dark_mode](./assets/genome_viewer_dark_mode_.png)
+
+Light mode:
+
+![genome_viewer_light_mode_](./assets/genome_viewer_light_mode_.png)
 
 If a user clicks on a row, the app will launch a drawer featuring the details for the gene variant.
 
@@ -163,11 +175,11 @@ If a user clicks on a row, the app will launch a drawer featuring the details fo
 
 Patient genomes that the user has uploaded.
 
-![list_of_patients](./assets/list_of_patients.png)
+![list_of_patients_dark_mode](./assets/list_of_patients_dark_mode.png)
 
-**Dark/light mode available**:
+Light mode:
 
-![genome_viewer_light_mode](./assets/list_of_patients_light_mode.png)
+![list_of_patients_light_mode](./assets/list_of_patients_light_mode.png)
 
 ## UI Client Architecture
 

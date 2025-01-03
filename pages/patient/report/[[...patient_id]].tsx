@@ -223,18 +223,25 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Fetch selected patient's genome variants from IndexedDB
   const selectedPatientGeneVariants: any[] = useLiveQuery(() => {
-    console.log('selectedPatientGeneVariants', selectedPatientGeneVariants)
-    return (
-      patientsIndexedDb.patientGenomeVariant
-        .where({
-          patientGenomeId: String(selectedPatientSelectedGenome?.id),
-          chromosome: String(selectedPatientSelectedChromosome?.id)
-            .replace('Chromosome', '')
-            .replace(' ', ''),
-        })
-        // .limit(150)
-        .toArray()
+    console.log('selectedPatientSelectedGenome?.id', selectedPatientSelectedGenome?.id)
+    console.log(
+      'selectedPatientSelectedChromosome?.id',
+      String(selectedPatientSelectedChromosome?.id).replace('Chromosome', '').replace(' ', ''),
     )
+    const res = patientsIndexedDb.patientGenomeVariant
+      .where({
+        patientGenomeId: String(selectedPatientSelectedGenome?.id),
+        chromosome: String(selectedPatientSelectedChromosome?.id)
+          .replace('Chromosome', '')
+          .replace(' ', ''),
+      })
+      // .limit(150)
+      .toArray()
+    console.log('res', res)
+    res.then((data) => {
+      console.log('data', data)
+    })
+    return res
   }, [selectedPatientSelectedGenome?.id, selectedPatientSelectedChromosome?.id])
 
   const selectedPatientSelectedGeneVariant: ISelectedItem | string = useSelector(
@@ -268,8 +275,8 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   useEffect(() => {
     // Create a list of RSIDs from local DNA file items selected
     const newRsids: string[] = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid)
+    // newRsids = ['rs10156191', 'rs12345678', 'rs98765432']
     console.log('rsidsList selectedPatientGeneVariants', JSON.stringify(newRsids))
-    // const newRsids = ['rs10156191', 'rs12345678', 'rs98765432']
     setRsidsList(newRsids)
   }, [selectedPatientGeneVariants])
 
@@ -287,16 +294,29 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Function to merge notes from ListB into ListA based on rsid
   function mergeNotes(listA: any[], listB: any[]): any[] {
+    console.log('data length', listB.length)
+    if (!listB) {
+      console.log('No data to merge')
+      return listA
+    }
+    // console.log('Merging notes...')
+
     // Create a Map for fast lookup of rsid-to-notes
-    const rsidToNotes = new Map<string, string>()
+    const clinvarRsidsFeaturingNotes = new Map<string, string>()
     listB.forEach((item) => {
-      rsidToNotes.set(item.rsid, item.notes)
+      clinvarRsidsFeaturingNotes.set(item.rsid, item.notes)
     })
+    console.log('rsidToNotes', clinvarRsidsFeaturingNotes)
 
     // Add notes to ListA where rsid matches
+    // console.log(listA)
     listA.forEach((item) => {
-      if (rsidToNotes.has(item.rsid)) {
-        item.notes = rsidToNotes.get(item.rsid) || ''
+      if (clinvarRsidsFeaturingNotes.has(item.rsid)) {
+        item.notes = clinvarRsidsFeaturingNotes.get(item.rsid) || 'No notes found'
+        // console.log('Adding notes to item:', item.rsid, item.notes)
+      } else {
+        item.notes = 'No notes found'
+        // console.log('No notes found for item:', item.rsid)
       }
     })
 
@@ -305,12 +325,10 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Effect: Retrieve enrichedData
   useEffect(() => {
-    if (selectedPatientGeneVariants?.length > 0 && data?.length > 0) {
+    if (selectedPatientGeneVariants?.length) {
       setEnrichedData(mergeNotes(selectedPatientGeneVariants, data))
-    } else {
-      setEnrichedData(selectedPatientGeneVariants)
     }
-  }, [data, selectedPatientGeneVariants])
+  }, [selectedPatientGeneVariants, data])
 
   // --------------
   // Drawer Content
@@ -452,16 +470,18 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
           dashboardNavButtons={dashboardNavButtons}
           dashboardNavDropdowns={dashboardNavDropdowns}
           columns={riskReportColumns}
-          reportRowsData={enrichedData}
+          reportRowsData={selectedPatientGeneVariants}
+          // enrichedData
           handleSelectedDataRowChange={handleSelectedDataRowChange}
         />
       </div>
 
       <div className="py-2 text-xs text-gray-500">
         Profile: {selectedPatientSelectedProfile?.id} ({patientProfiles?.length}) | Genome:{' '}
-        {selectedPatientSelectedGenome?.id} ({selectedPatientGenomes?.length}) | Chromosome:{' '}
-        {selectedPatientSelectedChromosome?.id} ({chromosomesList?.length}) | GeneVariants:{' '}
-        {selectedPatientSelectedGeneVariant?.id} ({selectedPatientGeneVariants?.length})
+        {selectedPatientSelectedGenome?.id} ({selectedPatientGenomes?.length}) | Chromosome:
+        {String(selectedPatientSelectedChromosome?.id).replace('Chromosome', '').replace(' ', '')} (
+        {chromosomesList?.length}) | GeneVariants: {selectedPatientSelectedGeneVariant?.id} (
+        {selectedPatientGeneVariants?.length})
       </div>
     </PrivateLayout>
   )
