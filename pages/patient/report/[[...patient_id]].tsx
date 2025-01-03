@@ -224,15 +224,17 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   // Fetch selected patient's genome variants from IndexedDB
   const selectedPatientGeneVariants: any[] = useLiveQuery(() => {
     console.log('selectedPatientGeneVariants', selectedPatientGeneVariants)
-    return patientsIndexedDb.patientGenomeVariant
-      .where({
-        patientGenomeId: String(selectedPatientSelectedGenome?.id),
-        chromosome: String(selectedPatientSelectedChromosome?.id)
-          .replace('Chromosome', '')
-          .replace(' ', ''),
-      })
-      .limit(50)
-      .toArray()
+    return (
+      patientsIndexedDb.patientGenomeVariant
+        .where({
+          patientGenomeId: String(selectedPatientSelectedGenome?.id),
+          chromosome: String(selectedPatientSelectedChromosome?.id)
+            .replace('Chromosome', '')
+            .replace(' ', ''),
+        })
+        // .limit(150)
+        .toArray()
+    )
   }, [selectedPatientSelectedGenome?.id, selectedPatientSelectedChromosome?.id])
 
   const selectedPatientSelectedGeneVariant: ISelectedItem | string = useSelector(
@@ -256,10 +258,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   // -----------------------------------------
   // Returns all genotypes/allele pairs for a list of SNPs, e.g. ["rs10033464"] :. API has no data (privacy) as to which genotype the patient has
 
-  // useEffect(() => {
-  //   console.log('text', text, 'api result', result)
-  // }, [text, result])
-
   // Simulate rsidsList generation
   const [rsidsList, setRsidsList] = useState<string[]>([])
 
@@ -267,15 +265,11 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   const { data, status, error } = useSelector((state: RootState) => state.rsid)
 
   // Simulate rsidsList update in useEffect
-  // useEffect(() => {
-  //   const newRsids = ['rs10156191', 'rs12345678', 'rs98765432']
-  //   setRsidsList(newRsids)
-  // }, [])
   useEffect(() => {
-    console.log('rsidsList selectedPatientGeneVariants', selectedPatientGeneVariants)
     // Create a list of RSIDs from local DNA file items selected
     const newRsids: string[] = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid)
     console.log('rsidsList selectedPatientGeneVariants', JSON.stringify(newRsids))
+    // const newRsids = ['rs10156191', 'rs12345678', 'rs98765432']
     setRsidsList(newRsids)
   }, [selectedPatientGeneVariants])
 
@@ -286,22 +280,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
       dispatch(fetchRsids(rsidsList))
     }
   }, [rsidsList, dispatch])
-
-  // refetchOnMountOrArgChange
-
-  // const rsidsPatchCollection = dispatch(
-  //     snpResearchApi.util.updateQueryData('postSnpDataByRsid', undefined, (rsidsList) => {
-  //       rsidsList = rsids
-  //     }),
-  //   )
-  // console.log('rsidsPatchCollection', rsidsPatchCollection)
-  // setPatch(rsidsPatchCollection)
-
-  //   const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsidsList)
-  //   const [
-  //     updatePost, // This is the mutation trigger
-  //     { isLoading: isUpdating }, // This is the destructured mutation result
-  //   ] = usePostSnpDataByRsidMutation()
 
   // ------------------------------------------
   // Data Enrichment: SNP Pairs (ClinVar, etc.)
@@ -326,11 +304,13 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   }
 
   // Effect: Retrieve enrichedData
-  //   useEffect(() => {
-  //     if (selectedPatientGeneVariants?.length > 0 && data?.length > 0) {
-  //       setEnrichedData(mergeNotes(selectedPatientGeneVariants, data))
-  //     }
-  //   }, [data, selectedPatientGeneVariants])
+  useEffect(() => {
+    if (selectedPatientGeneVariants?.length > 0 && data?.length > 0) {
+      setEnrichedData(mergeNotes(selectedPatientGeneVariants, data))
+    } else {
+      setEnrichedData(selectedPatientGeneVariants)
+    }
+  }, [data, selectedPatientGeneVariants])
 
   // --------------
   // Drawer Content
@@ -466,20 +446,15 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   return (
     <PrivateLayout isSidebar={true}>
       <div>
-        {/* {status === 'loading' && <p>Loading...</p>}
-        {status === 'failed' && <p>Error: {error}</p>} */}
-        {/* {status === 'succeeded' && ( */}
-        Data: {JSON.stringify(data)}
         <ReportGridWrapper
           dashboardTitle={dashboardTitle}
           dashboardComponents={dashboardComponents}
           dashboardNavButtons={dashboardNavButtons}
           dashboardNavDropdowns={dashboardNavDropdowns}
           columns={riskReportColumns}
-          riskReportRowsData={data}
+          reportRowsData={enrichedData}
           handleSelectedDataRowChange={handleSelectedDataRowChange}
         />
-        {/* )} */}
       </div>
 
       <div className="py-2 text-xs text-gray-500">

@@ -11,7 +11,7 @@ interface ReportGridWrapperProps {
   dashboardComponents: any
   dashboardNavDropdowns: any
   dashboardNavButtons: any
-  riskReportRowsData: any
+  reportRowsData: any
   columns: any
   handleSelectedDataRowChange: (e: any) => void
 }
@@ -22,7 +22,7 @@ const ReportGridWrapper: FC<ReportGridWrapperProps> = ({
   dashboardComponents,
   dashboardNavDropdowns,
   dashboardNavButtons,
-  riskReportRowsData,
+  reportRowsData,
   columns,
   handleSelectedDataRowChange,
 }) => {
@@ -43,9 +43,9 @@ const ReportGridWrapper: FC<ReportGridWrapperProps> = ({
         {selectedPatientSelectedGeneVariant?.id} ({selectedPatientGeneVariants?.length})
       </div> */}
 
-      {riskReportRowsData ? (
+      {reportRowsData ? (
         <TableGrid
-          rowData={riskReportRowsData}
+          rowData={reportRowsData}
           columnDefs={columns}
           error={error}
           onSelectedDataRowChange={handleSelectedDataRowChange}

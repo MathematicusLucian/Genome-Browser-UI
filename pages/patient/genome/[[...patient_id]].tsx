@@ -382,7 +382,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         dashboardNavButtons={dashboardNavButtons}
         dashboardNavDropdowns={dashboardNavDropdowns}
         columns={columns}
-        riskReportRowsData={selectedPatientGeneVariants}
+        reportRowsData={selectedPatientGeneVariants}
         handleSelectedDataRowChange={handleSelectedDataRowChange}
       />
     </PrivateLayout>
