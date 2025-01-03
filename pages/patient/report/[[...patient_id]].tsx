@@ -94,6 +94,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Dispatch actions for patient profiles
   const handleSelectedPatient = (patientProfile: any) => {
+    if (!patientProfile) return
     const id =
       'target' in patientProfile
         ? patientProfile?.target?.value
@@ -163,6 +164,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Dispatch actions for patient genome
   const handleSelectedPatientGenomeChange = (patientGenome: any) => {
+    if (!patientGenome) return
     const id =
       'target' in patientGenome
         ? patientGenome?.target?.value
@@ -198,6 +200,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Dispatch actions for chromosomes
   const handleSelectedChromosomeChange = (chromosome: any) => {
+    if (!chromosome) return
     const id =
       'target' in chromosome
         ? chromosome?.target?.value
@@ -233,6 +236,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   useEffect(() => {}, [selectedPatientGeneVariants, selectedPatientSelectedGeneVariant?.id])
 
   const handleSelectedPatientGeneVariantChange = (geneVariant: any) => {
+    if (!geneVariant) return
     const id =
       'target' in geneVariant
         ? geneVariant?.target?.value
