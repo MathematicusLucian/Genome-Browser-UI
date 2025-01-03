@@ -19,9 +19,15 @@ export const fetchRsids = createAsyncThunk(
   'rsid/fetchRsids',
   async (rsidsList: string[], { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/snp_research/', { rsidsList })
+      console.log('fetchRsids', rsidsList)
+      const rsidsJson = {
+        rsidsList: rsidsList,
+      }
+      const response = await axios.post('http://127.0.0.1:8000/snp_research/', rsidsJson)
+      console.log('fetchRsids response', response.data)
       return response.data
     } catch (err: any) {
+      console.log('fetchRsids error', err.response?.data || err.message)
       return rejectWithValue(err.response?.data || err.message)
     }
   },

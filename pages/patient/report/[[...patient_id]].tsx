@@ -19,12 +19,8 @@ import {
   ISelectedItem,
 } from '@/state/features/patient/patientSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks'
-import {
-  snpResearchApi,
-  // usePostSnpDataByRsidMutation,
-  usePostSnpDataByRsidQuery,
-} from '@/state/features/research/researchApi'
 import _ from 'lodash'
+import { fetchRsids } from '@/state/features/research/researchSlice'
 
 // --------------------------------------------------------------------------------------------
 // Risk Report
@@ -65,6 +61,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   // -----
 
   const dispatch = useAppDispatch()
+  // const dispatch = useDispatch<AppDispatch>();
 
   // -----
   // Utils
@@ -257,28 +254,48 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   // -----------------------------------------
   // ClinVar Data: SNP Pairs (Genotype/Allele)
   // -----------------------------------------
-
   // Returns all genotypes/allele pairs for a list of SNPs, e.g. ["rs10033464"] :. API has no data (privacy) as to which genotype the patient has
 
-  const [rsidsList, setRsidsList] = useState<any>()
-  const [patch, setPatch] = useState<any>()
+  // useEffect(() => {
+  //   console.log('text', text, 'api result', result)
+  // }, [text, result])
 
+  // Simulate rsidsList generation
+  const [rsidsList, setRsidsList] = useState<string[]>([])
+
+  // Selector for fetched data
+  const { data, status, error } = useSelector((state: RootState) => state.rsid)
+
+  // Simulate rsidsList update in useEffect
+  // useEffect(() => {
+  //   const newRsids = ['rs10156191', 'rs12345678', 'rs98765432']
+  //   setRsidsList(newRsids)
+  // }, [])
   useEffect(() => {
-    console.log('selectedPatientGeneVariants', selectedPatientGeneVariants)
-
-    // const rsids =
-    //   selectedPatientGeneVariants &&
-    //   JSON.stringify(selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid))
-    // console.log('rsids', rsids)
-    // // setRsidsList(rsids)
-    // const patchCollection = dispatch(
-    //   snpResearchApi.util.updateQueryData('postSnpDataByRsid', undefined, (rsidsList) => {
-    //     rsidsList = rsids
-    //   }),
-    // )
-    // console.log('patchCollection', patchCollection)
-    // setPatch(patchCollection)
+    console.log('rsidsList selectedPatientGeneVariants', selectedPatientGeneVariants)
+    // Create a list of RSIDs from local DNA file items selected
+    const newRsids: string[] = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid)
+    console.log('rsidsList selectedPatientGeneVariants', JSON.stringify(newRsids))
+    setRsidsList(newRsids)
   }, [selectedPatientGeneVariants])
+
+  // When rsidsList updates, trigger API call to fetch clinVar data
+  useEffect(() => {
+    if (rsidsList?.length > 0) {
+      console.log('rsidsList', JSON.stringify(rsidsList))
+      dispatch(fetchRsids(rsidsList))
+    }
+  }, [rsidsList, dispatch])
+
+  // refetchOnMountOrArgChange
+
+  // const rsidsPatchCollection = dispatch(
+  //     snpResearchApi.util.updateQueryData('postSnpDataByRsid', undefined, (rsidsList) => {
+  //       rsidsList = rsids
+  //     }),
+  //   )
+  // console.log('rsidsPatchCollection', rsidsPatchCollection)
+  // setPatch(rsidsPatchCollection)
 
   //   const { data, error, isLoading }: any = usePostSnpDataByRsidQuery(rsidsList)
   //   const [
@@ -448,25 +465,29 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   return (
     <PrivateLayout isSidebar={true}>
-      {/* {JSON.stringify(isUpdating)}
-      {/* <br /> */}
-      {/* {rsidsList && JSON.stringify(updatePost({ rsidsList }))} */}
+      <div>
+        {/* {status === 'loading' && <p>Loading...</p>}
+        {status === 'failed' && <p>Error: {error}</p>} */}
+        {/* {status === 'succeeded' && ( */}
+        Data: {JSON.stringify(data)}
+        <ReportGridWrapper
+          dashboardTitle={dashboardTitle}
+          dashboardComponents={dashboardComponents}
+          dashboardNavButtons={dashboardNavButtons}
+          dashboardNavDropdowns={dashboardNavDropdowns}
+          columns={riskReportColumns}
+          riskReportRowsData={data}
+          handleSelectedDataRowChange={handleSelectedDataRowChange}
+        />
+        {/* )} */}
+      </div>
 
-      {/* {JSON.stringify(selectedPatientGeneVariants.length)}
-      <br />
-      {JSON.stringify(rsidsList)} */}
-
-      {/* {JSON.stringify(patch)} */}
-
-      <ReportGridWrapper
-        dashboardTitle={dashboardTitle}
-        dashboardComponents={dashboardComponents}
-        dashboardNavButtons={dashboardNavButtons}
-        dashboardNavDropdowns={dashboardNavDropdowns}
-        columns={riskReportColumns}
-        riskReportRowsData={enrichedData}
-        handleSelectedDataRowChange={handleSelectedDataRowChange}
-      />
+      <div className="py-2 text-xs text-gray-500">
+        Profile: {selectedPatientSelectedProfile?.id} ({patientProfiles?.length}) | Genome:{' '}
+        {selectedPatientSelectedGenome?.id} ({selectedPatientGenomes?.length}) | Chromosome:{' '}
+        {selectedPatientSelectedChromosome?.id} ({chromosomesList?.length}) | GeneVariants:{' '}
+        {selectedPatientSelectedGeneVariant?.id} ({selectedPatientGeneVariants?.length})
+      </div>
     </PrivateLayout>
   )
 }
