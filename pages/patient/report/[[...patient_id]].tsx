@@ -87,7 +87,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   ) // dashboard attribute
   const key1 = selectedPatientSelectedProfile || 'default1'
   useEffect(() => {
-    console.log('selectedPatientSelectedProfile', selectedPatientSelectedProfile)
     if (selectedPatientSelectedProfile == null && patientProfiles) {
       handleSelectedPatient(patientProfiles[0])
     }
@@ -95,7 +94,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Dispatch actions for patient profiles
   const handleSelectedPatient = (patientProfile: any) => {
-    console.log('handleSelectedPatient', patientProfile)
     const id =
       'target' in patientProfile
         ? patientProfile?.target?.value
@@ -158,13 +156,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   ) // dashboard attribute
   const key2 = selectedPatientSelectedGenome || 'default2'
   useEffect(() => {
-    console.log('selectedPatientSelectedGenome', selectedPatientSelectedGenome)
-    console.log('selectedPatientGenomes', selectedPatientGenomes)
     if (selectedPatientGenomes && selectedPatientSelectedGenome == null) {
-      console.log(
-        'selectedPatientSelectedGenome: dispatch',
-        selectedPatientGenomes[0] && selectedPatientGenomes,
-      )
       handleSelectedPatientGenomeChange(selectedPatientGenomes[0])
     }
   }, [selectedPatientGenomes, selectedPatientSelectedGenome?.id])
@@ -199,7 +191,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   ) // dashboard attribute
   const key3 = selectedPatientSelectedChromosome || 'default3'
   useEffect(() => {
-    console.log('selectedPatientSelectedChromosome', selectedPatientSelectedChromosome)
     if (selectedPatientSelectedChromosome == null && chromosomesList) {
       handleSelectedChromosomeChange(chromosomesList[0])
     }
@@ -223,11 +214,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Fetch selected patient's genome variants from IndexedDB
   const selectedPatientGeneVariants: any[] = useLiveQuery(() => {
-    console.log('selectedPatientSelectedGenome?.id', selectedPatientSelectedGenome?.id)
-    console.log(
-      'selectedPatientSelectedChromosome?.id',
-      String(selectedPatientSelectedChromosome?.id).replace('Chromosome', '').replace(' ', ''),
-    )
     const res = patientsIndexedDb.patientGenomeVariant
       .where({
         patientGenomeId: String(selectedPatientSelectedGenome?.id),
@@ -237,10 +223,6 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
       })
       // .limit(150)
       .toArray()
-    console.log('res', res)
-    res.then((data) => {
-      console.log('data', data)
-    })
     return res
   }, [selectedPatientSelectedGenome?.id, selectedPatientSelectedChromosome?.id])
 
@@ -275,15 +257,12 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   useEffect(() => {
     // Create a list of RSIDs from local DNA file items selected
     const newRsids: string[] = selectedPatientGeneVariants?.map((geneVariant) => geneVariant.rsid)
-    // newRsids = ['rs10156191', 'rs12345678', 'rs98765432']
-    console.log('rsidsList selectedPatientGeneVariants', JSON.stringify(newRsids))
     setRsidsList(newRsids)
   }, [selectedPatientGeneVariants])
 
   // When rsidsList updates, trigger API call to fetch clinVar data
   useEffect(() => {
     if (rsidsList?.length > 0) {
-      console.log('rsidsList', JSON.stringify(rsidsList))
       dispatch(fetchRsids(rsidsList))
     }
   }, [rsidsList, dispatch])
@@ -294,32 +273,22 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
   // Function to merge notes from ListB into ListA based on rsid
   function mergeNotes(listA: any[], listB: any[]): any[] {
-    console.log('data length', listB.length)
     if (!listB) {
-      console.log('No data to merge')
       return listA
     }
-    // console.log('Merging notes...')
-
     // Create a Map for fast lookup of rsid-to-notes
     const clinvarRsidsFeaturingNotes = new Map<string, string>()
     listB.forEach((item) => {
       clinvarRsidsFeaturingNotes.set(item.rsid, item.notes)
     })
-    console.log('rsidToNotes', clinvarRsidsFeaturingNotes)
-
     // Add notes to ListA where rsid matches
-    // console.log(listA)
     listA.forEach((item) => {
       if (clinvarRsidsFeaturingNotes.has(item.rsid)) {
         item.notes = clinvarRsidsFeaturingNotes.get(item.rsid) || 'No notes found'
-        // console.log('Adding notes to item:', item.rsid, item.notes)
       } else {
         item.notes = 'No notes found'
-        // console.log('No notes found for item:', item.rsid)
       }
     })
-
     return listA
   }
 
