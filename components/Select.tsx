@@ -14,11 +14,6 @@ interface SelectProps {
 
 const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField, selectTitle, placeholder, selectedOption, error, handleSelectChange }) => {
 
-    const fallbackSelectedOption = 
-        (selectData[0] && selectDataKey in selectData[0])
-        ? selectedOption || selectData[0][selectDataKey]
-        : selectedOption;
-
     return (
         <div>
             {/* {fallbackSelectedOption} */}
@@ -27,7 +22,7 @@ const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField
                     <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> 
                     <select id={`${selectDataKey}-select`} onChange={handleSelectChange}
                         className='bg-gray-950 dark:bg-slate-100 text-xs text-white dark:text-zinc-900'
-                        value={fallbackSelectedOption}
+                        value={selectedOption}
                     >
                         <option value="">--{placeholder}--</option>
                         {selectData.map((profile: any) => (

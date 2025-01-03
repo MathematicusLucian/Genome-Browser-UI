@@ -44,6 +44,15 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     const dispatch = useAppDispatch(); 
 
+    // -----
+    // Utils
+    // -----
+
+    const selectedSelectItemOrFallback = (selectData, selectDataKey, selectedOption) =>
+            (selectData && selectData[0] && selectDataKey in selectData[0])
+            ? selectedOption || selectData[0][selectDataKey]
+            : selectedOption; 
+
     // ----------------------
     // Data: Patient Profiles
     // ----------------------
@@ -60,10 +69,15 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     const selectedPatientSelectedProfile: ISelectedItem|null = useSelector((state: RootState) => state.patient.selectedPatientProfile); // dashboard attribute 
     const key1 = selectedPatientSelectedProfile || 'default1';
     useEffect(() => {
-    }, [selectedPatientSelectedProfile]);
+        console.log('selectedPatientSelectedProfile', selectedPatientSelectedProfile)
+        if(selectedPatientSelectedProfile == null) {
+            patientProfiles && handleSelectedPatient(patientProfiles[0]);
+        }
+    }, [selectedPatientSelectedProfile?.id]);
 
     // Dispatch actions for patient profiles
     const handleSelectedPatient = (patientProfile: any) => { 
+        console.log('handleSelectedPatient', patientProfile)
         const id = ('target' in patientProfile)
             ? patientProfile?.target?.value
             : 'patientId' in patientProfile
@@ -115,7 +129,13 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     const selectedPatientSelectedGenome: ISelectedItem|null = useSelector((state: RootState) => state.patient.selectedPatientGenome); // dashboard attribute 
     const key2 = selectedPatientSelectedGenome || 'default2';
     useEffect(() => {
-    }, [selectedPatientSelectedGenome]);
+        console.log('selectedPatientSelectedGenome', selectedPatientSelectedGenome)
+        console.log('selectedPatientGenomes', selectedPatientGenomes)
+        if(selectedPatientGenomes && selectedPatientSelectedGenome == null) {
+            console.log('selectedPatientSelectedGenome: dispatch', selectedPatientGenomes[0])
+            selectedPatientGenomes && handleSelectedPatientGenomeChange(selectedPatientGenomes[0]);
+        }
+    }, [selectedPatientGenomes, selectedPatientSelectedGenome?.id]);
 
     // Dispatch actions for patient genome
     const handleSelectedPatientGenomeChange = (patientGenome: any) => {  
@@ -143,7 +163,11 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     const selectedPatientSelectedChromosome: ISelectedItem|null = useSelector((state: RootState) => state.patient.selectedChromosome); // dashboard attribute 
     const key3 = selectedPatientSelectedChromosome || 'default3';
     useEffect(() => {
-    }, [selectedPatientSelectedChromosome]);
+        console.log('selectedPatientSelectedChromosome', selectedPatientSelectedChromosome)
+        if(selectedPatientSelectedChromosome == null) {
+            chromosomesList && handleSelectedChromosomeChange(chromosomesList[0]);
+        }
+    }, [chromosomesList, selectedPatientSelectedChromosome?.id]);
 
     // Dispatch actions for chromosomes
     const handleSelectedChromosomeChange = (chromosome: any) => {  
@@ -163,6 +187,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     // Fetch selected patient's genome variants from IndexedDB
     const selectedPatientGeneVariants: any[] = useLiveQuery(
         () => { 
+            console.log('selectedPatientGeneVariants', selectedPatientGeneVariants);
             return patientsIndexedDb.patientGenomeVariant
                 .where({
                     'patientGenomeId': String(selectedPatientSelectedGenome?.id), 
@@ -170,15 +195,13 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                 })
                 .toArray(); 
         },
-        [selectedPatientSelectedGenome, selectedPatientSelectedChromosome]
-    );  
-    useEffect(() => {
-    }, [selectedPatientGeneVariants]);
+        [selectedPatientSelectedGenome?.id, selectedPatientSelectedChromosome?.id]
+    );   
 
     const selectedPatientSelectedGeneVariant: ISelectedItem|string = useSelector((state: RootState) => state.patient.selectedPatientGeneVariant); // dashboard attribute 
     const key4 = selectedPatientSelectedGeneVariant || 'default4';
     useEffect(() => {
-    }, [selectedPatientSelectedGeneVariant]);
+    }, [selectedPatientGeneVariants, selectedPatientSelectedGeneVariant?.id]);
 
     const handleSelectedPatientGeneVariantChange = (geneVariant: any) => {  
         const id = ('target' in geneVariant)
@@ -284,7 +307,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                 updateModalContent(modalContent(<UploadForm patientIdFromParentComponent={patientId} />));  
                 toggleModalVisible(true);
             },
-            condtionVariable: patientId
+            condtionVariable: selectedPatientSelectedProfile
         }
     ]; 
 
@@ -292,7 +315,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         {
             dataAsList: patientProfiles || [],
             error: error,
-            selectedSelectItem: selectedPatientSelectedProfile?.id,
+            selectedSelectItem: selectedSelectItemOrFallback(patientProfiles, 'patientId', selectedPatientSelectedProfile?.id),
             handleSelectedItemChange: handleSelectedPatient,
             selectDataKey: 'patientId',
             displayField: 'patientName',
@@ -302,7 +325,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         },{
             dataAsList: selectedPatientGenomes || [],
             error: error,
-            selectedSelectItem: selectedPatientSelectedGenome?.id,
+            selectedSelectItem: selectedSelectItemOrFallback(selectedPatientGenomes, 'patientGenomeId', selectedPatientSelectedGenome?.id),
             handleSelectedItemChange: handleSelectedPatientGenomeChange,
             selectDataKey: 'patientGenomeId', 
             displayField: 'datetimestamp', 
@@ -312,7 +335,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         },{
             dataAsList: chromosomesList || [],
             error: error,
-            selectedSelectItem: selectedPatientSelectedChromosome?.id,
+            selectedSelectItem: selectedSelectItemOrFallback(chromosomesList, 'chromosomeName', selectedPatientSelectedChromosome?.id),
             handleSelectedItemChange: handleSelectedChromosomeChange,
             selectDataKey: 'chromosomeName',
             displayField: 'chromosomeName',
@@ -346,6 +369,13 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
                 Refresh C
             </button>
 
+            <br />
+            {selectedPatientSelectedProfile?.id}
+            <br />
+            {selectedPatientSelectedGenome?.id}
+            <br />
+            {selectedPatientSelectedChromosome?.id}
+
             <ReportGridWrapper
                 dashboardTitle={dashboardTitle} 
                 dashboardComponents={dashboardComponents}
@@ -360,4 +390,4 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     );
 };
 
-export default RiskReportPage; 
+export default RiskReportPage;
