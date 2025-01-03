@@ -364,17 +364,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     ];      
 
     return (
-        <PrivateLayout isSidebar={true}>
-            <button className="text-xs" onClick={() => handleSelectedChromosomeChange({"chromosomeName":"Chromosome 8","species":"homo-sapiens"})}>
-                Refresh C
-            </button>
-
-            <br />
-            {selectedPatientSelectedProfile?.id}
-            <br />
-            {selectedPatientSelectedGenome?.id}
-            <br />
-            {selectedPatientSelectedChromosome?.id}
+        <PrivateLayout isSidebar={true}> 
 
             <ReportGridWrapper
                 dashboardTitle={dashboardTitle} 
