@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Select from "./Select";
 
-const DataGridFilter: React.FC<any> = ({dataAsList, error, selectedSelectItem, handleSelectedItemChange, updateStatus, selectDataKey, displayField, selectTitle, placeholder})  => {  
+const DataGridFilter: React.FC<any> = ({dataAsList, selectedSelectItem, handleSelectedItemChange, updateStatus, selectDataKey, displayField, selectTitle, placeholder})  => {  
 
-    const selectStatus = (!dataAsList || error)
-        ? `Please provide a ${selectDataKey}. If the table is empty, the profile, or genome may not exist. ${error}`
+    const selectStatus = (!dataAsList)
+        ? `Please provide a ${selectDataKey}. If the table is empty, the profile, or genome may not exist.`
         : `The ${selectDataKey} count: ${dataAsList.length}`;
 
     updateStatus(selectStatus);
@@ -13,21 +13,25 @@ const DataGridFilter: React.FC<any> = ({dataAsList, error, selectedSelectItem, h
     useEffect(() => {
     }, [selectedSelectItem]);
 
-    return dataAsList && error.length!=0
+    // return (
+    //     <div>{error}{JSON.stringify(dataAsList)}</div>
+    // )
+
+    return !dataAsList
         ? (<></>)
         : (
-        <> 
-            <Select 
-                selectData={dataAsList} 
-                selectDataKey={selectDataKey} 
-                displayField={displayField} 
-                selectTitle={selectTitle} 
-                placeholder={placeholder} 
-                error={error} 
-                selectedOption={selectedSelectItem} 
-                handleSelectChange={handleSelectedItemChange} 
-            /> 
-        </>
-    )}
+            <> 
+                <Select 
+                    selectData={dataAsList} 
+                    selectDataKey={selectDataKey} 
+                    displayField={displayField} 
+                    selectTitle={selectTitle} 
+                    placeholder={placeholder} 
+                    selectedOption={selectedSelectItem} 
+                    handleSelectChange={handleSelectedItemChange} 
+                /> 
+            </>
+    )
+}
 
 export default DataGridFilter;

@@ -24,9 +24,8 @@ import _ from "lodash";
 interface RiskReportPageProps {
 }
 const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {  
-    const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
-    const { drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext); 
-    const [patientId, setPatientId] = useState<string>('');
+    const {modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible} = useContext(ModalContext);
+    const {drawerTiitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible} = useContext(DrawerContext); 
     const [searchTermEntered, setSearchTermEntered] = useState(null);  
     const [enrichedData, setEnrichedData] = useState<any[]>([]);
     const [dataStatus, setDataStatus] = useState<string>('');
@@ -304,7 +303,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             buttonTitle: "Upload DNA File",
             onClickMethod: () => {
                 updateModalTitle("Upload Patient File");
-                updateModalContent(modalContent(<UploadForm patientIdFromParentComponent={patientId} />));  
+                updateModalContent(modalContent(<UploadForm patientIdFromParentComponent={selectedPatientSelectedProfile.id} />));  
                 toggleModalVisible(true);
             },
             condtionVariable: selectedPatientSelectedProfile
@@ -314,7 +313,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     const dashboardNavDropdowns = [ 
         {
             dataAsList: patientProfiles || [],
-            error: error,
+            error: null,
             selectedSelectItem: selectedSelectItemOrFallback(patientProfiles, 'patientId', selectedPatientSelectedProfile?.id),
             handleSelectedItemChange: handleSelectedPatient,
             selectDataKey: 'patientId',
@@ -324,7 +323,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             updateStatus: setDataStatus,
         },{
             dataAsList: selectedPatientGenomes || [],
-            error: error,
+            error: null,
             selectedSelectItem: selectedSelectItemOrFallback(selectedPatientGenomes, 'patientGenomeId', selectedPatientSelectedGenome?.id),
             handleSelectedItemChange: handleSelectedPatientGenomeChange,
             selectDataKey: 'patientGenomeId', 
@@ -334,7 +333,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
             updateStatus: setDataStatus,
         },{
             dataAsList: chromosomesList || [],
-            error: error,
+            error: null,
             selectedSelectItem: selectedSelectItemOrFallback(chromosomesList, 'chromosomeName', selectedPatientSelectedChromosome?.id),
             handleSelectedItemChange: handleSelectedChromosomeChange,
             selectDataKey: 'chromosomeName',

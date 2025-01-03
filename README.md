@@ -33,6 +33,12 @@ DNA files from popular family tree providers (23andMe, Ancestry.com, etc.) are l
 - UI Library: **shadncn/ui**
   - Styling with **Tailwind CSS**
   - Component primitives from **Radix UI** for accessibility and flexibility
+- Micro-frontends:
+  - **Modular design**: `Single-spa` is ingeniously crafted to be modular, enabling the development of small, independent applications that seamlessly integrate to form a more extensive application.
+  - **Framework-agnostic**: `Single-spa` is not confined to any specific front-end framework, granting you the freedom to employ your preferred framework for constructing micro-frontends.
+  - **Dynamic loading**: With `Single-spa`, micro-frontends can be dynamically loaded, allowing on-demand loading to minimise the initial load time of your application.
+  - **Flexible routing**: `Single-spa` features a versatile routing system, empowering you to define the precise manner in which your micro-frontends are loaded and unloaded.
+  - **Shared dependencies**: `Single-spa` facilitates the sharing of dependencies among micro-frontends, significantly reducing the overall size and complexity of the application.
 - State Management;
   - **Redux** with **RTK** patterns, and **Axios**. (Alternatives: Zustand, Jotai, or Recoil.)
 - **REST**ful and **WebSocket** connections for real-time, low-latency communication.

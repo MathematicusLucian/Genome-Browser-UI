@@ -8,16 +8,16 @@ interface SelectProps {
     displayField: string;
     placeholder: string;
     selectedOption: any; // for Profile select, this item would match the model IPatientProfile,
-    error: any;
     handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField, selectTitle, placeholder, selectedOption, error, handleSelectChange }) => {
+const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField, selectTitle, placeholder, selectedOption, handleSelectChange }) => {
 
     return (
-        <div>
-            {/* {fallbackSelectedOption} */}
-            {selectData && selectDataKey && error.length==0 ? (
+        <div> 
+            {!selectData || !selectDataKey ? (
+                <div>Error</div>
+            ) : (
                 <div className="dropdown">
                     <label htmlFor={`${selectDataKey}-select`}>{selectTitle}</label> 
                     <select id={`${selectDataKey}-select`} onChange={handleSelectChange}
@@ -50,8 +50,6 @@ const Select: React.FC<SelectProps> = ({ selectData, selectDataKey, displayField
                         }
                     `}</style>
                 </div>
-            ) : (
-                <div>Error: {error}</div>
             )}
         </div>
     )

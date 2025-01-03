@@ -7,6 +7,8 @@ import { FileUploader } from "react-drag-drop-files";
 import { v4 as uuidv4 } from 'uuid';
 import { patientsIndexedDb } from "@/database/database";
 import { IPatientGenome, IPatientGenomeVariant, IPatientProfile } from "@/models/database";
+import { useLiveQuery } from "dexie-react-hooks";
+import DataGridFilter from "./DataGridFllter";
 
 interface UploadFormProps {
   patientIdFromParentComponent: string;
@@ -40,10 +42,12 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
     const patientGenomeId = uuidv4();
     try {
       // Database 
-      if(!patientId) {
-        const defaultProfile: IPatientProfile = await patientsIndexedDb.patientProfile.where('patientName').equals('Default Profile').toArray()[0];
-        setPatientId(defaultProfile.patientId); 
-      }
+      // if(!patientId) {
+      //   const defaultProfile: IPatientProfile = await patientsIndexedDb.patientProfile.where('patientName').equals('Default Profile').toArray()[0];
+      //   console.log(defaultProfile);
+      //   setPatientId(defaultProfile?.patientId); 
+      // }
+      // console.log(patientId);
       const vcfSource = 'undefined';
       const patientGenome: IPatientGenome = {  
         patientGenomeId: patientGenomeId,
@@ -51,6 +55,7 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
         datetimestamp: Date.now(),
         patientId: patientId,
       }
+      console.log(patientGenome);
       await patientsIndexedDb.patientGenome.add(patientGenome);
     } catch (error) {
         console.error('Error adding genome to database:', error);
@@ -67,6 +72,7 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
           datetimestamp: Date.now(),
           patientGenomeId: patientGenomeId,
         }
+        // console.log(patientGenomeVariant);
         await patientsIndexedDb.patientGenomeVariant.add(patientGenomeVariant);
       } catch (error) {
           console.error('Error adding gene varients to database:', error);
@@ -135,10 +141,64 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
     }); 
   }
 
+  // -----
+  // Utils
+  // -----
+
+  const selectedSelectItemOrFallback = (selectData, selectDataKey, selectedOption) =>
+    (selectData && selectData[0] && selectDataKey in selectData[0])
+    ? selectedOption || selectData[0][selectDataKey]
+    : selectedOption; 
+
+  // Filter #1
+
+  // Fetch patient profiles from IndexedDB
+  const patientProfiles = useLiveQuery(
+      () => patientsIndexedDb.patientProfile
+          .toArray()
+  ); 
+
+  const handleSelectedPatient = (event) => {
+    console.log(event.target.value);
+    setPatientId(event.target.value);
+  }
+
+  const updateStatus = () => {
+
+  }
+
+  // Dashboards
+
+  const navDropdowns =
+  {
+    dataAsList: patientProfiles || [],
+    selectedSelectItem: selectedSelectItemOrFallback(patientProfiles, 'patientId', patientIdFromParentComponent),
+    handleSelectedItemChange: handleSelectedPatient,
+    selectDataKey: 'patientId',
+    displayField: 'patientName',
+    selectTitle: "Patient Profile:",
+    placeholder: "Please choose a patient",
+    updateStatus: updateStatus,
+  };
+
   return (
     <> 
       <div className="file-uploader">
-        <div><span>Patient Id: </span>{patientId}</div>
+          {patientProfiles && (<DataGridFilter 
+              dataAsList={navDropdowns.dataAsList} 
+              selectedSelectItem={navDropdowns.selectedSelectItem} 
+              handleSelectedItemChange={navDropdowns.handleSelectedItemChange} 
+              selectDataKey={navDropdowns.selectDataKey} 
+              displayField={navDropdowns.displayField} 
+              selectTitle={navDropdowns.selectTitle} 
+              placeholder={navDropdowns.placeholder}
+              updateStatus={navDropdowns.updateStatus} 
+          />)}
+        <div>
+        <label>New Patient Name: </label>
+        <input name="newPatientName"></input>
+        <hr />
+        <span>Patient Id: </span>{patientId}</div>
         {importProgress==0 && (
           <div className="m-4 rounded bg-white">
             <FileUploader
@@ -158,11 +218,11 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
         <p>
           {fileSelectedForUpload ? `File name: ${fileSelectedForUpload.name}` : "no files uploaded yet"}
         </p>
-        {importProgress!=0 && (
+        {/* {importProgress!=0 && ( */}
           <p>
             Uploading Progress: {importProgress}
           </p>
-        )}
+        {/* )} */}
       </div>
       <style jsx>{`
         .file-uploader {
@@ -202,3 +262,6 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
 }
 
 export default UploadForm;
+{/* {JSON.stringify(navDropdowns)} <hr />
+{navDropdowns.displayField} <hr />
+{JSON.stringify(navDropdowns.dataAsList)} */}
