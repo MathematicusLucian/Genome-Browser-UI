@@ -95,12 +95,16 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   // Dispatch actions for patient profiles
   const handleSelectedPatient = (patientProfile: any) => {
     if (!patientProfile) return
+
     const id =
       'target' in patientProfile
         ? patientProfile?.target?.value
         : 'patientId' in patientProfile
           ? patientProfile?.patientId
           : null
+
+    console.log('ACTION: handleSelectedPatient', id)
+
     if (id) dispatch(setSelectedPatientProfile({ id: id })) // patientProfile
   }
   const handleAddPatient = async (patientProfile) => {
