@@ -1,14 +1,14 @@
-import logger from 'redux-logger';
+import logger from 'redux-logger'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/query'; 
+import { setupListeners } from '@reduxjs/toolkit/query'
 import dashboardReducer from './features/dashboard/dashboardSlice'
 import geneDefinitionReducer from './features/geneDefinition/geneDefinitionSlice'
-import patientProfileReducer from './features/patient/patientSlice' 
-import todosReducer from './features/todos/todoSlice' 
- import { createWrapper } from 'next-redux-wrapper'
+import patientProfileReducer from './features/patient/patientSlice'
+import todosReducer from './features/todos/todoSlice'
+import { createWrapper } from 'next-redux-wrapper'
 // import createSagaMiddleware from 'redux-saga'
 // import rootSaga from './features/todos/sagas'
-import { snpResearchApi } from './features/research/researchApi'
+import rsidReducer from './features/research/researchSlice'
 // import { config } from 'utils/config'
 
 // const saga = createSagaMiddleware()
@@ -16,25 +16,26 @@ import { snpResearchApi } from './features/research/researchApi'
 const rootReducer = combineReducers({
   dashboard: dashboardReducer,
   geneDefinition: geneDefinitionReducer,
-  patient: patientProfileReducer, 
+  patient: patientProfileReducer,
   todos: todosReducer,
-  // research: researchDataReducer,
+  rsid: rsidReducer,
+  // [rsidSlice.reducerPath]: rsidSlice.reducer,
   // user
   // userProfile
-  [snpResearchApi.reducerPath]: snpResearchApi.reducer,
 })
 
 export const makeStore = () => {
-// export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
+  // export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
   const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger).concat(snpResearchApi.middleware),
+    // middleware: (getDefaultMiddleware) =>
+    // getDefaultMiddleware().concat(logger).concat(clinvarApiSlice.middleware),
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saga),
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(snpResearchApi.middleware),
     // devTools: config.isDevEnv,
   })
   // setupListeners(store.dispatch);
-  return store;
+  return store
 }
 
 // Infer the type of makeStore

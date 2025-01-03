@@ -81,6 +81,7 @@
     "next-themes": "^0.4.4",
     "nextjs-chunk-upload-action": "^9.0.0",
     "nodemailer": "^6.9.16",
+    "payload": "^3.14.0",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "react": "18.2.0",

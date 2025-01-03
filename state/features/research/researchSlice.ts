@@ -1,43 +1,51 @@
-import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit'
-import { initialState, IResearchData } from './state'; 
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import axios from 'axios'
 
-// ClinVar
-
-const fetchResearchDatasFromState = (researchDataState) => {
-    return researchDataState;
+interface RsidState {
+  data: any[] // Adjust the type as needed based on the API response
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | null
 }
 
-const fetchResearchDataFromStateById = (researchDataState, researchDataId: string) => {
-    return researchDataState.find(researchData => researchData.id === researchDataId)
+// Initial state
+const initialState: RsidState = {
+  data: [],
+  status: 'idle',
+  error: null,
 }
 
-const addResearchDataToState = (state, action: PayloadAction<IResearchData>) => {
-    state.push(action.payload)
-};
-
-const updateResearchDataInState = (state, action: PayloadAction<IResearchData>) => {
-    state.push(action.payload)
-};
-
-const researchDatasSlice = createSlice({
-    name: 'researchData',
-    initialState: initialState,  
-    reducers: {
-        // ClinVar
-        researchDataAdded: addResearchDataToState,
-        researchDataUpdated: updateResearchDataInState,
-    }, 
-    selectors: {
-        // Selectors are given just the `ResearchDataState` as a parameter, not the entire `RootState`
-        // ClinVar
-        selectAllResearchDatas: fetchResearchDatasFromState,
-        selectResearchDatasById: fetchResearchDataFromStateById
+// Async thunk for fetching data
+export const fetchRsids = createAsyncThunk(
+  'rsid/fetchRsids',
+  async (rsidsList: string[], { rejectWithValue }) => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/snp_research/', { rsidsList })
+      return response.data
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message)
     }
+  },
+)
+
+const rsidSlice = createSlice({
+  name: 'rsid',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchRsids.pending, (state) => {
+        state.status = 'loading'
+        state.error = null
+      })
+      .addCase(fetchRsids.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        state.data = action.payload
+      })
+      .addCase(fetchRsids.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.payload as string
+      })
+  },
 })
 
-export const { researchDataAdded, researchDataUpdated } = researchDatasSlice.actions;
-export const { selectAllResearchDatas, selectResearchDatasById } = researchDatasSlice.selectors
-export default researchDatasSlice.reducer;
-
-
-
+export default rsidSlice.reducer
