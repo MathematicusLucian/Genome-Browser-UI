@@ -1,214 +1,392 @@
 'use client'
-import React, { useState, useEffect, useContext, useMemo } from "react";
-import { useRouter } from 'next/router';
-import { ModalContext, DrawerContext } from '../../../context';
-import PrivateLayout from '@/pages/PrivateLayout';
-import Select from '@/components/Select'; 
-import CreatePatientForm from "@/components/CreatePatientForm";
-import UploadForm from '@/components/UploadForm'; 
-import GeneVariantList from "@/components/GeneVariantList"; 
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { patientsIndexedDb, IPatientProfile, IPatientGenome } from "@/database/database";
-import { useLiveQuery } from "dexie-react-hooks"; 
-import { IPatientGenomeVariant } from "@/models/database"; 
+import React, { useState, useEffect, useContext, useMemo } from 'react'
+import { useRouter } from 'next/router'
+import PrivateLayout from '@/pages/PrivateLayout'
+import { Separator } from '@radix-ui/react-separator'
+import { DrawerContext, ModalContext } from '@/context'
+import ReportGridWrapper from '@/components/ReportGridWrapper'
+import CreatePatientForm from '@/components/CreatePatientForm'
+import UploadForm from '@/components/UploadForm'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { patientsIndexedDb } from '@/database/database'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../state/store'
+import {
+  setSelectedPatientProfile,
+  setSelectedPatientGenome,
+  setSelectedPatientGeneVariant,
+  setSelectedChromosome,
+  ISelectedItem,
+} from '@/state/features/patient/patientSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks'
+import { usePostSnpDataByRsidQuery } from '@/state/features/research/researchApi'
+import _ from 'lodash'
 
-interface GenomePageProps {
+// --------------------------------------------------------------------------------------------
+// Risk Report
+// (Comparing Patient Gene Variants with Published Literature, e.g. SNP data, such as ClinVar.)
+// ---------------------------------------------------------------------------------------------
+
+interface RiskReportPageProps {}
+const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
+  const {
+    modalTitle,
+    modelContent,
+    modalVisible,
+    updateModalTitle,
+    updateModalContent,
+    toggleModalVisible,
+  } = useContext(ModalContext)
+  const {
+    drawerTiitle,
+    drawerContent,
+    drawerVisible,
+    updateDrawerTitle,
+    updateDrawerContent,
+    toggleDrawerVisible,
+  } = useContext(DrawerContext)
+  const [searchTermEntered, setSearchTermEntered] = useState(null)
+  const [enrichedData, setEnrichedData] = useState<any[]>([])
+  const [dataStatus, setDataStatus] = useState<string>('')
+  // const [error, setError] = useState(null);
+
+  // ------
+  // Router
+  // ------
+
+  const router = useRouter()
+
+  // -----
+  // Redux
+  // -----
+
+  const dispatch = useAppDispatch()
+
+  // -----
+  // Utils
+  // -----
+
+  const selectedSelectItemOrFallback = (selectData, selectDataKey, selectedOption) =>
+    selectData && selectData[0] && selectDataKey in selectData[0]
+      ? selectedOption || selectData[0][selectDataKey]
+      : selectedOption
+
+  // ----------------------
+  // Data: Patient Profiles
+  // ----------------------
+
+  // Filter #1
+
+  // Fetch patient profiles from IndexedDB
+  const patientProfiles = useLiveQuery(() => patientsIndexedDb.patientProfile.toArray())
+
+  // Fetch selected patient profile from Redux store
+  const selectedPatientSelectedProfile: ISelectedItem | null = useSelector(
+    (state: RootState) => state.patient.selectedPatientProfile,
+  ) // dashboard attribute
+  const key1 = selectedPatientSelectedProfile || 'default1'
+  useEffect(() => {
+    console.log('selectedPatientSelectedProfile', selectedPatientSelectedProfile)
+    if (selectedPatientSelectedProfile == null) {
+      patientProfiles && handleSelectedPatient(patientProfiles[0])
+    }
+  }, [selectedPatientSelectedProfile?.id])
+
+  // Dispatch actions for patient profiles
+  const handleSelectedPatient = (patientProfile: any) => {
+    console.log('handleSelectedPatient', patientProfile)
+    const id =
+      'target' in patientProfile
+        ? patientProfile?.target?.value
+        : 'patientId' in patientProfile
+          ? patientProfile?.patientId
+          : null
+    id && dispatch(setSelectedPatientProfile({ id: id })) // patientProfile
+  }
+  const handleAddPatient = async (patientProfile) => {
+    await patientsIndexedDb.patientProfile.add(patientProfile)
+  }
+  // End: Filter #1
+
+  // Effect: Retrieve patient profile ID from URL
+  useEffect(() => {
+    if (router?.isReady && patientProfiles) {
+      // No patient IdD in route path
+      if (router.query.patient_id == null) {
+        router.push(`/patient/genome/${patientProfiles[0]?.patientId}`)
+      }
+      // Updated selectedPatientSelectedProfile :. update the route
+      if (router.query.patient_id != selectedPatientSelectedProfile?.id) {
+        selectedPatientSelectedProfile &&
+          router.push(`/patient/genome/${selectedPatientSelectedProfile?.id}`)
+      }
+      // Load :. update selectedPatientSelectedProfile to match route param
+      const patientProfileMatchingPatientIdFromRouter = patientProfiles?.find(
+        (x) => x?.patientId == router?.query?.patient_id,
+      )
+      if (patientProfileMatchingPatientIdFromRouter && !selectedPatientSelectedProfile?.id) {
+        handleSelectedPatient(patientProfileMatchingPatientIdFromRouter)
+      } else {
+        // Load nothing
+      }
+    }
+  }, [router?.isReady, router?.asPath, patientProfiles, selectedPatientSelectedProfile])
+
+  // --------------------
+  // Data: Patient Genome
+  // --------------------
+
+  // Filter #2
+
+  // Fetch selected patient's genome from IndexedDB
+  const selectedPatientGenomes = useLiveQuery(
+    () =>
+      selectedPatientSelectedProfile &&
+      patientsIndexedDb.patientGenome
+        .where('patientId')
+        .equalsIgnoreCase(String(selectedPatientSelectedProfile?.id))
+        .toArray(),
+    [selectedPatientSelectedProfile, selectedPatientSelectedProfile],
+  )
+
+  // Fetch selected patient's selected genome from Redux store
+  const selectedPatientSelectedGenome: ISelectedItem | null = useSelector(
+    (state: RootState) => state.patient.selectedPatientGenome,
+  ) // dashboard attribute
+  const key2 = selectedPatientSelectedGenome || 'default2'
+  useEffect(() => {
+    console.log('selectedPatientSelectedGenome', selectedPatientSelectedGenome)
+    console.log('selectedPatientGenomes', selectedPatientGenomes)
+    if (selectedPatientGenomes && selectedPatientSelectedGenome == null) {
+      console.log('selectedPatientSelectedGenome: dispatch', selectedPatientGenomes[0])
+      selectedPatientGenomes && handleSelectedPatientGenomeChange(selectedPatientGenomes[0])
+    }
+  }, [selectedPatientGenomes, selectedPatientSelectedGenome?.id])
+
+  // Dispatch actions for patient genome
+  const handleSelectedPatientGenomeChange = (patientGenome: any) => {
+    const id =
+      'target' in patientGenome
+        ? patientGenome?.target?.value
+        : 'patientGenomeId' in patientGenome
+          ? patientGenome?.patientGenomeId
+          : null
+    id && dispatch(setSelectedPatientGenome({ id: id }))
+  }
+  // End Filter #2
+
+  // -----------
+  // Chromosomes
+  // -----------
+
+  // Filter #3
+
+  // Fetch chromosomes from IndexedDB
+  const chromosomesList = useLiveQuery(
+    // IChromosome[]
+    async () => patientsIndexedDb.chromosome.toArray(),
+  )
+
+  // Fetch selected patient's selected chromosome from Redux store
+  const selectedPatientSelectedChromosome: ISelectedItem | null = useSelector(
+    (state: RootState) => state.patient.selectedChromosome,
+  ) // dashboard attribute
+  const key3 = selectedPatientSelectedChromosome || 'default3'
+  useEffect(() => {
+    console.log('selectedPatientSelectedChromosome', selectedPatientSelectedChromosome)
+    if (selectedPatientSelectedChromosome == null) {
+      chromosomesList && handleSelectedChromosomeChange(chromosomesList[0])
+    }
+  }, [chromosomesList, selectedPatientSelectedChromosome?.id])
+
+  // Dispatch actions for chromosomes
+  const handleSelectedChromosomeChange = (chromosome: any) => {
+    const id =
+      'target' in chromosome
+        ? chromosome?.target?.value
+        : 'chromosomeName' in chromosome
+          ? chromosome?.chromosomeName
+          : null
+    id && dispatch(setSelectedChromosome({ id: id }))
+  }
+  // End Filter #3
+
+  // ----------------------------------
+  // Data: Patient Gene Variants (SNPs)
+  // ----------------------------------
+
+  // Fetch selected patient's genome variants from IndexedDB
+  const selectedPatientGeneVariants: any[] = useLiveQuery(() => {
+    console.log('selectedPatientGeneVariants', selectedPatientGeneVariants)
+    return patientsIndexedDb.patientGenomeVariant
+      .where({
+        patientGenomeId: String(selectedPatientSelectedGenome?.id),
+        chromosome: String(selectedPatientSelectedChromosome?.id)
+          .replace('Chromosome', '')
+          .replace(' ', ''),
+      })
+      .toArray()
+  }, [selectedPatientSelectedGenome?.id, selectedPatientSelectedChromosome?.id])
+
+  const selectedPatientSelectedGeneVariant: ISelectedItem | string = useSelector(
+    (state: RootState) => state.patient.selectedPatientGeneVariant,
+  ) // dashboard attribute
+  const key4 = selectedPatientSelectedGeneVariant || 'default4'
+  useEffect(() => {}, [selectedPatientGeneVariants, selectedPatientSelectedGeneVariant?.id])
+
+  const handleSelectedPatientGeneVariantChange = (geneVariant: any) => {
+    const id =
+      'target' in geneVariant
+        ? geneVariant?.target?.value
+        : 'patientGeneVariantId' in geneVariant
+          ? geneVariant?.patientGeneVariantId
+          : null
+    id && dispatch(setSelectedPatientGeneVariant({ id: id }))
+  }
+
+  // --------------
+  // Drawer Content
+  // --------------
+
+  const handleSelectedDataRowChange = (e) => {
+    handleSelectedPatientGeneVariantChange(e)
+    updateDrawerTitle('Gene Variant Details')
+    updateDrawerContent(genomeDetailsDrawerContent(e))
+    toggleDrawerVisible(true)
+  }
+
+  const genomeDetailsDrawerContent = (contentSlot) => {
+    return (
+      <>
+        <Separator className="my-4" />
+        {contentSlot && (
+          <div>
+            {Object.entries(contentSlot).map(([key, value]: any): any => (
+              <p key={key} className="drawer-item">
+                <strong>{key}:</strong> {value}
+              </p>
+            ))}
+          </div>
+        )}
+      </>
+    )
+  }
+
+  // -------------
+  // Modal Content
+  // -------------
+
+  const modalContent = (contentSlot: any) => <div className="mt-2 px-7 py-3">{contentSlot}</div>
+
+  // ---------------
+  // Dashboard Setup
+  // ---------------
+
+  const dashboardTitle = 'Patient Genome (DNA File) Report'
+
+  const dashboardNavButtons = [
+    {
+      buttonTitle: 'Create New Patient',
+      onClickMethod: () => {
+        updateModalTitle('Create New Patient')
+        updateModalContent(modalContent(<CreatePatientForm />))
+        toggleModalVisible(true)
+      },
+      condtionVariable: true,
+    },
+    {
+      buttonTitle: 'Upload DNA File',
+      onClickMethod: () => {
+        updateModalTitle('Upload Patient File')
+        updateModalContent(
+          modalContent(
+            <UploadForm patientIdFromParentComponent={selectedPatientSelectedProfile.id} />,
+          ),
+        )
+        toggleModalVisible(true)
+      },
+      condtionVariable: selectedPatientSelectedProfile,
+    },
+  ]
+
+  const dashboardNavDropdowns = [
+    {
+      dataAsList: patientProfiles || [],
+      error: null,
+      selectedSelectItem: selectedSelectItemOrFallback(
+        patientProfiles,
+        'patientId',
+        selectedPatientSelectedProfile?.id,
+      ),
+      handleSelectedItemChange: handleSelectedPatient,
+      selectDataKey: 'patientId',
+      displayField: 'patientName',
+      selectTitle: 'Patient Profile:',
+      placeholder: 'Please choose a patient',
+      updateStatus: setDataStatus,
+    },
+    {
+      dataAsList: selectedPatientGenomes || [],
+      error: null,
+      selectedSelectItem: selectedSelectItemOrFallback(
+        selectedPatientGenomes,
+        'patientGenomeId',
+        selectedPatientSelectedGenome?.id,
+      ),
+      handleSelectedItemChange: handleSelectedPatientGenomeChange,
+      selectDataKey: 'patientGenomeId',
+      displayField: 'datetimestamp',
+      selectTitle: 'Genome:',
+      placeholder: 'Please choose a DNA file',
+      updateStatus: setDataStatus,
+    },
+    {
+      dataAsList: chromosomesList || [],
+      error: null,
+      selectedSelectItem: selectedSelectItemOrFallback(
+        chromosomesList,
+        'chromosomeName',
+        selectedPatientSelectedChromosome?.id,
+      ),
+      handleSelectedItemChange: handleSelectedChromosomeChange,
+      selectDataKey: 'chromosomeName',
+      displayField: 'chromosomeName',
+      selectTitle: 'Chromosome:',
+      placeholder: 'Please choose a chromosome',
+      updateStatus: setDataStatus,
+    },
+  ]
+
+  const dashboardComponents = []
+
+  // ----------
+  // Grid Setup
+  // ----------
+
+  const columns = [
+    { headerName: 'rsid', field: 'rsid', flex: 2, maxWidth: 100 },
+    { headerName: 'genotype', field: 'genotype', flex: 1, maxWidth: 80 },
+    { headerName: 'chromosome', field: 'chromosome', flex: 1, maxWidth: 100 },
+    { headerName: 'position', field: 'position', flex: 2, maxWidth: 120 },
+    { headerName: 'datetimestamp', field: 'datetimestamp', flex: 1, maxWidth: 120 },
+    { headerName: 'patientId', field: 'patientId', flex: 1, maxWidth: 280 },
+    { headerName: 'patientGenomeId', field: 'patientGenomeId', flex: 1, maxWidth: 280 },
+  ]
+
+  return (
+    <PrivateLayout isSidebar={true}>
+      <div>{selectedPatientGeneVariants?.length}</div>
+      <ReportGridWrapper
+        dashboardTitle={dashboardTitle}
+        dashboardComponents={dashboardComponents}
+        dashboardNavButtons={dashboardNavButtons}
+        dashboardNavDropdowns={dashboardNavDropdowns}
+        columns={columns}
+        riskReportRowsData={selectedPatientGeneVariants}
+        handleSelectedDataRowChange={handleSelectedDataRowChange}
+      />
+    </PrivateLayout>
+  )
 }
 
-const GenomePage: React.FC<GenomePageProps> = (props) => {  
-    const { modalTitle, modelContent, modalVisible, updateModalTitle, updateModalContent, toggleModalVisible } = useContext(ModalContext);
-    const { drawerTitle, drawerContent, drawerVisible, updateDrawerTitle, updateDrawerContent, toggleDrawerVisible } = useContext(DrawerContext);
-    const [patientId, setPatientId] = useState<string>('');
-    const [error, setError] = useState(null); 
-    // Router
-    const router = useRouter();  
-
-    const createNewPatient = () => {
-        updateModalTitle("Create New Patient");
-        updateModalContent(<div className="mt-2 px-7 py-3"><CreatePatientForm /></div>);
-        toggleModalVisible(true);
-    }
-  
-    const uploadDNAFile = () => {
-        updateModalTitle("Upload Patient File");
-        updateModalContent(<div className="mt-2 px-7 py-3"><UploadForm patientIdFromParentComponent={patientId} /></div>);
-        toggleModalVisible(true);
-    }  
-
-    // --------------
-    // Drawer Content
-    // --------------
-    
-    const genomeDetailsDrawerContent = (content) => {
-        return (
-            <>
-                <Separator className="my-4" /> 
-                {content && (
-                    <div>
-                        {Object.entries(content).map(([key, value]: any): any => (
-                            <p key={key} className='drawer-item'><strong>{key}:</strong> {value}</p>
-                        ))}
-                    </div>
-                )} 
-            </>
-        );
-    };
-
-              
-    const handleSelectedDataRowChange = (e) => {
-        updateDrawerTitle("Gene Variant Details");
-        updateDrawerContent(genomeDetailsDrawerContent(e)); 
-        toggleDrawerVisible(true);
-    }
-
-    // -------
-    // Patient
-    // -------
-
-    const [selectedPatientProfile, setSelectedPatientProfile] = useState<IPatientProfile | null>(null); 
-    const [selectedPatientProfileId, setSelectedPatientProfileId] = useState<string | null>(null); 
-
-    const handleSelectedPatientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        // http://127.0.0.1:3000/patient/genome?patientId=[x]
-        router.push(`/patient/genome/${event.target.value}`);
-    };
- 
-    const patientProfiles = useLiveQuery( 
-        async () => patientsIndexedDb.patientProfile.toArray()
-    );
-    const patientProfilesCount = useLiveQuery(
-        async() => patientsIndexedDb.patientProfile.count()
-    ); 
-    useEffect(() => {
-        if (router.isReady) {
-            const p = Array.isArray(router.query.patient_id) ? router.query.patient_id[0] : router.query.patient_id;  
-            console.log('p', p);
-            setPatientId(p);
-            if(patientProfiles) { 
-                const patientProfileMatch = patientProfiles.find((x) => x.patientId == patientId);
-                if(patientProfileMatch) {
-                    setSelectedPatientProfile(patientProfileMatch);
-                    setSelectedPatientProfileId(patientProfileMatch.patientId);
-                }
-            } 
-        }
-    }, [router.isReady, router.asPath, patientProfiles, patientProfilesCount]);   
-
-    // --------------
-    // Patient Genome
-    // --------------
-
-    const [selectedPatientGenome, setSelectedPatientGenome] = useState<IPatientGenome | null>(null);  
-    const [selectedPatientGenomeId, setSelectedPatientGenomeId] = useState<string| null>(null);
-
-    const handleSelectedPatientGenomeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const targetPatientGenomeId = event.target.value;
-        console.log(targetPatientGenomeId);
-        setSelectedPatientGenomeId(targetPatientGenomeId); 
-        const targetPatientGenome = selectedPatientGenomes.find((x) => x.patientGenomeId = targetPatientGenomeId);
-        console.log(targetPatientGenome);
-        setSelectedPatientGenome(targetPatientGenome); 
-    }; 
-    
-    const selectedPatientGenomes = useLiveQuery(// IPatientGenome[]
-        async () => { 
-            const x = patientsIndexedDb.patientGenome.where('patientId').equalsIgnoreCase(String(selectedPatientProfileId)).toArray();  
-            return x;
-        },
-        [selectedPatientProfileId]
-    );
-
-    // ------------------
-    // Gene Variants List
-    // ------------------
-    
-    const selectedPatientGenomeVariants = useLiveQuery(// IPatientGeneVariant[]
-        async () => {
-            const x = patientsIndexedDb.patientGenomeVariant.where('patientGenomeId').equalsIgnoreCase(String(selectedPatientGenomeId)).toArray();  
-            return x;
-        },
-        [selectedPatientGenomeId]
-    );  
-
-    const columns = [
-        {"headerName":"rsid","field":"rsid", flex: 2, maxWidth: 100},
-        {"headerName":"genotype","field":"genotype", flex: 1, maxWidth: 80},
-        {"headerName":"chromosome","field":"chromosome", flex: 1, maxWidth: 100},
-        {"headerName":"position","field":"position", flex: 2, maxWidth: 120},
-        {"headerName":"datetimestamp","field":"datetimestamp", flex: 1, maxWidth: 120}, 
-        {"headerName":"patientId","field":"patientId", flex: 1, maxWidth: 280}, 
-        {"headerName":"patientGenomeId","field":"patientGenomeId", flex: 1, maxWidth: 280},
-    ];
-    
-    return (    
-        <PrivateLayout isSidebar={true}>  
-            <div className="text-xl">Patient Genome (Gene Variants) Viewer</div> 
-
-            <div className="flex flex-row">
-
-                <Button
-                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
-                    variant="outline"
-                    onClick={createNewPatient}
-                >
-                    Create New Patient
-                </Button> 
-
-                {patientId && (<Button
-                    className="flex-1 rounded px-3 py-1 mt-3 text-xs border-zinc-950 dark:border-zinc-200 bg-slate-100 dark:bg-gray-950 text-zinc-950 dark:text-white"
-                    variant="outline"
-                    onClick={uploadDNAFile}
-                >
-                    Upload DNA File
-                </Button>)}
-
-            </div>
-            
-            <Separator className="my-2" /> 
-
-            <p><em>Patient Profile Count: {patientProfilesCount}</em></p>      
-
-            <Select selectData={patientProfiles} selectDataKey={'patientId'} displayField={'patientName'} selectTitle={"Select a Patient Profile:"} placeholder={"Please choose a patient"} error={error} selectedOption={selectedPatientProfile} handleSelectChange={handleSelectedPatientChange} />
-            
-            <Separator className="my-4" /> 
-            
-            <p className="table-sub-header"><span>Patient Data</span></p>
-
-            {!selectedPatientProfile || error ? (
-                <div>Please provide a patient profile ID. If the table is empty, the profile may not exist. {error}</div>
-            ) : (
-                <div>
-                    <p className="table-sub-header"><span>Patient Name: </span>{selectedPatientProfile.patientName} | <span>Patient ID: </span>{selectedPatientProfile.patientId}</p>
-
-                    {!selectedPatientGenomes ? (
-                        <div>No genomes. Perhaps no DNA file has been uploaded. {error}</div>
-                    ) : (
-                        <div>
-                            <Separator className="my-4" /> 
-
-                            <p><em>Patient DNA files Count: {selectedPatientGenomes.length}</em></p>
-                            <Select selectData={selectedPatientGenomes} selectDataKey={'patientGenomeId'} displayField={'datetimestamp'} selectTitle={"Select a Genome:"} placeholder={"Please choose a DNA file"} error={error} selectedOption={selectedPatientGenome} handleSelectChange={handleSelectedPatientGenomeChange} />
-
-                            {!selectedPatientGenome ? (
-                                <div>No gene variants. Perhaps no DNA file has been uploaded. {error}</div>
-                            ) : (                  
-                                <>                            
-                                    <Separator className="my-4" /> 
-                                    
-                                    <p className="table-sub-header"><span>Patient Genome ID: </span>{selectedPatientGenome.patientGenomeId} | <span>Date:</span> {selectedPatientGenome.patientGenomeId}</p> 
-
-                                    <GeneVariantList geneVariantList={selectedPatientGenomeVariants} columns={columns} handleSelectedDataRowChange={handleSelectedDataRowChange} />     
-                                </>   
-                            )} 
-                            
-                        </div>
-                    )} 
-
-                </div>
-            )} 
-        </PrivateLayout>
-    );
-};
-
-export default GenomePage;
+export default RiskReportPage
