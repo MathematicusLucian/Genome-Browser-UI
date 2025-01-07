@@ -90,6 +90,7 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   ) // dashboard attribute
   const key1 = selectedPatientSelectedProfile || 'default1'
   useEffect(() => {
+    console.log('selectedPatientSelectedProfile', selectedPatientSelectedProfile)
     if (selectedPatientSelectedProfile == null && patientProfiles) {
       handleSelectedPatient(patientProfiles[0])
     }
@@ -108,7 +109,10 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
 
     console.log('ACTION: handleSelectedPatient', id)
 
-    if (id) dispatch(setSelectedPatientProfile({ id: id })) // patientProfile
+    if (id) {
+      console.log('id', id)
+      dispatch(setSelectedPatientProfile({ id: id })) // patientProfile
+    }
   }
   const handleAddPatient = async (patientProfile) => {
     await patientsIndexedDb.patientProfile.add(patientProfile)
