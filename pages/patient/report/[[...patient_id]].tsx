@@ -21,6 +21,8 @@ import {
 import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks'
 import _ from 'lodash'
 import { fetchRsids } from '@/state/features/research/researchSlice'
+import KeywordsFilter from '../../../lib/KeywordsFilter'
+import DataTypeFilter from '../../../lib/DataTypeFilter'
 
 // --------------------------------------------------------------------------------------------
 // Risk Report
@@ -300,8 +302,10 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
     listA.forEach((item) => {
       if (clinvarRsidsFeaturingNotes.has(item.rsid)) {
         item.notes = clinvarRsidsFeaturingNotes.get(item.rsid) || 'No notes found'
+        item.risk = clinvarRsidsFeaturingNotes.get(item.rsid) ? 'True' : ''
       } else {
         item.notes = 'No notes found'
+        item.risk = ''
       }
     })
     return listA
@@ -434,9 +438,10 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   // ----------
 
   const riskReportColumns = [
-    { headerName: 'rsid', field: 'rsid', flex: 2, maxWidth: 100 },
+    { headerName: 'rsid', field: 'rsid', flex: 2, maxWidth: 100, filter: KeywordsFilter },
     { headerName: 'genotype', field: 'genotype', flex: 1, maxWidth: 80 },
-    { headerName: 'notes', field: 'notes', flex: 4, maxWidth: 500 },
+    { headerName: 'risk', field: 'risk', flex: 1, maxWidth: 100, filter: DataTypeFilter },
+    { headerName: 'notes', field: 'notes', flex: 4, maxWidth: 500, filter: KeywordsFilter },
     { headerName: 'magnitude', field: 'magnitude', flex: 1, maxWidth: 100 },
     { headerName: 'chromosome', field: 'chromosome', flex: 1, maxWidth: 140 },
     { headerName: 'position', field: 'position', flex: 1, maxWidth: 120 },

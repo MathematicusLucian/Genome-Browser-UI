@@ -167,6 +167,16 @@ Light mode:
 
 ![genome_viewer_light_mode_](./assets/genome_viewer_light_mode_.png)
 
+**Custom `ag-grid` filters**
+
+Filter by risk:
+
+![snp_risk_filter](./assets/snp_risk_filter.png)
+
+Filter by keyword (multiple word partial search enabled, e.g. "bow canc" would return results featuring "bowel cancer"):
+
+![notes_filter_multiword_partial_search.png](./assets/notes_filter_multiword_partial_search.png)
+
 If a user clicks on a row, the app will launch a drawer featuring the details for the gene variant.
 
 ![gene_variant_details](./assets/gene_variant_details.png)

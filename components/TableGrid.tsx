@@ -1,124 +1,127 @@
-'use client';
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { flushSync } from 'react-dom';
-import { AgGridReact } from "ag-grid-react";
-import * as agGrid from "ag-grid-community";  
-import { colorSchemeDark, themeQuartz } from 'ag-grid-community';
-import { useContainerWidth } from "../utils/useContainerWidth";
-import { useWindowSize } from "../utils/useWindowSize";
-import { Button } from "./ui/button";
+'use client'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { flushSync } from 'react-dom'
+import { AgGridReact } from 'ag-grid-react'
+import * as agGrid from 'ag-grid-community'
+import { colorSchemeDark, themeQuartz } from 'ag-grid-community'
+import { useContainerWidth } from '../utils/useContainerWidth'
+import { useWindowSize } from '../utils/useWindowSize'
+import { Button } from './ui/button'
 
-agGrid.ModuleRegistry.registerModules([agGrid.AllCommunityModule, agGrid.ValidationModule]);
+agGrid.ModuleRegistry.registerModules([agGrid.AllCommunityModule, agGrid.ValidationModule])
 
 interface RowData {
-  athlete: string;
-  age: number;
-  country: string;
-  year: number;
-  date: string;
-  sport: string;
-  gold: number;
-  silver: number;
-  bronze: number;
-  total: number;
+  athlete: string
+  age: number
+  country: string
+  year: number
+  date: string
+  sport: string
+  gold: number
+  silver: number
+  bronze: number
+  total: number
 }
 
 interface TableGridProps {
-    rowData: any;
-    columnDefs: any;
-    error?: any;
-    onSelectedDataRowChange: (dataRow: string) => void;
+  rowData: any
+  columnDefs: any
+  error?: any
+  onSelectedDataRowChange: (dataRow: string) => void
 }
 
-const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSelectedDataRowChange }) => {
-  const gridRef = useRef<AgGridReact<any>>(null);
-  const [gridApi, setGridApi] = useState<agGrid.GridApi | null>(null);
-  const debounce = 0;
-  const [windowWidth] = useWindowSize(debounce);
-  const {width: containerWidth, ref} = useContainerWidth(debounce);
+const TableGrid: React.FC<TableGridProps> = ({
+  rowData,
+  columnDefs,
+  error,
+  onSelectedDataRowChange,
+}) => {
+  const gridRef = useRef<AgGridReact<any>>(null)
+  const [gridApi, setGridApi] = useState<agGrid.GridApi | null>(null)
+  const debounce = 0
+  const [windowWidth] = useWindowSize(debounce)
+  const { width: containerWidth, ref } = useContainerWidth(debounce)
 
-  // console.log("columnDefs", columnDefs);
-  // console.log("rowData", rowData);
-  
-  const agGridTheme = themeQuartz 
-    .withParams(
-        {
-            backgroundColor: '#201008',
-            foregroundColor: '#FFFFFFCC',
-            browserColorScheme: 'dark',
-        },
-        'dark-red'
-    ); 
+  const agGridTheme = themeQuartz.withParams(
+    {
+      backgroundColor: '#201008',
+      foregroundColor: '#FFFFFFCC',
+      browserColorScheme: 'dark',
+    },
+    'dark-red',
+  )
 
   const defaultColDef: agGrid.ColDef = {
     flex: 1,
-    minWidth: 50, 
+    minWidth: 50,
     resizable: true, // Enable resizing
     wrapText: true, // Wrap Text
     wrapHeaderText: true,
     autoHeight: true, // Adjust Cell Height to Fit Wrapped Text
     autoHeaderHeight: true,
-  };
+  }
 
   const onGridReady = (params: agGrid.GridReadyEvent) => {
-    setGridApi(params.api);
+    setGridApi(params.api)
     params.api.addGlobalListener((type: string, e: any) => {
-      if (type === "rowClicked" || type === "rowSelected") {
-        onSelectedDataRowChange(e.data);
+      if (type === 'rowClicked' || type === 'rowSelected') {
+        onSelectedDataRowChange(e.data)
       }
-    });  
-  };    
-  
+    })
+  }
+
   const onPaginationChanged = () => {
     // console.log("onPaginationChanged");
-  };
+  }
 
   const clearFilters = () => {
     if (gridApi) {
-      gridApi.setFilterModel(null);
+      gridApi.setFilterModel(null)
     }
-  }; 
-  
+  }
+
   const autoSizeStrategy = useMemo<
     | agGrid.SizeColumnsToFitGridStrategy
     | agGrid.SizeColumnsToFitProvidedWidthStrategy
     | agGrid.SizeColumnsToContentStrategy
   >(() => {
     return {
-      type: "fitCellContents",
-    };
-  }, []);
+      type: 'fitCellContents',
+    }
+  }, [])
 
-  const mode=true;
+  const mode = true
 
   useEffect(() => {
     if (gridApi) {
       // gridApi.sizeColumnsToFit();
-      let columnIds = [];
-      gridApi.getColumns().forEach(column => {
-        columnIds.push(column.getColDef());
-      });
-      gridApi.autoSizeColumns(columnIds);
+      const columnIds = []
+      gridApi.getColumns().forEach((column) => {
+        columnIds.push(column.getColDef())
+      })
+      gridApi.autoSizeColumns(columnIds)
     }
-  }, [windowWidth, containerWidth, gridApi]);
+  }, [windowWidth, containerWidth, gridApi])
 
   return (
     <div className="grid-container flex flex-col w-full" data-ag-theme-mode="mode">
       <div className="flex justify-between align-middle m-1 mt-3 text-xs text-[#4b5563]">
-          <Button
-            className="rounded px-3 py-1 text-xs border-zinc-950 dark:border-zinc-200"
-            onClick={clearFilters}
-          >
-            Clear Filters
-          </Button>
+        <Button
+          className="rounded px-3 py-1 text-xs border-zinc-950 dark:border-zinc-200"
+          onClick={clearFilters}
+        >
+          Clear Filters
+        </Button>
       </div>
       <AgGridReact
-        className={"ag-grid text-zinc-700 dark:text-white ag-theme-alpine dark:ag-theme-alpine-dark"} 
-        ref={gridRef} 
+        className={
+          'ag-grid text-zinc-700 dark:text-white ag-theme-alpine dark:ag-theme-alpine-dark'
+        }
+        ref={gridRef}
         columnDefs={columnDefs}
         rowData={rowData}
         rowSelection={'single'}
-        defaultColDef={defaultColDef} 
+        defaultColDef={defaultColDef}
         onGridReady={onGridReady}
         pagination={true}
         paginationPageSize={50}
@@ -128,22 +131,15 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
         ensureDomOrder={true}
         theme={agGridTheme}
       ></AgGridReact>
-      <style jsx global>{` 
+      <style jsx global>{`
         .grid-container {
           height: 55vh;
           width: 100%;
-          padding: 0; 
+          padding: 0;
         }
         .ag-grid .ag-cell {
-          font-family:
-            Menlo,
-            Monaco,
-            'Lucida Console',
-            'Liberation Mono',
-            'DejaVu Sans Mono',
-            'Bitstream Vera Sans Mono',
-            'Courier New',
-            monospace;
+          font-family: Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono',
+            'Bitstream Vera Sans Mono', 'Courier New', monospace;
           text-align: left;
         }
         .ag-grid .ag-cell {
@@ -153,7 +149,7 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           margin: 0 auto;
           padding: 0.5rem;
           font-size: 0.7rem;
-          line-height: 1.0;
+          line-height: 1;
         }
         .ag-grid .ag-header-cell {
           background-color: transparent !important;
@@ -161,11 +157,11 @@ const TableGrid: React.FC<TableGridProps> = ({ rowData, columnDefs, error, onSel
           margin: 0 auto;
           padding: 0.7rem;
           font-weight: 600;
-          font-size: 0.7rem; 
+          font-size: 0.7rem;
         }
       `}</style>
     </div>
-  );
-};
+  )
+}
 
-export default TableGrid;
+export default TableGrid
