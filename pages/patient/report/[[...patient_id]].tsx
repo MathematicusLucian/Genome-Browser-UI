@@ -21,8 +21,8 @@ import {
 import { useAppDispatch, useAppSelector } from '@/hooks/state-hooks'
 import _ from 'lodash'
 import { fetchRsids } from '@/state/features/research/researchSlice'
-import KeywordsFilter from '../../../lib/KeywordsFilter'
-import DataTypeFilter from '../../../lib/DataTypeFilter'
+import KeywordsFilter from '../../../components/KeywordsFilter'
+import DataTypeFilter from '../../../components/DataTypeFilter'
 
 // --------------------------------------------------------------------------------------------
 // Risk Report

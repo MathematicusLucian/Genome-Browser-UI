@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { patientsIndexedDb } from '@/database/database'
 import { IPatientGenome, IPatientGenomeVariant, IPatientProfile } from '@/models/database'
 import { useLiveQuery } from 'dexie-react-hooks'
-import DataGridFilter from './DataGridFllter'
+import DataGridFilter from './DropdownFllter'
 
 interface UploadFormProps {
   patientIdFromParentComponent: string

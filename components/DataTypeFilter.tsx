@@ -63,7 +63,7 @@ const DataTypeFilter = ({ model, onModelChange, getValue }) => {
             type="radio"
             name="dataType"
             value="All"
-            checked={unappliedModel != null}
+            checked={unappliedModel == null}
             onChange={onSelectedTypeChange}
           />{' '}
           All SNPs
@@ -73,7 +73,7 @@ const DataTypeFilter = ({ model, onModelChange, getValue }) => {
             type="radio"
             name="dataType"
             value="True"
-            checked={unappliedModel == null}
+            checked={unappliedModel != null}
             onChange={onSelectedTypeChange}
           />{' '}
           SNPs matching ClinVar notes

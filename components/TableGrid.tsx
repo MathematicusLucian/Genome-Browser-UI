@@ -68,6 +68,13 @@ const TableGrid: React.FC<TableGridProps> = ({
         onSelectedDataRowChange(e.data)
       }
     })
+    console.log("params.api.getColumn('risk')", params.api.getColumn('risk'))
+    params.api.setFilterModel({
+      column: params.api.getColumn('risk'),
+      value: 'True',
+    })
+    console.log('params.api.getFilterModel()', params.api.getFilterModel())
+    params.api.onFilterChanged()
   }
 
   const onPaginationChanged = () => {
