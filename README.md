@@ -1,13 +1,13 @@
-# Genome-Browser-UI 🔬🧬
+# Genoics-Browser-UI 🔬🧬
 
 ## Overview
 
-The Genome Browser scans/analyses DNA files from popular family tree providers (23andMe, Ancestry.com, etc.), comparing the genome of the user with published literature on health risks/conditions that their [gene variants](https://en.wikipedia.org/wiki/Human_genetic_variation) are correlated to. SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler.
+The GenomeSearch scans/analyses DNA files from popular family tree providers (23andMe, Ancestry.com, etc.), comparing the genome of the user with published literature on health risks/conditions that their [gene variants](https://en.wikipedia.org/wiki/Human_genetic_variation) are correlated to. SNP data is sourced from several sources, i.e. SNPedia, Ensembl, and GProfiler.
 
 For security reasons, the user's patient data is not shared to the server, but remains on their machine (in the web browser **IndexedDB**.) The SNP data from published literature is provisioned by the server.
 
-- This repo is the **React**-based (TypeScript) UI client application (with **NextJs**), and which queries the Genome Browser API.
-- The API/Orchestrator for this project is here: [Genome Browser API](https://github.com/MathematicusLucian/Genome-Browser-API).
+- This repo is the **React**-based (TypeScript) UI client application (with **NextJs**), and which queries the GenomeSearch API.
+- The API/Orchestrator for this project is here: [GenomeSearch API](https://github.com/MathematicusLucian/Genome=Search-API).
 
 ### Objectives
 
@@ -183,7 +183,7 @@ Light mode:
 
 ## UI Client Architecture
 
-The Genome Browser UI leverages the powerful features of Next.js to build a robust and scalable web application. Below is an overview of the key architectural components and patterns used in this project.
+The GenomeSearch UI leverages the powerful features of Next.js to build a robust and scalable web application. Below is an overview of the key architectural components and patterns used in this project.
 
 ### Key Features
 
@@ -199,7 +199,7 @@ The Genome Browser UI leverages the powerful features of Next.js to build a robu
 
 6. **Client-side Rendering**: Next.js also supports client-side rendering for interactive pages. The `useEffect` hook is used to fetch data on the client side after the initial render.
 
-7. **API Integration**: The application integrates with the Genome Browser API to fetch genome data. API calls are made using the `fetch` API within `getStaticProps`, `getServerSideProps`, or `useEffect` depending on the rendering strategy.
+7. **API Integration**: The application integrates with the GenomeSearch API to fetch genome data. API calls are made using the `fetch` API within `getStaticProps`, `getServerSideProps`, or `useEffect` depending on the rendering strategy.
 
 8. **State Management**: React's `useState` and `useEffect` hooks are used for managing local component state and side effects. For more complex state management, libraries like **Redux** (or, alternatively, **Context API**) can be integrated.
 

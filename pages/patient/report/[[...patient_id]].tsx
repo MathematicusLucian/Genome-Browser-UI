@@ -79,7 +79,10 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
   // Filter #1
 
   // Fetch patient profiles from IndexedDB
-  const patientProfiles = useLiveQuery(() => patientsIndexedDb.patientProfile.toArray())
+  const patientProfiles = useLiveQuery(() => {
+    console.log('patientProfiles', patientProfiles)
+    return patientsIndexedDb.patientProfile.toArray()
+  })
 
   // Fetch selected patient profile from Redux store
   const selectedPatientSelectedProfile: ISelectedItem | null = useSelector(
@@ -363,12 +366,12 @@ const RiskReportPage: React.FC<RiskReportPageProps> = (props) => {
         updateModalTitle('Upload Patient File')
         updateModalContent(
           modalContent(
-            <UploadForm patientIdFromParentComponent={selectedPatientSelectedProfile.id} />,
+            <UploadForm patientIdFromParentComponent={selectedPatientSelectedProfile?.id} />,
           ),
         )
         toggleModalVisible(true)
       },
-      condtionVariable: selectedPatientSelectedProfile,
+      condtionVariable: true, // selectedPatientSelectedProfile
     },
   ]
 

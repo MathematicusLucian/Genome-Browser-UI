@@ -1,18 +1,17 @@
 'use client'
-import React, { useEffect } from "react"; 
-import dynamic from "next/dynamic";
-import { addDemoDataIfDatabaseTablesEmpty } from "@/database/database";
+import React, { useEffect } from 'react'
+import dynamic from 'next/dynamic'
+import { addDemoDataIfDatabaseTablesEmpty } from '@/database/database'
 
-const PublicLayout = ({ isSidebar, children }) => {      
-  
-  const Sidebar = dynamic(() => import("../components/Sidebar"), { ssr: false });
+const PublicLayout = ({ isSidebar, children }) => {
+  const Sidebar = dynamic(() => import('../components/Sidebar'), { ssr: false })
 
   useEffect(() => {
-    addDemoDataIfDatabaseTablesEmpty();
-  }, []); 
+    addDemoDataIfDatabaseTablesEmpty()
+  }, [])
 
-  return children 
-  // return isSidebar ? 
+  return children
+  // return isSidebar ?
   //   (
   //     <div>
   //       <Sidebar>
@@ -22,6 +21,6 @@ const PublicLayout = ({ isSidebar, children }) => {
   //     </div>
   //   )
   //   : (<></>)
-};
+}
 
-export default PublicLayout;
+export default PublicLayout

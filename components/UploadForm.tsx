@@ -1,144 +1,263 @@
 // 'use client';
-import { ChangeEvent, useEffect, useRef, useState } from "react"; 
-import { ImportOptions, peakImportFile } from "dexie-export-import";
-// import { uploadFile } from "../utils/upload-action"; 
-import axios from 'axios';
-import { FileUploader } from "react-drag-drop-files";
-import { v4 as uuidv4 } from 'uuid';
-import { patientsIndexedDb } from "@/database/database";
-import { IPatientGenome, IPatientGenomeVariant, IPatientProfile } from "@/models/database";
-import { useLiveQuery } from "dexie-react-hooks";
-import DataGridFilter from "./DataGridFllter";
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ImportOptions, peakImportFile } from 'dexie-export-import'
+// import { uploadFile } from "../utils/upload-action";
+import axios from 'axios'
+import { FileUploader } from 'react-drag-drop-files'
+import { v4 as uuidv4 } from 'uuid'
+import { patientsIndexedDb } from '@/database/database'
+import { IPatientGenome, IPatientGenomeVariant, IPatientProfile } from '@/models/database'
+import { useLiveQuery } from 'dexie-react-hooks'
+import DataGridFilter from './DataGridFllter'
 
 interface UploadFormProps {
-  patientIdFromParentComponent: string;
+  patientIdFromParentComponent: string
 }
-const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) => {  
-  const [status, setStatus] = useState<any>(); 
-  const [importProgress, setImportProgress] = useState<number>(0); 
-  const [patientId, setPatientId] = useState<string>();
-  const [patient, setPatient] = useState<string>();
-  const [fileSelectedForUpload, setFileSelectedForUpload] = useState<File|null>(null); 
-  const fileTypes = ["TXT"]; 
-  const chunkSize = 900000; // 0.9MB  
-  let totalChunks = 0;
-  let chunkProgress;
-  let chunkNumber = 0;
-  let start = 0;
-  let end = 0;
+const UploadForm: React.FC<UploadFormProps> = ({ patientIdFromParentComponent }) => {
+  const [status, setStatus] = useState<any>()
+  const [importProgress, setImportProgress] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [progressData, setProgressData] = useState<Array<number>>([])
+  const [patientId, setPatientId] = useState<string>()
+  const [patient, setPatient] = useState<string>()
+  const [fileSelectedForUpload, setFileSelectedForUpload] = useState<File | null>(null)
+  const [abortControllers, setAbortControllers] = useState<Array<AbortController>>([])
+  const fileTypes = ['TXT']
+  const chunkSize = 5 * 1024 * 1024 // 5 MB chunk size
+  const chunks: any[] = []
+  let fileSize
+  const totalChunks = 0
+  let chunkProgress
+  const chunkNumber = 0
+  let startPointer = 0
+  let endPointer = chunkSize // 0
+  const reader = new FileReader()
+  const uniqueId = (Math.random() * 10000000000).toString(16)
 
   useEffect(() => {
-    setPatientId(patientIdFromParentComponent);
-  }, [patientIdFromParentComponent]);
+    setPatientId(patientIdFromParentComponent)
+  }, [patientIdFromParentComponent])
 
   const handleError = (file) => {
-    console.log(handleError);
-  }; 
+    console.log(handleError)
+  }
 
-  const handleFile = async (chunkFormDataBuffer) => { 
-    const vcfDataRows = await chunkFormDataBuffer.split(/\r\n|\n/); 
-    const vcfDataRowsWithoutHeadingText = await vcfDataRows.filter((x) => String(x).startsWith('rs') || String(x).startsWith('i'));
-    const vcfDelimitedRow = await vcfDataRowsWithoutHeadingText.map((x: any) => x.split('\t')); 
-    const patientGenomeId = uuidv4();
+  const createGenomeReference = async () => {
+    const patientGenomeId = uuidv4()
     try {
-      // Database 
-      // if(!patientId) {
-      //   const defaultProfile: IPatientProfile = await patientsIndexedDb.patientProfile.where('patientName').equals('Default Profile').toArray()[0];
-      //   console.log(defaultProfile);
-      //   setPatientId(defaultProfile?.patientId); 
-      // }
-      // console.log(patientId);
-      const vcfSource = 'undefined';
-      const patientGenome: IPatientGenome = {  
+      const vcfSource = 'undefined'
+      const patientGenome: IPatientGenome = {
         patientGenomeId: patientGenomeId,
         source: vcfSource,
         datetimestamp: Date.now(),
-        patientId: patientId,
+        patientId: patientId || patientIdFromParentComponent || null,
       }
-      console.log(patientGenome);
-      await patientsIndexedDb.patientGenome.add(patientGenome);
+      await patientsIndexedDb.patientGenome.add(patientGenome)
+      return patientGenomeId
     } catch (error) {
-        console.error('Error adding genome to database:', error);
+      console.error('Error adding genome to database:', error)
     }
-    await vcfDelimitedRow.map(async (vcfRow) => {
-      try {
-        const patientGeneVariantId = uuidv4();
-        const patientGenomeVariant: IPatientGenomeVariant = { 
-          patientGeneVariantId: patientGeneVariantId,
-          rsid: vcfRow[0],
-          genotype: vcfRow[3],
-          chromosome: vcfRow[1],
-          position: vcfRow[2],
-          datetimestamp: Date.now(),
-          patientGenomeId: patientGenomeId,
+  }
+
+  // Open IndexedDB
+  async function openIndexedDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('LargeFileDB', 1)
+
+      request.onupgradeneeded = (e: any) => {
+        const db = e.target.result
+        if (!db.objectStoreNames.contains('lines')) {
+          db.createObjectStore('lines', { keyPath: 'id', autoIncrement: true })
         }
-        // console.log(patientGenomeVariant);
-        await patientsIndexedDb.patientGenomeVariant.add(patientGenomeVariant);
-      } catch (error) {
-          console.error('Error adding gene varients to database:', error);
       }
-    }); 
-  }
 
-  const addGeneVariants = async (chunkBlob: Blob) => {
-    const reader = new FileReader();
-    reader.onload = async () => await handleFile(reader.result);
-    reader.readAsText(chunkBlob);
-  }
+      request.onsuccess = (e: any) => {
+        resolve(e.target.result)
+      }
 
-  const uploadNextChunksRecursively = async (fileSelectedForUpload: File) => {
-    if (end <= fileSelectedForUpload.size) {
-      end = start + chunkSize; 
-      const chunkBlob = fileSelectedForUpload.slice(start, end);
-      await addGeneVariants(chunkBlob);
-      const temp = `Chunk ${ chunkNumber + 1 }/${totalChunks} uploaded successfully`;
-      setStatus(temp); 
-      updateImportProgress({ totalRows: chunkProgress, completedRows: Number(chunkNumber + 1)});
-      chunkNumber++;
-      start = end;
-      // await uploadNextChunksRecursively(fileSelectedForUpload);
-    } else {
-      setImportProgress(0);
-      setStatus("File upload completed");
-    }
-  }; 
-
-  const handleFileUpload = async(file: File) => { 
-    setFileSelectedForUpload(file);
-    if (!file) {
-      // alert("Please select a file to upload.");
-      console.log("Please select a file to upload.");
-      return;
-    }
-    if(file) {
-      totalChunks = Math.ceil(file.size / chunkSize);
-      console.log('totalChunks', totalChunks);
-      chunkProgress = 100 / totalChunks;
-      console.log('chunkProgress', chunkProgress);
-      setImportProgress(0);
-      await uploadNextChunksRecursively(file);  
-    }
-  }
-
-  const updateImportProgress = ({ totalRows, completedRows }: { totalRows: any, completedRows: number }): boolean => {
-    setImportProgress(100 * completedRows / totalRows); 
-    return true;
-  }
-
-  const serverSideUploadAlternative = () => {
-    const formData: FormData = new FormData();
-    const httpRequestOptions = {
-      method: "POST",
-      body: formData,   
-    };
-    fetch("/api/upload", httpRequestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log({ data });
+      request.onerror = (e) => {
+        reject(e)
+      }
     })
-    .catch((error) => {
-      console.error("Error uploading chunk:", error);
-    }); 
+  }
+
+  // Store data in IndexedDB
+  async function storeInIndexedDB(db, patientGenomeId, lines) {
+    return new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction('lines', 'readwrite')
+      const store = transaction.objectStore('lines')
+
+      // try {
+      lines.forEach((line) => {
+        // // store.add({ line })
+        if (line.length != 0) {
+          // console.log(line)
+          const lineDelimited = line.split('\t')
+          console.log(lineDelimited)
+          store.add({ lineDelimited })
+          // console.log('lineDelimited', lineDelimited)
+          // const patientGeneVariantId = uuidv4()
+          // const patientGenomeVariant: IPatientGenomeVariant = {
+          //   patientGeneVariantId: patientGeneVariantId,
+          //   rsid: lineDelimited[0],
+          //   genotype: lineDelimited[3],
+          //   chromosome: lineDelimited[1],
+          //   position: lineDelimited[2],
+          //   datetimestamp: Date.now(),
+          //   patientGenomeId: patientGenomeId,
+          // }
+          // console.log('patientGenomeVariant', patientGenomeVariant)
+          // store.add({ patientGenomeVariant })
+          // await patientsIndexedDb.patientGenomeVariant.add(patientGenomeVariant)
+        }
+      })
+      // } catch (error) {
+      //   console.error('Error adding gene varients to database:', error)
+      // }
+
+      transaction.oncomplete = () => resolve()
+      transaction.onerror = (e) => reject(e)
+    })
+  }
+
+  const handleFile = async (patientGenomeId, chunkFormDataBuffer) => {
+    // Use IndexedDB for storing data
+    const db = await openIndexedDB()
+    // File processing
+    // const fileSize = chunkFormDataBuffer.size
+    // let lineCount = 0
+    const BATCH_SIZE = 10000 // Process 10,000 lines at a time
+    let linesBuffer = []
+    const lines = await chunkFormDataBuffer.split(/\r\n|\n/)
+    for (const line of lines) {
+      if (String(line).startsWith('rs') || String(line).startsWith('i')) {
+        // console.log(line)
+        // console.log(line.length)
+        linesBuffer.push(line.trim())
+        // lineCount++
+        // Process in batches
+        if (linesBuffer.length >= BATCH_SIZE) {
+          await storeInIndexedDB(db, patientGenomeId, linesBuffer)
+          // console.log(line)
+          linesBuffer = [] // Reset buffer
+        }
+        // Process any remaining lines
+        // if (linesBuffer.length > 0) {
+        //   await storeInIndexedDB(db, patientGenomeId, linesBuffer)
+        // }
+      }
+    }
+  }
+
+  const addGeneVariants = async (patientGenomeId, chunkBlob: Blob) => {
+    const fileReader = new FileReader()
+    fileReader.onload = async () => await handleFile(patientGenomeId, fileReader.result)
+    fileReader.readAsText(chunkBlob)
+  }
+
+  const cancelUpload = () => {
+    abortControllers.forEach((item) => item.abort())
+  }
+
+  const progress = progressData?.length
+    ? Math.round(progressData?.reduce((item1, item2) => item1 + item2) / (progressData.length || 1))
+    : 0
+
+  const createChunks = async (fileSelectedForUpload: File) => {
+    fileSize = fileSelectedForUpload.size
+    console.log(fileSelectedForUpload.size, fileSelectedForUpload.size / chunkSize)
+    while (startPointer < fileSize) {
+      console.log(startPointer, endPointer)
+      chunks.push(fileSelectedForUpload.slice(startPointer, endPointer))
+      console.log(chunks)
+      startPointer = endPointer
+      endPointer = startPointer + chunkSize
+    }
+    return chunks
+  }
+
+  const uploadChunk = async ({
+    patientGenomeId,
+    chunk,
+    chunkIndex,
+    chunksCount,
+    chunkSize,
+    fileSize,
+    uniqueId,
+    onUploadProgress,
+  }: {
+    patientGenomeId: any
+    chunk: Blob
+    chunkIndex: number
+    chunksCount: number
+    chunkSize: number
+    fileSize: number
+    uniqueId: string
+    onUploadProgress?: (value: number) => void
+  }) => {
+    const isLast = chunkIndex + 1 === chunksCount
+    const start = chunkIndex * chunkSize
+    const end = isLast ? fileSize : start + chunk.size
+    const controller = new AbortController()
+    setAbortControllers((value) => value.concat(controller))
+    setImportProgress(Math.round((100 * end) / fileSize))
+    return await addGeneVariants(patientGenomeId, chunk)
+  }
+
+  const handleFileUpload = async (file: File, chunkSize = 6 * 1024 * 1024) => {
+    setFileSelectedForUpload(file)
+    if (!file) {
+      console.log('Please select a file to upload.')
+      return
+    }
+    if (file) {
+      setImportProgress(0)
+      setProgressData([])
+      setAbortControllers([])
+      // const fileChunks = await createChunks(file)
+      const patientGenomeId = createGenomeReference()
+      console.log(patientGenomeId)
+
+      reader.onload = async (e) => {
+        const lines = await handleFile(patientGenomeId, reader.result)
+      }
+
+      reader.onerror = (e) => {
+        console.error('Error reading file:', e)
+      }
+
+      reader.readAsText(file)
+    }
+
+    // const promises = fileChunks.map(
+    //   async (chunk, chunkIndex) =>
+    //     await uploadChunk({
+    //       patientGenomeId,
+    //       chunk,
+    //       chunkIndex,
+    //       chunksCount: fileChunks.length,
+    //       chunkSize: chunkSize,
+    //       fileSize,
+    //       uniqueId,
+    //     }),
+    // )
+    // try {
+    //   setIsLoading(true)
+    //   Promise.all(promises)
+    //     .then((responses) => {
+    //       console.log('All chunks uploaded successfully!')
+    //     })
+    //     .catch((error) => {
+    //       console.log('Error uploading chunks:', error)
+    //     })
+    //   setIsLoading(false)
+    // } catch (error) {
+    //   console.error(error)
+    //   throw error
+    // } finally {
+    //   setIsLoading(false)
+    // }
+    // }
   }
 
   // -----
@@ -146,69 +265,71 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
   // -----
 
   const selectedSelectItemOrFallback = (selectData, selectDataKey, selectedOption) =>
-    (selectData && selectData[0] && selectDataKey in selectData[0])
-    ? selectedOption || selectData[0][selectDataKey]
-    : selectedOption; 
+    selectData && selectData[0] && selectDataKey in selectData[0]
+      ? selectedOption || selectData[0][selectDataKey]
+      : selectedOption
 
   // Filter #1
 
   // Fetch patient profiles from IndexedDB
-  const patientProfiles = useLiveQuery(
-      () => patientsIndexedDb.patientProfile
-          .toArray()
-  ); 
+  const patientProfiles = useLiveQuery(() => patientsIndexedDb.patientProfile.toArray())
 
   const handleSelectedPatient = (event) => {
-    console.log(event.target.value);
-    setPatientId(event.target.value);
+    console.log(event.target.value)
+    setPatientId(event.target.value)
   }
 
-  const updateStatus = () => {
-
-  }
+  const updateStatus = () => {}
 
   // Dashboards
 
-  const navDropdowns =
-  {
+  const navDropdowns = {
     dataAsList: patientProfiles || [],
-    selectedSelectItem: selectedSelectItemOrFallback(patientProfiles, 'patientId', patientIdFromParentComponent),
+    selectedSelectItem: selectedSelectItemOrFallback(
+      patientProfiles,
+      'patientId',
+      patientIdFromParentComponent,
+    ),
     handleSelectedItemChange: handleSelectedPatient,
     selectDataKey: 'patientId',
     displayField: 'patientName',
-    selectTitle: "Patient Profile:",
-    placeholder: "Please choose a patient",
+    selectTitle: 'Patient Profile:',
+    placeholder: 'Please choose a patient',
     updateStatus: updateStatus,
-  };
+  }
 
   return (
-    <> 
+    <>
       <div className="file-uploader">
-          {patientProfiles && (<DataGridFilter 
-              dataAsList={navDropdowns.dataAsList} 
-              selectedSelectItem={navDropdowns.selectedSelectItem} 
-              handleSelectedItemChange={navDropdowns.handleSelectedItemChange} 
-              selectDataKey={navDropdowns.selectDataKey} 
-              displayField={navDropdowns.displayField} 
-              selectTitle={navDropdowns.selectTitle} 
-              placeholder={navDropdowns.placeholder}
-              updateStatus={navDropdowns.updateStatus} 
-          />)}
+        {patientProfiles && (
+          <DataGridFilter
+            dataAsList={navDropdowns.dataAsList}
+            selectedSelectItem={navDropdowns.selectedSelectItem}
+            handleSelectedItemChange={navDropdowns.handleSelectedItemChange}
+            selectDataKey={navDropdowns.selectDataKey}
+            displayField={navDropdowns.displayField}
+            selectTitle={navDropdowns.selectTitle}
+            placeholder={navDropdowns.placeholder}
+            updateStatus={navDropdowns.updateStatus}
+          />
+        )}
         <div>
-        <label>New Patient Name: </label>
-        <input name="newPatientName"></input>
-        <hr />
-        <span>Patient Id: </span>{patientId}</div>
-        {importProgress==0 && (
+          <label>New Patient Name: </label>
+          <input name="newPatientName"></input>
+          <hr />
+          <span>Patient Id: </span>
+          {patientId}
+        </div>
+        {importProgress == 0 && (
           <div className="m-4 rounded bg-white">
             <FileUploader
               multiple={false}
               uploadedLabel={false}
               handleChange={handleFileUpload} // Will be called when the user selects or drops file(s)
               maxSize="50" // The maximum size of the file (Number in MB)
-              onSizeError={(file) => console.log("Size Error")}
-              hoverTitle={"Drop here"}
-              dropMessageStyle={{backgroundColor: 'red'}}
+              onSizeError={(file) => console.log('Size Error')}
+              hoverTitle={'Drop here'}
+              dropMessageStyle={{ backgroundColor: 'red' }}
               name="file"
               types={fileTypes}
               // error={handleError}
@@ -216,13 +337,12 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
           </div>
         )}
         <p>
-          {fileSelectedForUpload ? `File name: ${fileSelectedForUpload.name}` : "no files uploaded yet"}
+          {fileSelectedForUpload
+            ? `File name: ${fileSelectedForUpload.name}`
+            : 'no files uploaded yet'}
         </p>
-        {/* {importProgress!=0 && ( */}
-          <p>
-            Uploading Progress: {importProgress}
-          </p>
-        {/* )} */}
+        <p>Uploading Progress: {importProgress}</p>
+        {isLoading && <p>{isLoading}</p>}
       </div>
       <style jsx>{`
         .file-uploader {
@@ -236,7 +356,11 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
         h2 {
           font-size: 1rem;
         }
-        p, input, label, select, button {
+        p,
+        input,
+        label,
+        select,
+        button {
           font-size: 0.8em;
         }
         div span {
@@ -247,21 +371,18 @@ const UploadForm: React.FC<UploadFormProps> = ({patientIdFromParentComponent}) =
           border: 1px rgb(236, 232, 232) solid;
         }
         label {
-          padding: 0 0.5em; 
+          padding: 0 0.5em;
         }
         input {
-          padding: 0 0.5em; 
+          padding: 0 0.5em;
           border: 1px rgb(222, 221, 221) solid;
         }
         button {
-          padding: 0 0.5em; 
+          padding: 0 0.5em;
         }
       `}</style>
     </>
-  );
+  )
 }
 
-export default UploadForm;
-{/* {JSON.stringify(navDropdowns)} <hr />
-{navDropdowns.displayField} <hr />
-{JSON.stringify(navDropdowns.dataAsList)} */}
+export default UploadForm
